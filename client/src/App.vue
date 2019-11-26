@@ -1,28 +1,26 @@
 <template>
   <v-app>
-    <v-app-bar app dark></v-app-bar>
+    <Nav />
     <v-content>
-      <!-- Routes should go here -->
-      <HelloWorld />
+      <router-view class="view"></router-view>
     </v-content>
-    <v-footer app dark absolute>
-      <v-col class="text-center" cols="12">
-        <strong>ShareStuff</strong>
-      </v-col>
-    </v-footer>
+    <Footer />
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import router from "./router";
+import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 export default {
   name: "App",
-
+  router,
   components: {
-    HelloWorld
-  },
-
-  data: () => ({})
+    Nav,
+    Footer
+  }
 };
 </script>
+
+<style scoped lang="scss"></style>
