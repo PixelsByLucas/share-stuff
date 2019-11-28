@@ -2,44 +2,66 @@
   <v-app-bar app dark class="nav">
     <router-link to="/" tag="h1" class="nav__logo">ShareStuff</router-link>
     <v-spacer></v-spacer>
-    <v-btn icon class="nav__icon">
-      <v-icon>mdi-message-text-outline</v-icon>
-    </v-btn>
-    <v-btn icon class="nav__icon nav__icon--middle" to="/notifications">
-      <v-icon>mdi-bell-outline</v-icon>
-    </v-btn>
-    <!-- === PROFILE DROPDOWN === -->
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn icon class="nav__icon" v-on="on">
-          <v-icon>mdi-account-outline</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(item, index) in profileNavItems"
-          v-bind:key="index"
-          :to="item.url"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <UserBtns v-if="isLoggedIn"></UserBtns>
+    <LoginRegisterBtns v-else></LoginRegisterBtns>
   </v-app-bar>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
+import UserBtns from "./UserBtns";
+import LoginRegisterBtns from "./LoginRegisterBtns";
+
 export default {
   name: "Nav",
+  components: {
+    UserBtns,
+    LoginRegisterBtns
+  },
   data() {
     return {
-      profileNavItems: [
-        { title: "Profile", url: "/profile" },
-        { title: "Settings", url: "/settings" },
-        { title: "About", url: "about" },
-        { title: "Logout", url: this.$route }
-      ]
+      profileItems: [
+        { title: "Profile", url: "/profile", showWhen: "loggedIn" },
+        { title: "Settings", url: "/settings", showWhen: "always" },
+        { title: "About", url: "about", showWhen: "always" }
+      ],
+      profileItemsLogin: {
+        logout: { title: "Logout", url: "#", click: "modal" },
+        login: { title: "Login", url: "#", click: "modal" },
+        register: { title: "Register", url: "#", click: "modal" }
+      },
+      modalItems: ["Logout", "Login", "Register"]
     };
+  },
+  computed: {
+    ...mapState({
+      isLoggedIn: state => state.user.meta.isLoggedIn
+    }),
+    filteredProfileItems() {
+      const { isLoggedIn, token } = this.$store.getters;
+      const { logout, login, register } = this.profileItemsLogin;
+
+      return [
+        ...this.profileItems.filter(item => {
+          if (item.showWhen === "loggedIn" && !isLoggedIn) {
+            return;
+          }
+          return item;
+        }),
+
+        (() => {
+          if (isLoggedIn) {
+            return logout;
+          } else {
+            return token ? login : register;
+          }
+        })()
+      ];
+    }
+  },
+  mounted() {
+    console.log(this.$store.getters.isLoggedIn);
   }
 };
 </script>
@@ -58,7 +80,7 @@ export default {
     border-style: solid;
 
     &--middle {
-      margin: 0 1% 0 1%;
+      margin: 0 1rem 0 1rem;
     }
   }
 }
