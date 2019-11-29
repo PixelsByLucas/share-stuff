@@ -10,7 +10,6 @@ export const registerRequest = ({
   username,
   location
 }) => {
-  console.log(process.env.VUE_APP_SERVER_URL);
   const { firstName, lastName } = firstAndLastName(fullName);
   return axios({
     method: "post",
@@ -18,8 +17,6 @@ export const registerRequest = ({
     data: { email, password, firstName, lastName, username, location }
   })
     .then(res => {
-      console.log(res);
-
       return res.data;
     })
     .catch(error => {

@@ -218,17 +218,15 @@ export default {
       }
     },
     handleSubmit() {
-      const { setUserToken, setUser } = this.$store.actions;
       if (this.valid.thirdForm) {
         registerRequest(this.formValues).then(data => {
-          console.log(data);
           const { token, user } = data;
           if (token) {
-            setUserToken(token);
+            this.$store.dispatch("setUserToken", token);
           }
 
           if (user) {
-            setUser(user);
+            this.$store.dispatch("setUser", user);
           }
         });
         this.$emit("close-dialog");

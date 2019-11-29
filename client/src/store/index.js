@@ -54,7 +54,7 @@ export default new Vuex.Store({
       commit("USER_LOGIN", payload);
     },
     setUserToken({ commit }, payload) {
-      cacheItem(payload);
+      cacheItem("userToken", payload);
       commit("USER_TOKEN", payload);
     },
     setUser({ commit }, payload) {

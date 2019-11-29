@@ -20,48 +20,12 @@ export default {
     LoginRegisterBtns
   },
   data() {
-    return {
-      profileItems: [
-        { title: "Profile", url: "/profile", showWhen: "loggedIn" },
-        { title: "Settings", url: "/settings", showWhen: "always" },
-        { title: "About", url: "about", showWhen: "always" }
-      ],
-      profileItemsLogin: {
-        logout: { title: "Logout", url: "#", click: "modal" },
-        login: { title: "Login", url: "#", click: "modal" },
-        register: { title: "Register", url: "#", click: "modal" }
-      },
-      modalItems: ["Logout", "Login", "Register"]
-    };
+    return {};
   },
   computed: {
     ...mapState({
       isLoggedIn: state => state.user.meta.isLoggedIn
-    }),
-    filteredProfileItems() {
-      const { isLoggedIn, token } = this.$store.getters;
-      const { logout, login, register } = this.profileItemsLogin;
-
-      return [
-        ...this.profileItems.filter(item => {
-          if (item.showWhen === "loggedIn" && !isLoggedIn) {
-            return;
-          }
-          return item;
-        }),
-
-        (() => {
-          if (isLoggedIn) {
-            return logout;
-          } else {
-            return token ? login : register;
-          }
-        })()
-      ];
-    }
-  },
-  mounted() {
-    console.log(this.$store.getters.isLoggedIn);
+    })
   }
 };
 </script>
@@ -72,16 +36,6 @@ export default {
 
   &__logo {
     cursor: pointer;
-  }
-
-  &__icon {
-    border-color: whitesmoke;
-    border-width: 2px;
-    border-style: solid;
-
-    &--middle {
-      margin: 0 1rem 0 1rem;
-    }
   }
 }
 </style>
