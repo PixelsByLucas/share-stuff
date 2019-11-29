@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     }
   }],
   avatar: {
-    type: Buffer
+    type: Buffer,
   },
   karma: {
     type: Number,

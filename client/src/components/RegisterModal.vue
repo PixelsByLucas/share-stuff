@@ -44,7 +44,7 @@
     </div>
     <!-- === second form === -->
     <div class="secondForm" v-if="formPage === 1">
-      <v-form v-model="valid.firstForm" ref="secondForm">
+      <v-form v-model="valid.secondForm" ref="secondForm">
         <v-container>
           <v-row>
             <v-col cols="8">
@@ -71,9 +71,9 @@
               <v-row>
                 <v-col>
                   <v-text-field
-                    v-model="formValues.address"
+                    v-model="formValues.location"
                     label="Address"
-                    :rules="addressRules"
+                    :rules="locationRules"
                     required
                   ></v-text-field>
                 </v-col>
@@ -82,9 +82,27 @@
             <v-col cols="4" class="secondForm__iconCol">
               <div>
                 <v-btn icon class="secondForm__iconBtn" @click="pickFile">
-                  <v-icon size="124px">mdi-account-circle</v-icon>
+                  <v-icon size="124px" v-if="!avatar.imageUrl"
+                    >mdi-account-circle</v-icon
+                  >
+                  <v-img
+                    class="secondForm__profilePic"
+                    v-else
+                    :src="avatar.imageUrl"
+                    alt="profile picture"
+                    width="124px"
+                    height="124px"
+                  ></v-img>
                 </v-btn>
-                <label class="secondForm__label">Upload profile picture</label>
+                <label
+                  :class="
+                    imageWarning
+                      ? 'secondForm__label imageWarning'
+                      : 'secondForm__label'
+                  "
+                  v-if="!avatar.imageUrl"
+                  >Upload profile picture
+                </label>
                 <input
                   type="file"
                   style="display: none"
@@ -97,16 +115,53 @@
           </v-row>
         </v-container>
         <v-card-actions>
+          <v-btn v-on:click="handleBack">BACK</v-btn>
           <v-spacer></v-spacer>
           <v-btn v-on:click="handleNext('secondForm')">NEXT</v-btn>
         </v-card-actions>
       </v-form>
     </div>
     <!-- === third form === -->
+    <div v-if="formPage === 2">
+      <v-card-subtitle>Terms and Condition</v-card-subtitle>
+      <v-card-text
+        >Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque
+        molestiae distinctio qui exercitationem, dolores rerum atque odit rem
+        maxime praesentium dolore natus facere vero esse mollitia tenetur
+        dolorum quo consequuntur! Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Odio, dolorum minima sequi, ratione incidunt aliquam
+        optio nostrum et laudantium doloribus harum tempore beatae impedit
+        officia odit reiciendis. Laudantium, debitis eum! Lorem ipsum dolor, sit
+        amet consectetur adipisicing elit. Alias ad est consequuntur eveniet
+        laboriosam aliquid perspiciatis delectus harum. Nesciunt ad aspernatur
+        id eius, ex voluptates consequatur officiis cum inventore recusandae?
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam
+        debitis amet repellendus laboriosam! Facere, dicta praesentium
+        perferendis eius qui quod veniam dolorum officiis, expedita reiciendis
+        incidunt, labore odit quo nisi?</v-card-text
+      >
+      <v-form v-model="valid.thirdForm" ref="thirdForm">
+        <v-checkbox
+          v-model="agreeToTerms"
+          :rules="[v => !!v || 'You must agree to continue!']"
+          label="Do you agree?"
+          required
+        ></v-checkbox>
+      </v-form>
+      <v-card-actions>
+        <v-row class="thirdForm__actions">
+          <v-btn v-on:click="handleBack">BACK</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn v-on:click="handleSubmit">SUBMIT</v-btn>
+        </v-row>
+      </v-card-actions>
+    </div>
   </v-card>
 </template>
 
 <script>
+import { registerRequest } from "../apis/users";
+
 export default {
   name: "RegisterModal",
   data() {
@@ -116,7 +171,9 @@ export default {
         password: "",
         fullName: "",
         username: "",
-        address: "",
+        location: ""
+      },
+      avatar: {
         imageFile: "",
         imageName: "",
         imageUrl: ""
@@ -127,6 +184,8 @@ export default {
         thirdForm: false
       },
       formPage: 0,
+      agreeToTerms: false,
+      imageWarning: false,
       emailRules: [
         v => !!v || "E-mail is required",
         v => /.+@.+/.test(v) || "E-mail must be valid"
@@ -138,7 +197,7 @@ export default {
       // TODO: provide more rules here
       fullNameRules: [v => !!v || "Full name is required"],
       usernameRules: [v => !!v || "Username is required"],
-      addressRules: [v => !!v || "Address is required"]
+      locationRules: [v => !!v || "Address is required"]
     };
   },
   methods: {
@@ -147,7 +206,34 @@ export default {
         this.$refs[formNum].validate();
         return;
       }
+      if (formNum === "secondForm" && !this.avatar.imageFile) {
+        this.imageWarning = true;
+        return;
+      }
       this.formPage++;
+    },
+    handleBack() {
+      if (this.formPage > 0) {
+        this.formPage--;
+      }
+    },
+    handleSubmit() {
+      const { setUserToken, setUser } = this.$store.actions;
+      if (this.valid.thirdForm) {
+        registerRequest(this.formValues).then(data => {
+          console.log(data);
+          const { token, user } = data;
+          if (token) {
+            setUserToken(token);
+          }
+
+          if (user) {
+            setUser(user);
+          }
+        });
+        this.$emit("close-dialog");
+      }
+      this.$refs.thirdForm.validate();
     },
     pickFile() {
       this.$refs.image.click();
@@ -155,20 +241,20 @@ export default {
     onFilePicked(e) {
       const files = e.target.files;
       if (files[0] !== undefined) {
-        this.formValues.imageName = files[0].name;
-        if (this.formValues.imageName.lastIndexOf(".") <= 0) {
+        this.avatar.imageName = files[0].name;
+        if (this.avatar.imageName.lastIndexOf(".") <= 0) {
           return;
         }
         const fr = new FileReader();
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
-          this.formValues.imageUrl = fr.result;
-          this.formValues.imageFile = files[0];
+          this.avatar.imageUrl = fr.result;
+          this.avatar.imageFile = files[0];
         });
       } else {
-        this.formValues.imageName = "";
-        this.formValues.imageFile = "";
-        this.formValues.imageUrl = "";
+        this.avatar.imageName = "";
+        this.avatar.imageFile = "";
+        this.avatar.imageUrl = "";
       }
     }
   }
@@ -184,6 +270,9 @@ export default {
   &__iconCol {
     align-self: center;
   }
+  &__profilePic {
+    border-radius: 50%;
+  }
   &__iconBtn {
     width: 124px;
     height: 124px;
@@ -194,5 +283,13 @@ export default {
     color: rgba(0, 0, 0, 0.6);
     font-size: 16px;
   }
+}
+.thirdForm {
+  &__actions {
+    margin-top: 2rem;
+  }
+}
+.imageWarning {
+  color: red;
 }
 </style>
