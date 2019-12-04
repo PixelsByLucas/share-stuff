@@ -15,5 +15,8 @@
    ],  
    "eslint.autoFixOnSave": true, 
    "editor.formatOnSave": false,  
-   "vetur.validation.template": true
+   "vetur.validation.template": true,
+   "rules": {
+    "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
+}
 }

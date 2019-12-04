@@ -18,6 +18,36 @@ router.post('/users', async (req, res) => {
   }
 })
 
+// === Verify User email ===
+router.post('/users/email', async (req, res) => {
+  try {
+    const emailInUse = await User.findOne({ email: req.body.email })
+
+    if(!emailInUse) {
+      res.send(true)
+    } else {
+      res.send(false)
+    }
+  } catch (err) {
+    res.status(500).send()
+  }
+})
+
+// === Verify User Username ===
+router.post('/users/username', async (req, res) => {
+  try {
+    const usernameInUse = await User.findOne({ username: req.body.username })
+
+    if(!usernameInUse) {
+      res.send(true)
+    } else {
+      res.send(false)
+    }
+  } catch (err) {
+    res.status(500).send()
+  }
+})
+
 // === Login User ===
 router.post('/users/login', async (req, res) => {
   try {
@@ -73,7 +103,8 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
   const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
   req.user.avatar = buffer
   await req.user.save()
-  res.send()
+  res.set('Content-Type', 'image/png')
+  res.send(req.user.avatar)
 }, (error, req, res, next) => {
   res.status(400).send({error: error.message})
 })

@@ -20,6 +20,53 @@ export const registerRequest = ({
       return res.data;
     })
     .catch(error => {
-      console.log(error);
+      throw error;
+    });
+};
+
+export const uniqueEmailRequest = email => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/email`,
+    data: { email }
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+
+export const uniqueUsernameRequest = username => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/username`,
+    data: { username }
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+
+export const uploadAvatar = (avatar, token) => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/me/avatar`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data"
+    },
+    data: avatar
+  })
+    .then(res => {
+      console.log("axios res:", res);
+      return res.data;
+    })
+    .catch(error => {
+      throw error;
     });
 };

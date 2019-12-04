@@ -19,7 +19,8 @@
           <v-col>
             <v-text-field
               v-model="formValues.email"
-              label="mail"
+              label="email"
+              :error-messages="warnings.emailWarning"
               :rules="emailRules"
               required
             ></v-text-field>
@@ -63,6 +64,7 @@
                   <v-text-field
                     v-model="formValues.username"
                     label="Username"
+                    :error-messages="warnings.usernameWarning"
                     :rules="usernameRules"
                     required
                   ></v-text-field>
@@ -96,7 +98,7 @@
                 </v-btn>
                 <label
                   :class="
-                    imageWarning
+                    warnings.imageWarning
                       ? 'secondForm__label imageWarning'
                       : 'secondForm__label'
                   "
@@ -160,13 +162,15 @@
 </template>
 
 <script>
-import { registerRequest } from "../apis/users";
+import { isEmail } from "validator";
+import debounce from "../utils/debounce";
 
 export default {
   name: "RegisterModal",
   data() {
     return {
       formValues: {
+        // TODO: We'll want to sanitize these values to make sure they don't contain <, >, &, ', ", etc. characters
         email: "",
         password: "",
         fullName: "",
@@ -183,12 +187,16 @@ export default {
         secondForm: false,
         thirdForm: false
       },
+      warnings: {
+        imageWarning: false,
+        emailWarning: [],
+        usernameWarning: []
+      },
       formPage: 0,
       agreeToTerms: false,
-      imageWarning: false,
       emailRules: [
         v => !!v || "E-mail is required",
-        v => /.+@.+/.test(v) || "E-mail must be valid"
+        v => isEmail(v) || "E-mail must be valid"
       ],
       passwordRules: [
         v => !!v || "Password is required",
@@ -200,6 +208,25 @@ export default {
       locationRules: [v => !!v || "Address is required"]
     };
   },
+  watch: {
+    "formValues.email": async function(email) {
+      const unique = await this.debouncedDispatch("verifyUniqueEmail", email);
+
+      unique
+        ? (this.warnings.emailWarning = [])
+        : (this.warnings.emailWarning = ["That email is already in use"]);
+    },
+    "formValues.username": async function(username) {
+      const unique = await this.debouncedDispatch(
+        "verifyUniqueUserName",
+        username
+      );
+
+      unique
+        ? (this.warnings.usernameWarning = [])
+        : (this.warnings.usernameWarning = ["That username is already in use"]);
+    }
+  },
   methods: {
     handleNext(formNum) {
       if (!this.valid[formNum]) {
@@ -207,7 +234,7 @@ export default {
         return;
       }
       if (formNum === "secondForm" && !this.avatar.imageFile) {
-        this.imageWarning = true;
+        this.warnings.imageWarning = true;
         return;
       }
       this.formPage++;
@@ -217,18 +244,22 @@ export default {
         this.formPage--;
       }
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (this.valid.thirdForm) {
-        registerRequest(this.formValues).then(data => {
-          const { token, user } = data;
-          if (token) {
-            this.$store.dispatch("setUserToken", token);
-          }
-
-          if (user) {
-            this.$store.dispatch("setUser", user);
-          }
+        this.$store.dispatch("registerUser", {
+          formValues: this.formValues,
+          avatar: this.avatar.imageFile
         });
+        // registerRequest(this.formValues).then(data => {
+        //   const { token, user } = data;
+        //   if (token) {
+        //     this.$store.dispatch("setUserToken", token);
+        //   }
+
+        //   if (user) {
+        //     this.$store.dispatch("setUser", user);
+        //   }
+        // });
         this.$emit("close-dialog");
       }
       this.$refs.thirdForm.validate();
@@ -247,7 +278,9 @@ export default {
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
           this.avatar.imageUrl = fr.result;
-          this.avatar.imageFile = files[0];
+          const fd = new FormData();
+          fd.append("avatar", files[0], files[0].name);
+          this.avatar.imageFile = fd;
         });
       } else {
         this.avatar.imageName = "";
@@ -255,6 +288,9 @@ export default {
         this.avatar.imageUrl = "";
       }
     }
+  },
+  created() {
+    this.debouncedDispatch = debounce(this.$store.dispatch, 1000);
   }
 };
 </script>
