@@ -3,7 +3,9 @@ import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
   registerRequest,
-  uploadAvatar
+  uploadAvatar,
+  readAvatar,
+  getUserFromToken
 } from "../apis/users";
 
 export default {
@@ -21,8 +23,6 @@ export default {
   },
   mutations: {
     USER(state, payload) {
-      console.log("payload", payload);
-      console.log({ ...state, ...payload });
       state = Object.assign(state, payload);
     },
     USER_LOGIN(state, payload) {
@@ -36,12 +36,22 @@ export default {
     }
   },
   actions: {
+    async loginFromToken({ commit, state }, payload) {
+      const user = await getUserFromToken(payload);
+      if (user) {
+        commit("USER_LOGIN", true);
+        commit("USER_TOKEN", payload);
+        commit("USER", user);
+
+        const avatar = await readAvatar(state._id);
+
+        if (avatar) {
+          commit("USER_AVATAR", avatar);
+        }
+      }
+    },
     setUserLogin({ commit }, payload) {
       commit("USER_LOGIN", payload);
-    },
-    setUserToken({ commit }, payload) {
-      cacheItem("userToken", payload);
-      commit("USER_TOKEN", payload);
     },
     async registerUser({ commit, dispatch }, payload) {
       // commit("TOGGLE_LOADING", true);

@@ -69,3 +69,32 @@ export const uploadAvatar = (avatar, token) => {
       console.log("ERROR: ", error);
     });
 };
+
+export const readAvatar = id => {
+  return axios({
+    method: "get",
+    url: `${SERVER_URL}/users/${id}/avatar`
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR", error);
+    });
+};
+
+export const getUserFromToken = token => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/userFromToken`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR: ", error);
+    });
+};

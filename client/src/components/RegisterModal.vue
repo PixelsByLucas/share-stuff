@@ -250,16 +250,6 @@ export default {
           formValues: this.formValues,
           avatar: this.avatar.imageFile
         });
-        // registerRequest(this.formValues).then(data => {
-        //   const { token, user } = data;
-        //   if (token) {
-        //     this.$store.dispatch("setUserToken", token);
-        //   }
-
-        //   if (user) {
-        //     this.$store.dispatch("setUser", user);
-        //   }
-        // });
         this.$emit("close-dialog");
       }
       this.$refs.thirdForm.validate();

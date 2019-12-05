@@ -22,11 +22,7 @@ export default {
   data() {
     return {};
   },
-  computed: {
-    ...mapState({
-      isLoggedIn: state => state.isLoggedIn
-    })
-  }
+  computed: mapState({ isLoggedIn: state => state.users.isLoggedIn })
 };
 </script>
 

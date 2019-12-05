@@ -60,6 +60,11 @@ router.post('/users/login', async (req, res) => {
   }
 })
 
+// === Get User From Token ===
+router.post('/users/userFromToken', auth, async (req, res) => {
+  res.send(req.user)
+})
+
 // === Logout User ===
 router.post('/users/logout', auth, async (req, res) => {
   try {
