@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     ...mapState({
-      isLoggedIn: state => state.user.isLoggedIn
+      isLoggedIn: state => state.isLoggedIn
     })
   }
 };

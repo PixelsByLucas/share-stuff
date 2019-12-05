@@ -20,7 +20,7 @@ export const registerRequest = ({
       return res.data;
     })
     .catch(error => {
-      throw error;
+      console.log("ERROR: ", error);
     });
 };
 
@@ -34,7 +34,7 @@ export const uniqueEmailRequest = email => {
       return res.data;
     })
     .catch(error => {
-      throw error;
+      console.log("ERROR: ", error);
     });
 };
 
@@ -48,7 +48,7 @@ export const uniqueUsernameRequest = username => {
       return res.data;
     })
     .catch(error => {
-      throw error;
+      console.log("ERROR: ", error);
     });
 };
 
@@ -63,10 +63,9 @@ export const uploadAvatar = (avatar, token) => {
     data: avatar
   })
     .then(res => {
-      console.log("axios res:", res);
       return res.data;
     })
     .catch(error => {
-      throw error;
+      console.log("ERROR: ", error);
     });
 };
