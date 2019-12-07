@@ -7,22 +7,27 @@
     <v-btn icon class="nav__icon nav__icon--middle" to="/notifications">
       <v-icon>mdi-bell-outline</v-icon>
     </v-btn>
-    <v-menu offset-y :close-on-content-click="false">
+    <v-menu offset-y>
       <template v-slot:activator="{ on }">
         <v-btn icon class="nav__icon" v-on="on">
-          <v-icon>mdi-account-outline</v-icon>
+          <v-avatar>
+            <img
+              v-if="avatar"
+              :src="`${SERVER_URL}/users/${_id}/avatar`"
+              class="nav__img"
+            />
+            <v-icon v-else>mdi-account-outline</v-icon>
+          </v-avatar>
         </v-btn>
       </template>
       <v-list>
         <v-list-item
-          v-for="(item, index) in filteredProfileItems"
-          v-bind:key="index"
+          v-for="(item, index) in profileItems"
+          v-bind:key="`profileItem:${index}`"
+          v-on:click="clickHandler"
           :to="item.url"
         >
-          <v-list-item-title v-if="modalItems.includes(item.title)">{{
-            item.title
-          }}</v-list-item-title>
-          <v-list-item-title v-else>{{ item.title }}</v-list-item-title>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -30,50 +35,39 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { SERVER_URL } from "../apis/users";
 export default {
   name: "UserBtns",
   data() {
     return {
-      // profileItems: [
-      //   { title: "Profile", url: "/profile", showWhen: "loggedIn" },
-      //   { title: "Settings", url: "/settings", showWhen: "always" },
-      //   { title: "About", url: "about", showWhen: "always" }
-      // ],
-      // profileItemsLogin: {
-      //   logout: { title: "Logout", url: "#", click: "modal" },
-      //   login: { title: "Login", url: "#", click: "modal" },
-      //   register: { title: "Register", url: "#", click: "modal" }
-      // },
-      // modalItems: ["Logout", "Login", "Register"]
+      profileItems: [
+        { title: "Profile", url: "/profile" },
+        { title: "Settings", url: "/settings" },
+        { title: "About", url: "/about" },
+        { title: "Logout", url: "" }
+      ],
+      SERVER_URL
     };
   },
-  computed() {
-    // filteredProfileItems() {
-    //   const { isLoggedIn, token } = this.$store.getters;
-    //   const { logout, login, register } = this.profileItemsLogin;
-    //   return [
-    //     ...this.profileItems.filter(item => {
-    //       if (item.showWhen === "loggedIn" && !isLoggedIn) {
-    //         return;
-    //       }
-    //       return item;
-    //     }),
-    //     (() => {
-    //       if (isLoggedIn) {
-    //         return logout;
-    //       } else {
-    //         return token ? login : register;
-    //       }
-    //     })()
-    //   ];
-    // }
+  computed: mapState({
+    avatar: state => state.users.avatar,
+    _id: state => state.users._id
+  }),
+  methods: {
+    clickHandler(e) {
+      if (e.target.textContent === "Logout") {
+        this.$store.dispatch("logout");
+      }
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .nav {
-  &__icon {
+  &__icon,
+  &__img {
     border-color: whitesmoke;
     border-width: 2px;
     border-style: solid;
@@ -81,6 +75,9 @@ export default {
     &--middle {
       margin: 0 1rem 0 1rem;
     }
+  }
+  &__img {
+    padding: 1.5px;
   }
 }
 </style>

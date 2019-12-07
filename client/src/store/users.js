@@ -1,25 +1,33 @@
-import { cacheItem } from "../utils/cacheHandler";
+import { cacheItem, deleteCachedItem } from "../utils/cacheHandler";
 import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
   registerRequest,
   uploadAvatar,
-  readAvatar,
-  getUserFromToken
+  // readAvatar,
+  loginRequest,
+  getUserFromToken,
+  logoutRequest
 } from "../apis/users";
 
+const EMPTY_USER = {
+  _id: null,
+  token: null,
+  isLoggedIn: false,
+  username: "",
+  email: "",
+  firstName: "",
+  lastName: "",
+  age: 0,
+  location: "",
+  avatar: "",
+  karma: 0
+};
+
 export default {
+  // TODO: remove all avatar actions and mutations since we're rendering images by providing endpoint URL as src in img html tag
   state: {
-    _id: null,
-    token: null,
-    isLoggedIn: false,
-    username: "",
-    firstName: "",
-    lastName: "",
-    age: 0,
-    location: "",
-    avatar: "",
-    karma: 0
+    ...EMPTY_USER
   },
   mutations: {
     USER(state, payload) {
@@ -36,25 +44,41 @@ export default {
     }
   },
   actions: {
-    async loginFromToken({ commit, state }, payload) {
+    async logout({ state, commit }) {
+      const LoggedOut = await logoutRequest(state.token);
+      if (LoggedOut) {
+        deleteCachedItem("user_token");
+        commit("USER_LOGIN", true);
+        commit("USER", EMPTY_USER);
+      }
+    },
+    async loginFromToken({ commit }, payload) {
       const user = await getUserFromToken(payload);
       if (user) {
         commit("USER_LOGIN", true);
         commit("USER_TOKEN", payload);
         commit("USER", user);
 
-        const avatar = await readAvatar(state._id);
+        // const avatar = await readAvatar(state._id);
 
-        if (avatar) {
-          commit("USER_AVATAR", avatar);
-        }
+        // if (avatar) {
+        //   commit("USER_AVATAR", avatar);
+        // }
+      }
+    },
+    async loginWithEmail({ commit }, payload) {
+      const { user, token } = await loginRequest(payload);
+      if (user && token) {
+        commit("USER", user);
+        commit("USER_LOGIN", true);
+        commit("USER_TOKEN", token);
+        cacheItem("user_token", token);
       }
     },
     setUserLogin({ commit }, payload) {
       commit("USER_LOGIN", payload);
     },
     async registerUser({ commit, dispatch }, payload) {
-      // commit("TOGGLE_LOADING", true);
       const response = await registerRequest(payload.formValues);
       const { token, user } = response;
       if (token) {
@@ -66,7 +90,6 @@ export default {
         dispatch("uploadAvatar", payload.avatar);
         dispatch("setUserLogin", true);
       }
-      // commit("TOGGLE_LOADING", false);
     },
     async uploadAvatar({ commit, state }, payload) {
       const avatar = await uploadAvatar(payload, state.token);
@@ -75,15 +98,11 @@ export default {
       }
     },
     async verifyUniqueEmail(context, payload) {
-      // commit("TOGGLE_LOADING", true);
       const isUnique = await uniqueEmailRequest(payload);
-      // commit("TOGGLE_LOADING", false);
       return isUnique;
     },
     async verifyUniqueUserName(context, payload) {
-      // commit("TOGGLE_LOADING", true);
       const isUnique = await uniqueUsernameRequest(payload);
-      // commit("TOGGLE_LOADING", false);
       return isUnique;
     }
   },

@@ -25,6 +25,14 @@ export const cacheItem = (name, data) => {
   }
 };
 
+export const deleteCachedItem = name => {
+  if (localStorageIsAvailable()) {
+    localStorage.removeItem(name);
+  } else {
+    Cookies.remove(name);
+  }
+};
+
 export const checkForCached = name => {
   let item = null;
   if (localStorageIsAvailable()) {

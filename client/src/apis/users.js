@@ -1,7 +1,7 @@
 import axios from "axios";
 import firstAndLastName from "../utils/firstAndLastName";
 
-const SERVER_URL = process.env.VUE_APP_SERVER_URL;
+export const SERVER_URL = process.env.VUE_APP_SERVER_URL;
 
 export const registerRequest = ({
   email,
@@ -52,6 +52,7 @@ export const uniqueUsernameRequest = username => {
     });
 };
 
+// TODO: upload Avatar will potentially not return any data, remove return res.data
 export const uploadAvatar = (avatar, token) => {
   return axios({
     method: "post",
@@ -70,6 +71,7 @@ export const uploadAvatar = (avatar, token) => {
     });
 };
 
+// TODO: potentially no need for this API request
 export const readAvatar = id => {
   return axios({
     method: "get",
@@ -93,6 +95,42 @@ export const getUserFromToken = token => {
   })
     .then(res => {
       return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR: ", error);
+    });
+};
+
+export const loginRequest = formValues => {
+  console.log({ email: formValues.email, password: formValues.password });
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/login`,
+    data: { email: formValues.email, password: formValues.password }
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR: ", error);
+      return { user: undefined, token: undefined };
+    });
+};
+
+export const logoutRequest = token => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/logout`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      if (res.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
     })
     .catch(error => {
       console.log("ERROR: ", error);
