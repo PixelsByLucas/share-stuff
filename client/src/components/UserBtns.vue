@@ -12,7 +12,7 @@
         <v-btn icon class="nav__icon" v-on="on">
           <v-avatar>
             <img
-              v-if="avatar"
+              v-if="_id"
               :src="`${SERVER_URL}/users/${_id}/avatar`"
               class="nav__img"
             />
@@ -51,7 +51,7 @@ export default {
     };
   },
   computed: mapState({
-    avatar: state => state.users.avatar,
+    // avatar: state => state.users.avatar,
     _id: state => state.users._id
   }),
   methods: {

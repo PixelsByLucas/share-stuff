@@ -102,7 +102,6 @@ export const getUserFromToken = token => {
 };
 
 export const loginRequest = formValues => {
-  console.log({ email: formValues.email, password: formValues.password });
   return axios({
     method: "post",
     url: `${SERVER_URL}/users/login`,

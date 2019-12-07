@@ -79,7 +79,8 @@ export default {
           ...this.formValues
         });
         if (!this.isLoggedIn) {
-          this.$refs.loginForm.reset();
+          this.formValues.password = "";
+          this.$refs.loginForm.resetValidation();
         }
       } else {
         this.$refs.loginForm.validate();
