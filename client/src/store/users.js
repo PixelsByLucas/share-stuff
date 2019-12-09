@@ -3,11 +3,11 @@ import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
   registerRequest,
-  uploadAvatar,
   // readAvatar,
   loginRequest,
   getUserFromToken,
-  logoutRequest
+  logoutRequest,
+  uploadAvatarRequest
 } from "../apis/users";
 
 const EMPTY_USER = {
@@ -58,12 +58,6 @@ export default {
         commit("USER_LOGIN", true);
         commit("USER_TOKEN", payload);
         commit("USER", user);
-
-        // const avatar = await readAvatar(state._id);
-
-        // if (avatar) {
-        //   commit("USER_AVATAR", avatar);
-        // }
       }
     },
     async loginWithEmail({ commit }, payload) {
@@ -79,23 +73,19 @@ export default {
       commit("USER_LOGIN", payload);
     },
     async registerUser({ commit, dispatch }, payload) {
-      const response = await registerRequest(payload.formValues);
-      const { token, user } = response;
+      const { token, user } = await registerRequest(payload.formValues);
       if (token) {
         commit("USER_TOKEN", token);
         cacheItem("user_token", token);
       }
       if (user) {
+        await uploadAvatarRequest(payload.avatar, token);
         commit("USER", user);
-        dispatch("uploadAvatar", payload.avatar);
         dispatch("setUserLogin", true);
       }
     },
-    async uploadAvatar({ commit, state }, payload) {
-      const avatar = await uploadAvatar(payload, state.token);
-      if (avatar) {
-        commit("USER_AVATAR", avatar);
-      }
+    async uploadAvatar({ state }, payload) {
+      uploadAvatarRequest(payload, state.token);
     },
     async verifyUniqueEmail(context, payload) {
       const isUnique = await uniqueEmailRequest(payload);

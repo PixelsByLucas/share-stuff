@@ -1,5 +1,5 @@
 <template>
-  <v-card class="register-modal">
+  <v-card class="login-modal">
     <v-row>
       <v-spacer></v-spacer>
       <v-btn v-on:click="$emit('close-dialog')" icon>
@@ -89,3 +89,9 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.login-modal {
+  padding: 3rem 4rem 3rem 4rem;
+  margin: 0 auto;
+}
+</style>

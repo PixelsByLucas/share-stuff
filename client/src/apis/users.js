@@ -53,7 +53,7 @@ export const uniqueUsernameRequest = username => {
 };
 
 // TODO: upload Avatar will potentially not return any data, remove return res.data
-export const uploadAvatar = (avatar, token) => {
+export const uploadAvatarRequest = (avatar, token) => {
   return axios({
     method: "post",
     url: `${SERVER_URL}/users/me/avatar`,

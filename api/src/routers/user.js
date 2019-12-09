@@ -108,17 +108,19 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
   const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
   req.user.avatar = buffer
   await req.user.save()
-  res.set('Content-Type', 'image/png')
-  res.send(req.user.avatar)
+  console.log("AVATAR UPLOADED")
+  res.send()
 }, (error, req, res, next) => {
   res.status(400).send({error: error.message})
 })
 
 // === Read User Avatar ===
 router.get('/users/:id/avatar', async (req, res) => {
+  console.log("HIT", req.params.id)
 
   try {
     const user = await User.findById(req.params.id)
+    console.log(user)
   
     if(!user || !user.avatar) {
       throw new Error()
