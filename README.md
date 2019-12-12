@@ -17,7 +17,9 @@ This directory contains all front-end files.  The front-end is build with Vue.js
 
 ## Getting Started 
 1. Navigate into the ```/api``` directory.  Run ```npm install``` in the terminal.
-2. Navigate into the ```/client``` directory.  Run ```npm install``` in the terminal.
-3. Start back-end server: navigate to ```/api```.  Run ```npm run dev```.
-4. Start Vue.js: navigate to ```/client```.  Run ```npm run serve```.  Dev server will run on http://localhost:8080/. 
+2.  find the ```.env.exmaple``` file inside ```/api/config``` and remove the ```.example``` from the end of the file name.  Fill in the values after the ```=``` with the values you've been provided personally.  
+3. Navigate into the ```/client``` directory.  Run ```npm install``` in the terminal.
+4.  find the ```.env.development.local.exmaple``` file inside ```/client``` and remove the ```.example``` from the end of the file name.  Fill in the values after the ```=``` with the values you've been provided personally.  
+5. Start back-end server: navigate to ```/api```.  Run ```npm run dev```.
+6. Start Vue.js: navigate to ```/client```.  Run ```npm run serve```.  Dev server will run on http://localhost:8080/. 
 
