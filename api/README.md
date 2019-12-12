@@ -59,8 +59,12 @@ npm run start
 2. Open Robo3T
 3. Click File > Connect 
 4. Address: ds353358.mlab.com  :  53358
+
 ![Connection](https://i.imgur.com/bM2T0jb.jpg?1 "connection")
+
 5. Click on Authentication tab
 6. Database: share-stuff,   User Name: robo3t,    Password: password1
+
 ![Authentication](https://i.imgur.com/Zi4gQP1.jpg?1 "authentication")
+
 7. Click Save
