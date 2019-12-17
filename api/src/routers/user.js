@@ -140,7 +140,7 @@ router.get('/users/me', auth, async (req, res) => {
 
 // === Update User ===
 router.patch('/users/me', auth, async (req, res) => {
-  const allowedUpdates = ['firstName', 'lastName', 'age', 'location', 'email']
+  const allowedUpdates = ['firstName', 'lastName', 'age', 'location', 'email', 'bio']
   const updates = Object.keys(req.body)
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
@@ -158,6 +158,9 @@ router.patch('/users/me', auth, async (req, res) => {
     res.status(400).send(error)
   }
 })
+
+// === Update User Rating ===
+// TODO: We'll need to get a transaction id from completed trade to varify rating update
 
 // === Delete Avatar ===
 router.delete('/users/me/avatar', auth, async (req, res) => {

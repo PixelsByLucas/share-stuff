@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
   tokens: [{
     token: {
       type: String,
-      require: true
+      required: true
     }
   }],
   avatar: {
@@ -65,6 +65,14 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 1000,
     required: true
+  },
+  rating: {
+    type: { up: Number, down: Number },
+    default: { up: 0, down: 0 },
+  },
+  bio: {
+    type: String,
+    default: ""
   }
 })
 
