@@ -18,5 +18,8 @@
    "vetur.validation.template": true,
    "rules": {
     "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
+},
+"editor.codeActionsOnSave": {
+  "source.fixAll.eslint": true
 }
 }
