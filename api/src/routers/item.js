@@ -3,29 +3,11 @@ const router = new express.Router()
 const Item = require('../models/item')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
-const multer = require('multer')
 const sharp = require('sharp')
-
-const upload = multer({
-  limits: {
-    fileSize: 2000000,
-    files: 3
-  },
-  fileFilter(req, file, cb) {
-    if(!file) {
-      return cb(new Error('No image submitted'))
-    }
-
-    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error('Please upload a .jpg, .jpeg or .png file'))
-    }
-
-    cb(undefined, true)
-  }
-})
+const { uploadMultiple, uploadSingle } = require('../middleware/upload')
 
 // === Create Item ===
-router.post('/items', auth, upload.array('media', 4), async (req, res) => {
+router.post('/items', auth, uploadMultiple.array('media', 4), async (req, res) => {
 
   const bufferArr = await Promise.all(req.files.map(file => {
     return sharp(file.buffer).png().resize({ width: 500, height: 500 }).toBuffer()
@@ -49,7 +31,7 @@ router.post('/items', auth, upload.array('media', 4), async (req, res) => {
 })
 
 // === Create Item Media ===
-router.post('/items/:id/media', auth, upload.single('media'), async (req, res) => {
+router.post('/items/:id/media', auth, uploadSingle.single('media'), async (req, res) => {
   
   const buffer = await sharp(req.file.buffer).png().resize({ width: 500, height: 500 }).toBuffer()
   
@@ -90,7 +72,6 @@ router.get('/items/:itemId/media/:imageId', async (req, res) => {
     if(!image) {
       res.status(404).send()
     }
-    console.log('ROUTER JUST BEFORE SENDING')
     res.set('Content-Type', 'image/png')
     res.send(image[0].buffer)
 
