@@ -2,7 +2,7 @@ const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
 const auth = require('../middleware/auth')
-const multer = require('multer')
+const { uploadSingle } = require('../middleware/upload')
 const sharp = require('sharp')
 
 // === Create User ===
@@ -91,24 +91,23 @@ router.post('/users/logoutAll', auth, async (req, res) => {
   }
 })
 
-const upload = multer({
-  limits: {
-    fileSize: 2000000
-  },
-  fileFilter(req, file, cb) {
-    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error('Please upload a .jpg, .jpeg or .png file'))
-    }
-    cb(undefined, true)
-  }
-})
+// const upload = multer({
+//   limits: {
+//     fileSize: 2000000
+//   },
+//   fileFilter(req, file, cb) {
+//     if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+//       return cb(new Error('Please upload a .jpg, .jpeg or .png file'))
+//     }
+//     cb(undefined, true)
+//   }
+// })
 
 // === Create Avatar ===
-router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+router.post('/users/me/avatar', auth, uploadSingle.single('avatar'), async (req, res) => {
   const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
   req.user.avatar = buffer
   await req.user.save()
-  console.log("AVATAR UPLOADED")
   res.send()
 }, (error, req, res, next) => {
   res.status(400).send({error: error.message})
@@ -116,11 +115,9 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
 
 // === Read User Avatar ===
 router.get('/users/:id/avatar', async (req, res) => {
-  console.log("HIT", req.params.id)
 
   try {
     const user = await User.findById(req.params.id)
-    console.log(user)
   
     if(!user || !user.avatar) {
       throw new Error()
