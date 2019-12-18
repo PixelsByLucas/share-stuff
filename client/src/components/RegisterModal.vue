@@ -29,10 +29,14 @@
         <v-row>
           <v-col>
             <v-text-field
+              :type="showPassword ? 'text' : 'password'"
               v-model="formValues.password"
               label="password"
               :rules="passwordRules"
               required
+              counter
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="showPassword = !showPassword"
             >
             </v-text-field>
           </v-col>
@@ -194,13 +198,14 @@ export default {
       },
       formPage: 0,
       agreeToTerms: false,
+      showPassword: false,
       emailRules: [
         v => !!v || "E-mail is required",
         v => isEmail(v) || "E-mail must be valid"
       ],
       passwordRules: [
         v => !!v || "Password is required",
-        v => v.length >= 8 || "Password must be more than 10 characters"
+        v => v.length >= 8 || "Password must be more than 8 characters"
       ],
       // TODO: provide more rules here
       fullNameRules: [v => !!v || "Full name is required"],
