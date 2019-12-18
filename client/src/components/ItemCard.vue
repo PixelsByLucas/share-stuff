@@ -6,7 +6,7 @@
             max-width="100%"
         ></v-img>
         <v-card-title>
-            Item
+            <!-- {{ item.name }} -->
         </v-card-title>
         <v-card-text>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, dolores mollitia? Rerum reiciendis distinctio consequatur, numquam qui a repellendus fuga ipsum eaque voluptatum corporis quo fugiat iste sunt fugit aspernatur?
@@ -15,8 +15,14 @@
 </template>
 
 <script>
+    // console.log(this.item)
     export default {
         name: "ItemCard",
+        // data(){
+        //     return {
+        //         item:this.item
+        //         }
+        // }
     };
 </script>
 

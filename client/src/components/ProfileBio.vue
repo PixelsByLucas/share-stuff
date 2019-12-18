@@ -27,7 +27,8 @@
                     v-else
                     height="100%"
                 >
-                    <h2>Bio</h2>
+                    <h2>{{ firstName }} {{ lastName }}</h2>
+                    <h3>{{ username }}</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis quo in tempore officia numquam aliquam esse sit. Labore, ad quibusdam quam veritatis quas voluptatibus aut impedit repellat, explicabo ut architecto.</p>
                 </v-card>
             </v-col>
@@ -46,7 +47,11 @@
         },
         computed: mapState({
             // avatar: state => state.users.avatar,
-            _id: state => state.users._id
+            _id: state => state.users._id,
+            firstName: state => state.users.firstName,
+            lastName: state => state.users.lastName,
+            username: state => state.users.username,
+
         }),
     };
 </script>
