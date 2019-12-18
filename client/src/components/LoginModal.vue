@@ -26,6 +26,10 @@
               label="password"
               :rules="passwordRules"
               required
+              :type="showPassword ? 'text' : 'password'"
+              counter
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="showPassword = !showPassword"
             >
             </v-text-field>
           </v-col>
@@ -57,9 +61,10 @@ export default {
       ],
       passwordRules: [
         v => !!v || "Password is required",
-        v => v.length >= 8 || "Password must be more than 10 characters"
+        v => v.length >= 8 || "Password must be more than 8 characters"
       ],
-      valid: false
+      valid: false,
+      showPassword: false
     };
   },
   computed: mapState({
