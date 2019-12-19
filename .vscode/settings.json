@@ -12,13 +12,12 @@
      "language": "javascriptreact",      
      "autoFix": true    
     }  
-   ],  
-   "eslint.autoFixOnSave": true, 
-   "editor.formatOnSave": false,  
+   ],
    "vetur.validation.template": true,
    "rules": {
     "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
 },
+"editor.codeActionsOnSaveTimeout": 1200,
 "editor.codeActionsOnSave": {
   "source.fixAll.eslint": true
 }
