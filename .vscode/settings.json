@@ -1,24 +1,8 @@
 {
-  "eslint.validate": [    
-    {     
-     "language": "vue",     
-     "autoFix": true   
-    },    
-    {     
-     "language": "javascript",   
-     "autoFix": true    
-    },   
-    {    
-     "language": "javascriptreact",      
-     "autoFix": true    
-    }  
-   ],
-   "vetur.validation.template": true,
-   "rules": {
-    "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
-},
-"editor.codeActionsOnSaveTimeout": 1200,
-"editor.codeActionsOnSave": {
-  "source.fixAll.eslint": true
-}
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSaveTimeout": 1200,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "eslint.validate": [ "javascript", "javascriptreact" ]
 }
