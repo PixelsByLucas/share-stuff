@@ -36,6 +36,12 @@ const routes = [
       import(
         /* webpackChunkName: "notifications" */ "../views/Notifications.vue"
       )
+  },
+  {
+    path: "/playground",
+    name: "playground",
+    component: () =>
+      import(/* webpackChunkName: "playground" */ "../views/Playground.vue")
   }
 ];
 
