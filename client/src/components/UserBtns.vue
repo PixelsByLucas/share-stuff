@@ -11,11 +11,7 @@
       <template v-slot:activator="{ on }">
         <v-btn icon class="nav__icon" v-on="on">
           <v-avatar>
-            <img
-              v-if="_id"
-              :src="`${SERVER_URL}/users/${_id}/avatar`"
-              class="nav__img"
-            />
+            <img v-if="_id" :src="`${SERVER_URL}/users/${_id}/avatar`" class="nav__img" />
             <v-icon v-else>mdi-account-outline</v-icon>
           </v-avatar>
         </v-btn>
@@ -51,7 +47,6 @@ export default {
     };
   },
   computed: mapState({
-    // avatar: state => state.users.avatar,
     _id: state => state.users._id
   }),
   methods: {
