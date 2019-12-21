@@ -21,7 +21,11 @@ const EMPTY_USER = {
   age: 0,
   location: "",
   avatar: "",
-  karma: 0
+  karma: 0,
+  rating: {
+    up: 0,
+    down: 0
+  }
 };
 
 export default {
