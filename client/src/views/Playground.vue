@@ -2,7 +2,7 @@
   <!-- This vue can be used to test/build components in isolation from their context. -->
   <!-- Navigate to the /playground route in the browser to see the component -->
   <!-- Don't commit changes to this file -->
-  <div class="playgound">
+  <div class="playground">
     <h1>This is the playground page</h1>
     <div>
       <!-- Render the component you want to test here -->
@@ -16,3 +16,4 @@ export default {
   name: "Playground"
 };
 </script>
+<style lang="scss" scoped></style>
