@@ -13,7 +13,7 @@
 // Import the component you want to work with here.
 // Write all the dummy data the component needs to function here.
 export default {
-  name: ""
+  name: "Playground"
 };
 </script>
 <style lang="scss" scoped></style>
