@@ -38,6 +38,12 @@ const routes = [
       )
   },
   {
+    path: "/createitem",
+    name: "createItem",
+    component: () =>
+      import(/* webpackChunkName: "createItem"*/ "../views/CreateItem.vue")
+  },
+  {
     path: "/playground",
     name: "playground",
     component: () =>
