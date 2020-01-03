@@ -2,7 +2,7 @@
   <v-card class="review-item">
     <v-card-title>
       <v-icon class="review-item__icon" small :color="color">{{ icon }}</v-icon>
-      <a class="review-item__username">{{ review.username }}</a>
+      <a class="review-item__username">{{ review.owner.username }}</a>
     </v-card-title>
     <v-card-text>
       <p>{{ review.text }}</p>
