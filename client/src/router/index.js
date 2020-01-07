@@ -11,7 +11,7 @@ const routes = [
     component: Home
   },
   {
-    path: "/profile",
+    path: "/profile/:username",
     name: "profile",
     component: () =>
       import(/* webpackChunkName: "profile" */ "../views/Profile.vue")
@@ -48,6 +48,11 @@ const routes = [
     name: "playground",
     component: () =>
       import(/* webpackChunkName: "playground" */ "../views/Playground.vue")
+  },
+  {
+    path: "*",
+    name: "404",
+    component: () => import(/* webpackChunkName: "404" */ "../views/404.vue")
   }
 ];
 

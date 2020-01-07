@@ -64,8 +64,8 @@ export default {
     };
   },
   computed: mapState({
-    isLoggedIn: state => state.users.isLoggedIn,
-    karma: state => state.users.karma
+    isLoggedIn: state => state.users.me.isLoggedIn,
+    karma: state => state.users.me.karma
   })
 };
 </script>

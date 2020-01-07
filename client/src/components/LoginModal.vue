@@ -68,7 +68,7 @@ export default {
     };
   },
   computed: mapState({
-    isLoggedIn: state => state.users.isLoggedIn
+    isLoggedIn: state => state.users.me.isLoggedIn
   }),
   watch: {
     isLoggedIn(loggedIn) {

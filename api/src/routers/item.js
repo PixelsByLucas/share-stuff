@@ -141,7 +141,6 @@ router.get("/items/user/:id", async (req, res) => {
     }
 
     await user.populate({ path: "items" }).execPopulate();
-
     res.send(user.items);
   } catch (error) {
     res.status(500).send();

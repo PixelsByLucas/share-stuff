@@ -38,7 +38,10 @@ export default {
   data() {
     return {
       profileItems: [
-        { title: "Profile", url: "/profile" },
+        {
+          title: "Profile",
+          url: `/profile/${this.$store.state.users.me.username}`
+        },
         { title: "Settings", url: "/settings" },
         { title: "About", url: "/about" },
         { title: "Logout", url: "" }
@@ -47,7 +50,7 @@ export default {
     };
   },
   computed: mapState({
-    _id: state => state.users._id
+    _id: state => state.users.me._id
   }),
   methods: {
     clickHandler(e) {

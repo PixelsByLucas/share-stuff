@@ -2,10 +2,13 @@
   <div class="stuffReview">
     <v-container fluid>
       <v-row no-gutters>
-        <v-btn-toggle v-model="toggle" mandatory>
+        <v-btn-toggle v-model="toggle" mandatory class="stuffReview__toggle">
           <v-btn>Stuff</v-btn>
           <v-btn>Reviews</v-btn>
         </v-btn-toggle>
+      </v-row>
+      <v-row v-if="isUserMe && toggle === 0" no-gutters>
+        <v-btn class="stuffReview__newItem" to="/createitem">NEW ITEM</v-btn>
       </v-row>
       <v-row v-if="toggle === 0" class="stuff">
         <v-col v-for="item in items" :key="item._id" xs="12" sm="4" md="3">
@@ -26,6 +29,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import Item from "../components/Item";
 import ReviewItem from "../components/ReviewItem";
 export default {
@@ -39,6 +43,19 @@ export default {
       toggle: 0
     };
   },
-  props: ["items", "reviews"]
+  props: ["items", "reviews"],
+  computed: mapState({
+    isUserMe: state => state.users.profileUser.isUserMe
+  })
 };
 </script>
+<style lang="scss" scoped>
+.stuffReview {
+  &__newItem {
+    margin: 12px 0;
+  }
+  &__toggle {
+    margin: 12px 0;
+  }
+}
+</style>
