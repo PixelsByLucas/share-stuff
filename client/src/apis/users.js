@@ -72,16 +72,29 @@ export const uploadAvatarRequest = (avatar, token) => {
 };
 
 // TODO: potentially no need for this API request
-export const readAvatar = id => {
+// export const readAvatar = id => {
+//   return axios({
+//     method: "get",
+//     url: `${SERVER_URL}/users/${id}/avatar`
+//   })
+//     .then(res => {
+//       return res.data;
+//     })
+//     .catch(error => {
+//       console.log("ERROR", error);
+//     });
+// };
+
+export const getUserFromUsername = username => {
   return axios({
     method: "get",
-    url: `${SERVER_URL}/users/${id}/avatar`
+    url: `${SERVER_URL}/users/${username}`
   })
     .then(res => {
       return res.data;
     })
     .catch(error => {
-      console.log("ERROR", error);
+      console.log("ERROR: ", error);
     });
 };
 

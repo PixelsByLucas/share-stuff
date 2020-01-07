@@ -40,24 +40,16 @@
           </v-col>
         </v-row>
         <v-container fluid>
-          <v-row>
-            <v-col
-              v-for="n in 3"
-              :key="n"
-              class="square"
-              @click="pickFile(n - 1)"
-            >
+          <v-row class="create-item__image-row">
+            <v-col v-for="n in 3" :key="n" class="square" @click="pickFile(n - 1)">
               <v-card class="create-item__img-pick" outlined>
-                <v-img
-                  v-if="imageUrl[n - 1]"
-                  :src="imageUrl[n - 1]"
-                  class="create-item__image"
-                ></v-img>
-                <v-card-title v-else class="create-item__img-pick__title">
-                  {{ `Image ${n}` }}
-                </v-card-title>
+                <v-img v-if="imageUrl[n - 1]" :src="imageUrl[n - 1]" class="create-item__image"></v-img>
+                <v-card-title v-else class="create-item__img-pick__title">{{ `Image ${n}` }}</v-card-title>
               </v-card>
             </v-col>
+          </v-row>
+          <v-row class="create-item__label-row">
+            <label v-if="imageWarning" class="create-item__label">You must upload at least one image</label>
           </v-row>
           <input
             type="file"
@@ -69,7 +61,7 @@
             @change="onFilePicked"
           />
         </v-container>
-        <v-row>
+        <v-row no-gutters>
           <v-spacer></v-spacer>
           <v-btn v-on:click="handleSubmit">SUBMIT</v-btn>
         </v-row>
@@ -79,6 +71,7 @@
 </template>
 <script>
 import { ITEM_CATEGORIES } from "../utils/constants";
+import { mapState } from "vuex";
 export default {
   name: "CreateItem",
   data() {
@@ -97,15 +90,27 @@ export default {
       },
       imgNum: 0,
       formValid: false,
+      imageWarning: false,
       nameRules: [v => !!v || "Name is required"],
       descriptionRules: [v => !!v || "Description is required"]
     };
   },
+  computed: mapState({
+    username: state => state.users.me.username
+  }),
   methods: {
     handleSubmit() {
+      if (!this.formValues.media.length) {
+        this.$refs.form.validate();
+        this.imageWarning = true;
+        return;
+      } else {
+        this.imageWarning = false;
+      }
+
       if (this.formValid) {
         this.$store.dispatch("newItem", this.createForm(this.formValues));
-        this.$router.push("/profile");
+        this.$router.push(`/profile/${this.username}`);
       } else {
         this.$refs.form.validate();
       }
@@ -157,6 +162,18 @@ export default {
   &__image {
     width: 100%;
     height: 100%;
+  }
+  &__image-row {
+    margin-bottom: 8px;
+  }
+  &__label {
+    color: #ff5252;
+    font-size: 12px;
+    padding-left: 12px;
+    font-family: "Roboto", sans-serif;
+  }
+  &__label-row {
+    min-height: 18px;
   }
   &__divider {
     margin: 0 1rem;

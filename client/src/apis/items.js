@@ -17,3 +17,16 @@ export const createItem = (formData, token) => {
       console.log("ERROR: ", error);
     });
 };
+
+export const getItemsByOwner = id => {
+  return axios({
+    method: "get",
+    url: `${SERVER_URL}/items/user/${id}`
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR:", error);
+    });
+};

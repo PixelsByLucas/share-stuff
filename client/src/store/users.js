@@ -7,7 +7,8 @@ import {
   loginRequest,
   getUserFromToken,
   logoutRequest,
-  uploadAvatarRequest
+  uploadAvatarRequest,
+  getUserFromUsername
 } from "../apis/users";
 
 const EMPTY_USER = {
@@ -31,25 +32,39 @@ const EMPTY_USER = {
 export default {
   // TODO: remove all avatar actions and mutations since we're rendering images by providing endpoint URL as src in img html tag
   state: {
-    ...EMPTY_USER
+    me: {
+      ...EMPTY_USER
+    },
+    profileUser: {
+      isUserMe: false,
+      ...EMPTY_USER
+    },
+    fetchingUser: false
   },
   mutations: {
+    // TODO: potentially replace Object.assign with vue.set()
     USER(state, payload) {
-      state = Object.assign(state, payload);
+      state = Object.assign(state.me, payload);
     },
     USER_LOGIN(state, payload) {
-      state.isLoggedIn = payload;
+      state.me.isLoggedIn = payload;
     },
     USER_TOKEN(state, payload) {
-      state.token = payload;
+      state.me.token = payload;
     },
     USER_AVATAR(state, payload) {
-      state.avatar = payload;
+      state.me.avatar = payload;
+    },
+    FETCHING_USER(state, payload) {
+      this.fetchingUser = payload;
+    },
+    SET_PROFILE_USER(state, payload) {
+      state.profileUser = { ...state.profileUser, ...payload };
     }
   },
   actions: {
     async logout({ state, commit }) {
-      const LoggedOut = await logoutRequest(state.token);
+      const LoggedOut = await logoutRequest(state.me.token);
       if (LoggedOut) {
         deleteCachedItem("user_token");
         commit("USER_LOGIN", true);
@@ -57,14 +72,17 @@ export default {
       }
     },
     async loginFromToken({ commit }, payload) {
+      commit("FETCHING_USER", true);
       const user = await getUserFromToken(payload);
       if (user) {
         commit("USER_LOGIN", true);
         commit("USER_TOKEN", payload);
         commit("USER", user);
       }
+      commit("FETCHING_USER", false);
     },
     async loginWithEmail({ commit }, payload) {
+      commit("FETCHING_USER", true);
       const { user, token } = await loginRequest(payload);
       if (user && token) {
         commit("USER", user);
@@ -72,11 +90,13 @@ export default {
         commit("USER_TOKEN", token);
         cacheItem("user_token", token);
       }
+      commit("FETCHING_USER", false);
     },
-    setUserLogin({ commit }, payload) {
-      commit("USER_LOGIN", payload);
-    },
-    async registerUser({ commit, dispatch }, payload) {
+    // setUserLogin({ commit }, payload) {
+    //   commit("USER_LOGIN", payload);
+    // },
+    async registerUser({ commit }, payload) {
+      commit("FETCHING_USER", true);
       const { token, user } = await registerRequest(payload.formValues);
       if (token) {
         commit("USER_TOKEN", token);
@@ -85,11 +105,25 @@ export default {
       if (user) {
         await uploadAvatarRequest(payload.avatar, token);
         commit("USER", user);
-        dispatch("setUserLogin", true);
+        commit("USER_LOGIN", true);
+      }
+      commit("FETCHING_USER", false);
+    },
+    async getUserProfileData(
+      { commit, state },
+      { username: usernameFromParam }
+    ) {
+      if (state.me.username === usernameFromParam) {
+        commit("SET_PROFILE_USER", { ...state.me, isUserMe: true });
+      } else {
+        commit("FETCHING_USER", true);
+        const user = await getUserFromUsername(usernameFromParam);
+        commit("SET_PROFILE_USER", { ...user, isUserMe: false });
+        commit("FETCHING_USER", false);
       }
     },
     async uploadAvatar({ state }, payload) {
-      uploadAvatarRequest(payload, state.token);
+      uploadAvatarRequest(payload, state.me.token);
     },
     async verifyUniqueEmail(context, payload) {
       const isUnique = await uniqueEmailRequest(payload);
@@ -102,10 +136,13 @@ export default {
   },
   getters: {
     isLoggedIn(state) {
-      return state.isLoggedIn;
+      return state.me.isLoggedIn;
     },
+    // isMyProfile: state => paramsUsername => {
+    //   return state.me.username === paramsUsername;
+    // },
     token(state) {
-      return state.token;
+      return state.me.token;
     }
   }
 };

@@ -8,12 +8,12 @@ const sharp = require('sharp')
 // === Create User ===
 router.post('/users', async (req, res) => {
   const user = new User(req.body)
-  
+
   try {
     await user.save()
     const token = await user.generateAuthToken()
     res.status(201).send({ user, token })
-  } catch(err) {
+  } catch (err) {
     res.status(400).send(err)
   }
 })
@@ -23,7 +23,7 @@ router.post('/users/email', async (req, res) => {
   try {
     const emailInUse = await User.findOne({ email: req.body.email })
 
-    if(!emailInUse) {
+    if (!emailInUse) {
       res.send(true)
     } else {
       res.send(false)
@@ -38,7 +38,7 @@ router.post('/users/username', async (req, res) => {
   try {
     const usernameInUse = await User.findOne({ username: req.body.username })
 
-    if(!usernameInUse) {
+    if (!usernameInUse) {
       res.send(true)
     } else {
       res.send(false)
@@ -91,18 +91,6 @@ router.post('/users/logoutAll', auth, async (req, res) => {
   }
 })
 
-// const upload = multer({
-//   limits: {
-//     fileSize: 2000000
-//   },
-//   fileFilter(req, file, cb) {
-//     if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-//       return cb(new Error('Please upload a .jpg, .jpeg or .png file'))
-//     }
-//     cb(undefined, true)
-//   }
-// })
-
 // === Create Avatar ===
 router.post('/users/me/avatar', auth, uploadSingle.single('avatar'), async (req, res) => {
   const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
@@ -110,7 +98,7 @@ router.post('/users/me/avatar', auth, uploadSingle.single('avatar'), async (req,
   await req.user.save()
   res.send()
 }, (error, req, res, next) => {
-  res.status(400).send({error: error.message})
+  res.status(400).send({ error: error.message })
 })
 
 // === Read User Avatar ===
@@ -118,11 +106,11 @@ router.get('/users/:id/avatar', async (req, res) => {
 
   try {
     const user = await User.findById(req.params.id)
-  
-    if(!user || !user.avatar) {
+
+    if (!user || !user.avatar) {
       throw new Error()
     }
-  
+
     res.set('Content-Type', 'image/png')
     res.send(user.avatar)
   } catch (error) {
@@ -135,13 +123,29 @@ router.get('/users/me', auth, async (req, res) => {
   res.send(req.user)
 })
 
+// === Read User By Username ===
+router.get('/users/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username })
+
+    if (user) {
+      res.send(user)
+    } else {
+      res.status(404).send()
+    }
+
+  } catch (error) {
+    res.status(400).send()
+  }
+})
+
 // === Update User ===
 router.patch('/users/me', auth, async (req, res) => {
   const allowedUpdates = ['firstName', 'lastName', 'age', 'location', 'email', 'bio']
   const updates = Object.keys(req.body)
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
-  if(!isValidOperation) {
+  if (!isValidOperation) {
     return res.status(400).send({ error: 'invalid updates' })
   }
 
