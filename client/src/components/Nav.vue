@@ -44,6 +44,7 @@
 <script>
 import { mapState } from "vuex";
 import { ITEM_CATEGORIES } from "../utils/constants";
+import debounce from "../utils/debounce";
 
 import UserBtns from "./UserBtns";
 import LoginRegisterBtns from "./LoginRegisterBtns";
@@ -66,7 +67,18 @@ export default {
   computed: mapState({
     isLoggedIn: state => state.users.me.isLoggedIn,
     karma: state => state.users.me.karma
-  })
+  }),
+  watch: {
+    "formValues.searchTerm": function(term) {
+      this.debouncedDispatch("setTerm", term);
+    },
+    "formValues.searchCategory": function(category) {
+      this.$store.dispatch("setCategory", category);
+    }
+  },
+  created() {
+    this.debouncedDispatch = debounce(this.$store.dispatch, 1000);
+  }
 };
 </script>
 
