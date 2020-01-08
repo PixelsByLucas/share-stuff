@@ -1,20 +1,19 @@
 <template>
-  <div class="home">
-    <DistanceBar />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <!-- This vue can be used to test/build components in isolation from their context. -->
+  <!-- Navigate to the /playground route in the browser to see the component -->
+  <!-- Don't commit changes to this file -->
+  <div class="playground">
+    <h1>This is the playground page</h1>
+    <div>
+      <!-- Render the component you want to test here -->
+    </div>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-import DistanceBar from "@/components/DistanceBar.vue";
-
+// Import the component you want to work with here.
+// Write all the dummy data the component needs to function here.
 export default {
-  name: "home",
-  components: {
-    HelloWorld,
-    DistanceBar
-  }
+  name: "Playground"
 };
 </script>
+<style lang="scss" scoped></style>
