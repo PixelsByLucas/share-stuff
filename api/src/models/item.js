@@ -35,7 +35,7 @@ const itemSchema = new mongoose.Schema({
   media: {
     type: [imageSchema],
     validate(value) {
-      if(value.length > 3) {
+      if (value.length > 3) {
         throw new Error('You cannot upload more than 3 images per item')
       }
     }
@@ -45,10 +45,11 @@ const itemSchema = new mongoose.Schema({
 })
 
 // === instance methods ===
-itemSchema.methods.toJSON = function() {
+itemSchema.methods.toJSON = function () {
   const item = this
   const itemObject = item.toObject()
-  
+
+  // TODO: Can I just delete itemObject.media entirely?
   itemObject.media.forEach((image, index) => {
     delete itemObject.media[index].buffer
   });

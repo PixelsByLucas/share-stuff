@@ -9,8 +9,8 @@
     <v-card-title>Register</v-card-title>
     <!-- === first form === -->
     <div class="firstForm" v-if="formPage === 0">
-      <v-card-text
-        >Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure sit
+      <v-card-text>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure sit
         maiores necessitatibus temporibus quasi officiis, unde et magni vitae
         numquam sequi.
       </v-card-text>
@@ -37,8 +37,7 @@
               counter
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
-            >
-            </v-text-field>
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-card-actions>
@@ -77,9 +76,9 @@
               <v-row>
                 <v-col>
                   <v-text-field
-                    v-model="formValues.location"
+                    v-model="formValues.address"
                     label="Address"
-                    :rules="locationRules"
+                    :rules="addressRules"
                     required
                   ></v-text-field>
                 </v-col>
@@ -88,9 +87,7 @@
             <v-col cols="4" class="secondForm__iconCol">
               <div>
                 <v-btn icon class="secondForm__iconBtn" @click="pickFile">
-                  <v-icon size="124px" v-if="!avatar.imageUrl"
-                    >mdi-account-circle</v-icon
-                  >
+                  <v-icon size="124px" v-if="!avatar.imageUrl">mdi-account-circle</v-icon>
                   <v-img
                     class="secondForm__profilePic"
                     v-else
@@ -107,8 +104,7 @@
                       : 'secondForm__label'
                   "
                   v-if="!avatar.imageUrl"
-                  >Upload profile picture
-                </label>
+                >Upload profile picture</label>
                 <input
                   type="file"
                   style="display: none"
@@ -130,22 +126,22 @@
     <!-- === third form === -->
     <div v-if="formPage === 2">
       <v-card-subtitle>Terms and Condition</v-card-subtitle>
-      <v-card-text
-        >Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque
-        molestiae distinctio qui exercitationem, dolores rerum atque odit rem
-        maxime praesentium dolore natus facere vero esse mollitia tenetur
-        dolorum quo consequuntur! Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Odio, dolorum minima sequi, ratione incidunt aliquam
-        optio nostrum et laudantium doloribus harum tempore beatae impedit
-        officia odit reiciendis. Laudantium, debitis eum! Lorem ipsum dolor, sit
-        amet consectetur adipisicing elit. Alias ad est consequuntur eveniet
+      <v-card-text>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque molestiae
+        distinctio qui exercitationem, dolores rerum atque odit rem maxime
+        praesentium dolore natus facere vero esse mollitia tenetur dolorum quo
+        consequuntur! Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Odio, dolorum minima sequi, ratione incidunt aliquam optio nostrum et
+        laudantium doloribus harum tempore beatae impedit officia odit
+        reiciendis. Laudantium, debitis eum! Lorem ipsum dolor, sit amet
+        consectetur adipisicing elit. Alias ad est consequuntur eveniet
         laboriosam aliquid perspiciatis delectus harum. Nesciunt ad aspernatur
         id eius, ex voluptates consequatur officiis cum inventore recusandae?
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam
         debitis amet repellendus laboriosam! Facere, dicta praesentium
         perferendis eius qui quod veniam dolorum officiis, expedita reiciendis
-        incidunt, labore odit quo nisi?</v-card-text
-      >
+        incidunt, labore odit quo nisi?
+      </v-card-text>
       <v-form v-model="valid.thirdForm" ref="thirdForm">
         <v-checkbox
           v-model="agreeToTerms"
@@ -179,7 +175,10 @@ export default {
         password: "",
         fullName: "",
         username: "",
-        location: ""
+        primaryLocation: {
+          lat: 0,
+          long: 0
+        }
       },
       avatar: {
         imageFile: "",
@@ -196,6 +195,7 @@ export default {
         emailWarning: [],
         usernameWarning: []
       },
+      addressInput: "",
       formPage: 0,
       agreeToTerms: false,
       showPassword: false,
@@ -210,7 +210,7 @@ export default {
       // TODO: provide more rules here
       fullNameRules: [v => !!v || "Full name is required"],
       usernameRules: [v => !!v || "Username is required"],
-      locationRules: [v => !!v || "Address is required"]
+      addressRules: [v => !!v || "Address is required"]
     };
   },
   watch: {

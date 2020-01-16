@@ -8,13 +8,13 @@ export const registerRequest = ({
   password,
   fullName,
   username,
-  location
+  primaryLocation
 }) => {
   const { firstName, lastName } = firstAndLastName(fullName);
   return axios({
     method: "post",
     url: `${SERVER_URL}/users`,
-    data: { email, password, firstName, lastName, username, location }
+    data: { email, password, firstName, lastName, username, primaryLocation }
   })
     .then(res => {
       return res.data;
@@ -70,20 +70,6 @@ export const uploadAvatarRequest = (avatar, token) => {
       console.log("ERROR: ", error);
     });
 };
-
-// TODO: potentially no need for this API request
-// export const readAvatar = id => {
-//   return axios({
-//     method: "get",
-//     url: `${SERVER_URL}/users/${id}/avatar`
-//   })
-//     .then(res => {
-//       return res.data;
-//     })
-//     .catch(error => {
-//       console.log("ERROR", error);
-//     });
-// };
 
 export const getUserFromUsername = username => {
   return axios({
