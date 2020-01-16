@@ -24,14 +24,16 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 99,
     validate(value) {
-      if(value < 0) {
+      if (value < 0) {
         throw new Error('Age must be a positive number')
       }
     }
   },
-  location: {
-    type: String,
-    trim: true,
+  primaryLocation: {
+    type: {
+      lat: Number,
+      long: Number
+    },
     required: true
   },
   email: {
@@ -41,7 +43,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     validate(value) {
-      if(!validator.isEmail(value)) {
+      if (!validator.isEmail(value)) {
         throw new Error('Email is invalid')
       }
     }
@@ -84,7 +86,7 @@ userSchema.virtual('items', {
 })
 
 // === instance methods ===
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this
   const userObject = user.toObject()
 
@@ -95,7 +97,7 @@ userSchema.methods.toJSON = function() {
   return userObject
 }
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
   const user = this
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '24h' })
 
@@ -109,13 +111,13 @@ userSchema.methods.generateAuthToken = async function() {
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
 
-  if(!user) {
+  if (!user) {
     throw new Error('Unable to login')
   }
 
   const isMatch = await bcrypt.compare(password, user.password)
 
-  if(!isMatch) {
+  if (!isMatch) {
     throw new Error('Unable to login')
   }
 
@@ -123,10 +125,10 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 // === middleware ===
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   const user = this
 
-  if(user.isModified('password')) {
+  if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8)
   }
 

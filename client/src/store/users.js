@@ -3,7 +3,6 @@ import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
   registerRequest,
-  // readAvatar,
   loginRequest,
   getUserFromToken,
   logoutRequest,
@@ -20,8 +19,17 @@ const EMPTY_USER = {
   firstName: "",
   lastName: "",
   age: 0,
-  location: "",
-  avatar: "",
+  primaryLocation: {
+    streetAddress: "",
+    city: "",
+    country: "",
+    lat: 43.64515353395524,
+    long: -79.41002994775774
+  },
+  currentLocation: {
+    lat: 0,
+    long: 0
+  },
   karma: 0,
   rating: {
     up: 0,
@@ -51,9 +59,6 @@ export default {
     },
     USER_TOKEN(state, payload) {
       state.me.token = payload;
-    },
-    USER_AVATAR(state, payload) {
-      state.me.avatar = payload;
     },
     FETCHING_USER(state, payload) {
       this.fetchingUser = payload;
