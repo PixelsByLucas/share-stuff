@@ -2,11 +2,13 @@
   <div class="map">
     <v-icon class="map__marker" x-large>mdi-map-marker</v-icon>
     <l-map
-      style="height: 100%; width: 100%"
+      style="height: 15rem; width: 100%; borderRadius: 4px;"
+      :zoomAnimation="true"
       :zoom="zoom"
       :center="center"
       @update:zoom="zoomUpdated"
       @update:center="centerUpdated"
+      ref="map"
     >
       <l-tile-layer :url="url"></l-tile-layer>
     </l-map>
@@ -14,30 +16,47 @@
 </template>
 <script>
 import { LMap, LTileLayer } from "vue2-leaflet";
+import { latLng } from "leaflet";
 export default {
   name: "Map",
   components: {
     LMap,
     LTileLayer
   },
+  props: ["coords", "zoomProp"],
   data() {
     return {
       url:
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-      zoom: 18,
-      // TODO: eventually we'll want to dynamically set the lat and long below.
-      // store lat,long in our database?
-      // try to get real time lat,long via GPS here
-      center: [43.64515353395524, -79.41002994775774]
+      zoom: 1,
+      center: { lat: 42.032974332441405, lng: -0.3515625 }
     };
   },
+  created() {
+    if (this.coords) {
+      this.center = this.coords;
+    }
+
+    if (this.zoomProp) {
+      this.zoom = this.zoomProp;
+    }
+  },
+  watch: {
+    coords(coords) {
+      this.$refs.map.mapObject.flyTo(
+        latLng(parseFloat(coords.lat), parseFloat(coords.lng)),
+        16
+      );
+    }
+  },
   methods: {
-    zoomUpdated(zoom) {
-      this.zoom = zoom;
+    zoomUpdated(newZoom) {
+      this.zoom = newZoom;
+      this.$emit("new-zoom", newZoom);
     },
-    centerUpdated(center) {
-      this.center = center;
-      this.$emit("update-center", { lat: center.lat, long: center.lng });
+    centerUpdated(newCenter) {
+      this.center = newCenter;
+      this.$emit("new-center", { ...newCenter });
     }
   }
 };

@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   primaryLocation: {
     type: {
       lat: Number,
-      long: Number
+      lng: Number
     },
     required: true
   },

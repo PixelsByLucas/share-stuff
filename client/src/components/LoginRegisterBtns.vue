@@ -6,11 +6,17 @@
       </template>
       <LoginModal v-on:close-dialog="loginDialog = false" />
     </v-dialog>
-    <v-dialog max-width="675px" persistent v-model="registerDialog">
+    <v-dialog
+      :scrollable="true"
+      content-class="register-modal"
+      max-width="675px"
+      persistent
+      v-model="registerDialog"
+    >
       <template v-slot:activator="{ on }">
         <v-btn class="nav__register-btn" v-on="on">REGISTER</v-btn>
       </template>
-      <RegisterModal v-on:close-dialog="registerDialog = false" />
+      <RegisterModal style="height: 100%;" v-on:close-dialog="registerDialog = false" />
     </v-dialog>
   </div>
 </template>
@@ -41,5 +47,8 @@ export default {
   &__register-btn {
     margin-left: 1rem;
   }
+}
+.register-modal {
+  height: 40rem !important;
 }
 </style>

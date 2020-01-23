@@ -1,25 +1,30 @@
 <template>
   <v-card class="register-modal">
-    <v-row>
+    <v-row dense>
+      <v-card-title>{{ modalTitle }}</v-card-title>
       <v-spacer></v-spacer>
       <v-btn v-on:click="$emit('close-dialog')" icon>
-        <v-icon large>mdi-close</v-icon>
+        <v-icon color="black" large>mdi-close</v-icon>
       </v-btn>
     </v-row>
-    <v-card-title>Register</v-card-title>
+    <v-row v-if="modalSubtitle" dense>
+      <v-card-subtitle>{{ modalSubtitle }}</v-card-subtitle>
+    </v-row>
+    <v-divider></v-divider>
     <!-- === first form === -->
-    <div class="firstForm" v-if="formPage === 0">
-      <v-card-text>
+    <v-card-text class="card-text" v-if="formPage === 0">
+      <p class="firstForm__text">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure sit
         maiores necessitatibus temporibus quasi officiis, unde et magni vitae
         numquam sequi.
-      </v-card-text>
-      <v-form v-model="valid.firstForm" ref="firstForm">
+      </p>
+      <v-form v-model="valid.form0" ref="form0">
         <v-row>
           <v-col>
             <v-text-field
               v-model="formValues.email"
               label="email"
+              outlined
               :error-messages="warnings.emailWarning"
               :rules="emailRules"
               required
@@ -32,6 +37,7 @@
               :type="showPassword ? 'text' : 'password'"
               v-model="formValues.password"
               label="password"
+              outlined
               :rules="passwordRules"
               required
               counter
@@ -40,15 +46,11 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn v-on:click="handleNext('firstForm')">NEXT</v-btn>
-        </v-card-actions>
       </v-form>
-    </div>
+    </v-card-text>
     <!-- === second form === -->
-    <div class="secondForm" v-if="formPage === 1">
-      <v-form v-model="valid.secondForm" ref="secondForm">
+    <v-card-text class="card-text" v-if="formPage === 1">
+      <v-form v-model="valid.form1" ref="form1">
         <v-container>
           <v-row>
             <v-col cols="8">
@@ -57,6 +59,7 @@
                   <v-text-field
                     v-model="formValues.fullName"
                     label="Full name"
+                    outlined
                     :rules="fullNameRules"
                     required
                   ></v-text-field>
@@ -67,25 +70,16 @@
                   <v-text-field
                     v-model="formValues.username"
                     label="Username"
+                    outlined
                     :error-messages="warnings.usernameWarning"
                     :rules="usernameRules"
                     required
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col>
-                  <v-text-field
-                    v-model="formValues.address"
-                    label="Address"
-                    :rules="addressRules"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
             </v-col>
-            <v-col cols="4" class="secondForm__iconCol">
-              <div>
+            <v-col cols="4" class="secondForm__iconCol" align-self="center">
+              <v-row justify="center">
                 <v-btn icon class="secondForm__iconBtn" @click="pickFile">
                   <v-icon size="124px" v-if="!avatar.imageUrl">mdi-account-circle</v-icon>
                   <v-img
@@ -103,8 +97,7 @@
                       ? 'secondForm__label imageWarning'
                       : 'secondForm__label'
                   "
-                  v-if="!avatar.imageUrl"
-                >Upload profile picture</label>
+                >upload profile picture</label>
                 <input
                   type="file"
                   style="display: none"
@@ -112,21 +105,32 @@
                   accept="image/*"
                   @change="onFilePicked"
                 />
-              </div>
+              </v-row>
             </v-col>
           </v-row>
         </v-container>
-        <v-card-actions>
-          <v-btn v-on:click="handleBack">BACK</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn v-on:click="handleNext('secondForm')">NEXT</v-btn>
-        </v-card-actions>
       </v-form>
-    </div>
+    </v-card-text>
     <!-- === third form === -->
-    <div v-if="formPage === 2">
-      <v-card-subtitle>Terms and Condition</v-card-subtitle>
-      <v-card-text>
+    <v-card-text v-if="formPage === 2" class="card-text">
+      <v-container>
+        <v-row>
+          <v-text-field v-model="map.addressInput" label="Search by address" outlined></v-text-field>
+        </v-row>
+        <v-row>
+          <Map
+            :coords="this.map.geoCoords"
+            :zoomProp="this.map.zoom"
+            v-on:new-center="updateLocation"
+            v-on:new-zoom="updateZoom"
+          />
+        </v-row>
+      </v-container>
+    </v-card-text>
+
+    <!-- === fourth form === -->
+    <v-card-text v-if="formPage === 3" class="card-text">
+      <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque molestiae
         distinctio qui exercitationem, dolores rerum atque odit rem maxime
         praesentium dolore natus facere vero esse mollitia tenetur dolorum quo
@@ -141,8 +145,8 @@
         debitis amet repellendus laboriosam! Facere, dicta praesentium
         perferendis eius qui quod veniam dolorum officiis, expedita reiciendis
         incidunt, labore odit quo nisi?
-      </v-card-text>
-      <v-form v-model="valid.thirdForm" ref="thirdForm">
+      </p>
+      <v-form v-model="valid.form3" ref="form3">
         <v-checkbox
           v-model="agreeToTerms"
           :rules="[v => !!v || 'You must agree to continue!']"
@@ -150,23 +154,31 @@
           required
         ></v-checkbox>
       </v-form>
-      <v-card-actions>
-        <v-row class="thirdForm__actions">
-          <v-btn v-on:click="handleBack">BACK</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn v-on:click="handleSubmit">SUBMIT</v-btn>
-        </v-row>
-      </v-card-actions>
-    </div>
+    </v-card-text>
+
+    <!-- === form actions === -->
+    <v-divider></v-divider>
+    <v-card-actions class="card-actions">
+      <v-row>
+        <v-btn v-if="formPage !== 0" v-on:click="handleBack">BACK</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn v-if="formPage === 3" v-on:click="handleSubmit">SUBMIT</v-btn>
+        <v-btn v-else v-on:click="handleNext">NEXT</v-btn>
+      </v-row>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import { isEmail } from "validator";
 import debounce from "../utils/debounce";
+import Map from "../components/Map";
 
 export default {
   name: "RegisterModal",
+  components: {
+    Map
+  },
   data() {
     return {
       formValues: {
@@ -177,7 +189,7 @@ export default {
         username: "",
         primaryLocation: {
           lat: 0,
-          long: 0
+          lng: 0
         }
       },
       avatar: {
@@ -186,16 +198,21 @@ export default {
         imageUrl: ""
       },
       valid: {
-        firstForm: false,
-        secondForm: false,
-        thirdForm: false
+        form0: false,
+        form1: false,
+        form2: true,
+        form3: false
       },
       warnings: {
         imageWarning: false,
         emailWarning: [],
         usernameWarning: []
       },
-      addressInput: "",
+      map: {
+        addressInput: "",
+        geoCoords: null,
+        zoom: 0
+      },
       formPage: 0,
       agreeToTerms: false,
       showPassword: false,
@@ -209,11 +226,44 @@ export default {
       ],
       // TODO: provide more rules here
       fullNameRules: [v => !!v || "Full name is required"],
-      usernameRules: [v => !!v || "Username is required"],
-      addressRules: [v => !!v || "Address is required"]
+      usernameRules: [v => !!v || "Username is required"]
     };
   },
+  computed: {
+    modalTitle() {
+      switch (this.formPage) {
+        case 1:
+          return "Name";
+        case 2:
+          return "Location";
+        case 3:
+          return "Terms and Condition";
+        default:
+          return "Register";
+      }
+    },
+    modalSubtitle() {
+      switch (this.formPage) {
+        case 2:
+          return "Place the map marker at the location where you'll be lending from.";
+        default:
+          return "";
+      }
+    }
+  },
   watch: {
+    "map.addressInput": async function(input) {
+      const coords = await this.debouncedDispatch("getLatLng", input);
+      if (coords) {
+        this.map.geoCoords = coords;
+        this.map.zoom = 16;
+      }
+    },
+    "avatar.imageUrl": function(url, prevUrl) {
+      if (!prevUrl && this.warnings.imageWarning) {
+        this.warnings.imageWarning = false;
+      }
+    },
     "formValues.email": async function(email) {
       const unique = await this.debouncedDispatch("verifyUniqueEmail", email);
 
@@ -233,12 +283,20 @@ export default {
     }
   },
   methods: {
-    handleNext(formNum) {
+    updateZoom(newZoom) {
+      this.map.zoom = newZoom;
+    },
+    updateLocation(newLocation) {
+      this.formValues.primaryLocation = newLocation;
+    },
+    handleNext() {
+      const formNum = `form${this.formPage}`;
+
       if (!this.valid[formNum]) {
         this.$refs[formNum].validate();
         return;
       }
-      if (formNum === "secondForm" && !this.avatar.imageFile) {
+      if (formNum === "form1" && !this.avatar.imageFile) {
         this.warnings.imageWarning = true;
         return;
       }
@@ -250,14 +308,14 @@ export default {
       }
     },
     async handleSubmit() {
-      if (this.valid.thirdForm) {
+      if (this.valid.form3) {
         this.$store.dispatch("registerUser", {
           formValues: this.formValues,
           avatar: this.avatar.imageFile
         });
         this.$emit("close-dialog");
       }
-      this.$refs.thirdForm.validate();
+      this.$refs.form3.validate();
     },
     pickFile() {
       this.$refs.image.click();
@@ -292,13 +350,16 @@ export default {
 
 <style lang="scss" scoped>
 .register-modal {
-  padding: 3rem 4rem 3rem 4rem;
+  padding: 2rem 3rem 2rem 3rem;
   margin: 0 auto;
 }
-.secondForm {
-  &__iconCol {
-    align-self: center;
+.firstForm {
+  &__text {
+    padding-left: 0;
+    padding-right: 0;
   }
+}
+.secondForm {
   &__profilePic {
     border-radius: 50%;
   }
@@ -311,11 +372,6 @@ export default {
   &__label {
     color: rgba(0, 0, 0, 0.6);
     font-size: 16px;
-  }
-}
-.thirdForm {
-  &__actions {
-    margin-top: 2rem;
   }
 }
 .imageWarning {

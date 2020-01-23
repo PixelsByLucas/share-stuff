@@ -8,7 +8,9 @@ import {
   logoutRequest,
   uploadAvatarRequest,
   getUserFromUsername
+  // updateUser
 } from "../apis/users";
+import { geocode } from "../apis/geocoding";
 
 const EMPTY_USER = {
   _id: null,
@@ -20,15 +22,12 @@ const EMPTY_USER = {
   lastName: "",
   age: 0,
   primaryLocation: {
-    streetAddress: "",
-    city: "",
-    country: "",
     lat: 43.64515353395524,
-    long: -79.41002994775774
+    lng: -79.41002994775774
   },
   currentLocation: {
     lat: 0,
-    long: 0
+    lng: 0
   },
   karma: 0,
   rating: {
@@ -38,7 +37,6 @@ const EMPTY_USER = {
 };
 
 export default {
-  // TODO: remove all avatar actions and mutations since we're rendering images by providing endpoint URL as src in img html tag
   state: {
     me: {
       ...EMPTY_USER
@@ -47,7 +45,8 @@ export default {
       isUserMe: false,
       ...EMPTY_USER
     },
-    fetchingUser: false
+    fetchingUser: false,
+    fetchingLocation: false
   },
   mutations: {
     // TODO: potentially replace Object.assign with vue.set()
@@ -63,11 +62,24 @@ export default {
     FETCHING_USER(state, payload) {
       this.fetchingUser = payload;
     },
+    FETCHING_LOCATION(state, payload) {
+      state.fetchingLocation = payload;
+    },
     SET_PROFILE_USER(state, payload) {
       state.profileUser = { ...state.profileUser, ...payload };
     }
   },
   actions: {
+    async getLatLng({ commit }, payload) {
+      commit("FETCHING_LOCATION", true);
+      return geocode(payload).then(candidates => {
+        if (candidates.length) {
+          const { x, y } = candidates[0].location;
+          return { lat: y, lng: x };
+        }
+        commit("FETCHING_LOCATION", false);
+      });
+    },
     async logout({ state, commit }) {
       const LoggedOut = await logoutRequest(state.me.token);
       if (LoggedOut) {
@@ -97,9 +109,6 @@ export default {
       }
       commit("FETCHING_USER", false);
     },
-    // setUserLogin({ commit }, payload) {
-    //   commit("USER_LOGIN", payload);
-    // },
     async registerUser({ commit }, payload) {
       commit("FETCHING_USER", true);
       const { token, user } = await registerRequest(payload.formValues);
@@ -143,9 +152,6 @@ export default {
     isLoggedIn(state) {
       return state.me.isLoggedIn;
     },
-    // isMyProfile: state => paramsUsername => {
-    //   return state.me.username === paramsUsername;
-    // },
     token(state) {
       return state.me.token;
     }

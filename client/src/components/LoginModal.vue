@@ -8,15 +8,10 @@
     </v-row>
     <v-card-title>Login</v-card-title>
     <div>
-      <v-form v-model="valid" ref="loginForm">
+      <v-form v-model="valid" ref="loginForm" v-on:submit.prevent="handleSubmit">
         <v-row>
           <v-col>
-            <v-text-field
-              v-model="formValues.email"
-              label="email"
-              :rules="emailRules"
-              required
-            ></v-text-field>
+            <v-text-field v-model="formValues.email" label="email" :rules="emailRules" required></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -30,13 +25,12 @@
               counter
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
-            >
-            </v-text-field>
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-on:click="handleSubmit">LOGIN</v-btn>
+          <v-btn type="submit">LOGIN</v-btn>
         </v-card-actions>
       </v-form>
     </div>
@@ -79,6 +73,8 @@ export default {
   },
   methods: {
     async handleSubmit() {
+      console.log("handlesubmit");
+      debugger;
       if (this.valid) {
         await this.$store.dispatch("loginWithEmail", {
           ...this.formValues
