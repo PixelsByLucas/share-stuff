@@ -134,3 +134,22 @@ export const logoutRequest = token => {
       console.log("ERROR: ", error);
     });
 };
+
+export const updateUser = (primaryLocation, token) => {
+  return axios({
+    method: "post",
+    url: `${SERVER_URL}/users/logout`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    data: {
+      primaryLocation
+    }
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log("ERROR in updateUser request: ", error);
+    });
+};

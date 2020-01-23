@@ -2,19 +2,12 @@ import { ITEM_CATEGORIES } from "../utils/constants";
 
 export default {
   state: {
-    location: {
-      lat: "",
-      long: ""
-    },
     searchTerm: "",
     category: ""
   },
   mutations: {
     SET_CATEGORY(state, payload) {
       state.category = payload;
-    },
-    SET_LOCATION(state, payload) {
-      state.location = { lat: payload.lat, long: payload.long };
     },
     SET_TERM(state, payload) {
       state.searchTerm = payload;
