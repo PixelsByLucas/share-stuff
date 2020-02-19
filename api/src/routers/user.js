@@ -6,7 +6,9 @@ const { uploadSingle } = require('../middleware/upload')
 const sharp = require('sharp')
 
 // === Create User ===
-router.post('/users', async (req, res) => {
+router.post('/users', uploadSingle.single('avatar'), async (req, res) => {
+  req.body.avatar = req.file.buffer
+  req.body.primaryLocation = JSON.parse(req.body.primaryLocation)
   const user = new User(req.body)
 
   try {

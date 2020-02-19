@@ -18,7 +18,7 @@
 import { LMap, LTileLayer } from "vue2-leaflet";
 import { latLng } from "leaflet";
 export default {
-  name: "Map",
+  name: "LeafletMap",
   components: {
     LMap,
     LTileLayer
