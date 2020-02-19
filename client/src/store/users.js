@@ -111,13 +111,12 @@ export default {
     },
     async registerUser({ commit }, payload) {
       commit("FETCHING_USER", true);
-      const { token, user } = await registerRequest(payload.formValues);
+      const { token, user } = await registerRequest(payload);
       if (token) {
         commit("USER_TOKEN", token);
         cacheItem("user_token", token);
       }
       if (user) {
-        await uploadAvatarRequest(payload.avatar, token);
         commit("USER", user);
         commit("USER_LOGIN", true);
       }

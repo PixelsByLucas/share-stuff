@@ -1,20 +1,13 @@
 import axios from "axios";
-import firstAndLastName from "../utils/firstAndLastName";
+// import firstAndLastName from "../utils/firstAndLastName";
 
 export const SERVER_URL = process.env.VUE_APP_SERVER_URL;
 
-export const registerRequest = ({
-  email,
-  password,
-  fullName,
-  username,
-  primaryLocation
-}) => {
-  const { firstName, lastName } = firstAndLastName(fullName);
+export const registerRequest = formData => {
   return axios({
     method: "post",
     url: `${SERVER_URL}/users`,
-    data: { email, password, firstName, lastName, username, primaryLocation }
+    data: formData
   })
     .then(res => {
       return res.data;

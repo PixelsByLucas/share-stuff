@@ -118,7 +118,7 @@
           <v-text-field v-model="map.addressInput" label="Search by address" outlined></v-text-field>
         </v-row>
         <v-row>
-          <Map
+          <LeafletMap
             :coords="this.map.geoCoords"
             :zoomProp="this.map.zoom"
             v-on:new-center="updateLocation"
@@ -170,14 +170,15 @@
 </template>
 
 <script>
-import { isEmail } from "validator";
 import debounce from "../utils/debounce";
-import Map from "../components/Map";
+import firstAndLastName from "../utils/firstAndLastName";
+import { isEmail } from "validator";
+import LeafletMap from "../components/LeafletMap";
 
 export default {
   name: "RegisterModal",
   components: {
-    Map
+    LeafletMap
   },
   data() {
     return {
@@ -271,6 +272,7 @@ export default {
         ? (this.warnings.emailWarning = [])
         : (this.warnings.emailWarning = ["That email is already in use"]);
     },
+    "formValues.primaryLocation": async function() {},
     "formValues.username": async function(username) {
       const unique = await this.debouncedDispatch(
         "verifyUniqueUserName",
@@ -286,6 +288,7 @@ export default {
     updateZoom(newZoom) {
       this.map.zoom = newZoom;
     },
+    // STOPPED HERE: everything seems fine, but primaryLocation is [object, object]... is this a problem??  Why is it happening??
     updateLocation(newLocation) {
       this.formValues.primaryLocation = newLocation;
     },
@@ -308,14 +311,35 @@ export default {
       }
     },
     async handleSubmit() {
+      this.createForm();
       if (this.valid.form3) {
-        this.$store.dispatch("registerUser", {
-          formValues: this.formValues,
-          avatar: this.avatar.imageFile
-        });
+        this.$store.dispatch("registerUser", this.createForm());
         this.$emit("close-dialog");
       }
       this.$refs.form3.validate();
+    },
+    createForm() {
+      const userData = { ...this.formValues, avatar: this.avatar.imageFile };
+
+      const fd = new FormData();
+
+      for (const key in userData) {
+        if (key === "fullName") {
+          const { firstName, lastName } = firstAndLastName(userData[key]);
+
+          fd.append("firstName", firstName);
+          fd.append("lastName", lastName);
+        } else if (key === "primaryLocation") {
+          fd.append(
+            key,
+            JSON.stringify({ lat: userData[key].lat, lng: userData[key].lng })
+          );
+        } else {
+          fd.append(key, userData[key]);
+        }
+      }
+
+      return fd;
     },
     pickFile() {
       this.$refs.image.click();
@@ -331,9 +355,7 @@ export default {
         fr.readAsDataURL(files[0]);
         fr.addEventListener("load", () => {
           this.avatar.imageUrl = fr.result;
-          const fd = new FormData();
-          fd.append("avatar", files[0], files[0].name);
-          this.avatar.imageFile = fd;
+          this.avatar.imageFile = files[0];
         });
       } else {
         this.avatar.imageName = "";

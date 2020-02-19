@@ -109,7 +109,7 @@ export default {
       }
 
       if (this.formValid) {
-        this.$store.dispatch("newItem", this.createForm(this.formValues));
+        this.$store.dispatch("newItem", this.createForm());
         this.$router.push(`/profile/${this.username}`);
       } else {
         this.$refs.form.validate();

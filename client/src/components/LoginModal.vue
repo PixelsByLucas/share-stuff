@@ -73,8 +73,6 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      console.log("handlesubmit");
-      debugger;
       if (this.valid) {
         await this.$store.dispatch("loginWithEmail", {
           ...this.formValues
