@@ -30,3 +30,16 @@ export const getItemsByOwner = id => {
       console.log("ERROR:", error);
     });
 };
+
+export const getAllItemsAPI = () => {
+  return axios({
+    method: "get",
+    url: `${SERVER_URL}/items`
+  })
+    .then(res => {
+      return res.data
+    })
+    .catch(error => {
+      console.log("ERROR", error)
+    })
+}
