@@ -4,6 +4,7 @@ export default {
     userItems: [],
     profileItems: [],
     allItems: [],
+    itemDetail: {},
     fetchingItems: false
   },
   mutations: {
@@ -42,6 +43,13 @@ export default {
       commit("FETCHING_ITEMS", true);
       const items = await getItemsByOwner(payload);
       commit("SET_PROFILE_ITEMS", items);
+      commit("FETCHING_ITEMS", false);
+    },
+    async getItemDetail({ commit }, payload) {
+      commit("FETCHING_ITEMS", true);
+
+      // TODO: call API to fetch itemDetail
+
       commit("FETCHING_ITEMS", false);
     }
   },

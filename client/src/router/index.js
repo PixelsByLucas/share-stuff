@@ -44,6 +44,12 @@ const routes = [
       import(/* webpackChunkName: "createItem"*/ "../views/CreateItem.vue")
   },
   {
+    path: "/itemdetail/:id",
+    name: "itemDetail",
+    component: () =>
+      import(/* webpackChunkName: "itemDetail"*/ "../views/ItemDetail.vue")
+  },
+  {
     path: "/playground",
     name: "playground",
     component: () =>
@@ -54,7 +60,7 @@ const routes = [
     name: "404",
     component: () =>
       import(/* webpackChunkName: "NotFound" */ "../views/NotFound.vue")
-  }
+  },
 ];
 
 const router = new VueRouter({
