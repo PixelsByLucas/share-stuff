@@ -10,7 +10,15 @@ export default new Vuetify({
       karma: {
         component: KarmaIcon,
         props: {
-          name: "karma"
+          name: "karma",
+          dark: false
+        }
+      },
+      karmaDark: {
+        component: KarmaIcon,
+        props: {
+          name: "karmaDark",
+          dark: true
         }
       }
     }

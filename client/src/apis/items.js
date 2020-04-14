@@ -43,3 +43,16 @@ export const getAllItemsAPI = () => {
       console.log("ERROR", error)
     })
 }
+
+export const getItemAPI = id => {
+  return axios({
+    method: "get",
+    url: `${SERVER_URL}/items/${id}`
+  })
+    .then(res => {
+      return res.data
+    })
+    .catch(error => {
+      console.log("ERROR", error)
+    })
+}

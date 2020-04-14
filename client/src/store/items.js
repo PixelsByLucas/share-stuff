@@ -1,4 +1,4 @@
-import { createItem, getItemsByOwner, getAllItemsAPI } from "../apis/items";
+import { createItem, getItemsByOwner, getAllItemsAPI, getItemAPI } from "../apis/items";
 export default {
   state: {
     userItems: [],
@@ -15,7 +15,10 @@ export default {
       state.profileItems = payload;
     },
     SET_ALL_ITEMS(state, payload) {
-      state.allItems = payload
+      state.allItems = payload;
+    },
+    SET_ITEM_DETAIL(state, payload) {
+      state.itemDetail = payload;
     },
     FETCHING_ITEMS(state, payload) {
       state.fetchingItems = payload;
@@ -47,9 +50,8 @@ export default {
     },
     async getItemDetail({ commit }, payload) {
       commit("FETCHING_ITEMS", true);
-
-      // TODO: call API to fetch itemDetail
-
+      const item = await getItemAPI(payload);
+      commit("SET_ITEM_DETAIL", item);
       commit("FETCHING_ITEMS", false);
     }
   },
