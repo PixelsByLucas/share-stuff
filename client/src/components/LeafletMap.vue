@@ -2,7 +2,7 @@
   <div class="map">
     <v-icon class="map__marker" x-large>mdi-map-marker</v-icon>
     <l-map
-      style="height: 15rem; width: 100%; borderRadius: 4px;"
+      style="height: 100%; width: 100%; borderRadius: 4px; z-index: 0"
       :zoomAnimation="true"
       :zoom="zoom"
       :center="center"
@@ -72,8 +72,8 @@ export default {
   position: relative;
   &__marker {
     transform: translate(-50%, -100%);
-    position: absolute;
-    z-index: 500;
+    position: absolute !important;
+    z-index: 1;
     top: 50%;
     left: 50%;
   }

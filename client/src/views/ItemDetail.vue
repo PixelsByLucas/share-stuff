@@ -24,9 +24,11 @@
       <v-row>
         <v-col cols="6">
           <!-- TODO: reviews here -->
+          <ReviewList :reviews="reviews" />
         </v-col>
         <v-col cols="6">
           <!-- TODO: map here -->
+          <LeafletMap />
         </v-col>
       </v-row>
     </v-container>
@@ -36,13 +38,24 @@
   </div>
 </template>
 <script>
-import Carousel from "../components/Carousel";
 import { mapState } from "vuex";
+
+import Carousel from "../components/Carousel";
+import ReviewList from "../components/ReviewList";
+import LeafletMap from "../components/LeafletMap";
+import { profileDummyData } from "../utils/dummyData";
 
 export default {
   name: "ItemDetail",
   components: {
-    Carousel
+    Carousel,
+    ReviewList,
+    LeafletMap
+  },
+  data() {
+    return {
+      ...profileDummyData
+    };
   },
   computed: {
     ...mapState({

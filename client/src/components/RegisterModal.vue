@@ -113,19 +113,23 @@
     </v-card-text>
     <!-- === third form === -->
     <v-card-text v-if="formPage === 2" class="card-text">
-      <v-container>
-        <v-row>
+      <!-- <v-container class="map-box"> -->
+      <v-row>
+        <v-col cols="12">
           <v-text-field v-model="map.addressInput" label="Search by address" outlined></v-text-field>
-        </v-row>
-        <v-row>
+        </v-col>
+      </v-row>
+      <v-row style="height: 15rem;">
+        <v-col cols="12">
           <LeafletMap
             :coords="this.map.geoCoords"
             :zoomProp="this.map.zoom"
             v-on:new-center="updateLocation"
             v-on:new-zoom="updateZoom"
           />
-        </v-row>
-      </v-container>
+        </v-col>
+      </v-row>
+      <!-- </v-container> -->
     </v-card-text>
 
     <!-- === fourth form === -->
@@ -211,10 +215,10 @@ export default {
       },
       map: {
         addressInput: "",
-        geoCoords: null,
+        geoCoords: "",
         zoom: 0
       },
-      formPage: 0,
+      formPage: 2,
       agreeToTerms: false,
       showPassword: false,
       emailRules: [
@@ -371,6 +375,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.map-box {
+  height: "100%" !important;
+  width: "100%" !important;
+}
 .register-modal {
   padding: 2rem 3rem 2rem 3rem;
   margin: 0 auto;
