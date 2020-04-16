@@ -103,13 +103,19 @@ export default {
       imgNum: 0,
       formValid: false,
       imageWarning: false,
-      nameRules: [v => !!v || "Name is required"],
+      nameRules: [
+        v => !!v || "Name is required",
+        v => v.length < 25 || "Name must less than 25 characters"
+      ],
       priceRules: [
         v => !!v || "Price is required",
         v => v.match(/^[0-9]+$/) || "Price must only contain numbers",
         v => !!Number(v) || "Price must be a whole number larger than 0"
       ],
-      descriptionRules: [v => !!v || "Description is required"]
+      descriptionRules: [
+        v => !!v || "Description is required",
+        v => v.length < 500 || "Description must be less than 500 character"
+      ]
     };
   },
   computed: mapState({

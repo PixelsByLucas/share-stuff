@@ -10,9 +10,9 @@
           <p class="item-text">{{itemDetail.description}}</p>
           <v-divider class="divider"></v-divider>
           <v-row align="center" no-gutters>
-            <span class="item-text item-text__cost">Cost:</span>
+            <span class="item-text item-text__price">Price:</span>
             <v-icon class="karma-icon" color="black" v-text="'$vuetify.icons.karmaDark'"></v-icon>
-            <span>1000</span>
+            <span>{{itemDetail.price}}</span>
             <v-spacer></v-spacer>
             <v-btn class="nav__register-btn">BORROW</v-btn>
           </v-row>
@@ -75,8 +75,9 @@ export default {
 }
 .item-text {
   font-family: "Roboto";
-  &__cost {
-    font-size: 1.5rem;
+  &__price {
+    font-size: 1.4rem;
+    margin-right: 16px;
   }
 }
 .divider {

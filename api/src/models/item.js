@@ -10,12 +10,22 @@ const itemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    validate(value) {
+      if (value > 25) {
+        throw new Error('Name must be less than 25 characters')
+      }
+    }
   },
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    validate(value) {
+      if (value > 500) {
+        throw new Error('Description must be less than 500 characters')
+      }
+    }
   },
   available: {
     type: Boolean,
