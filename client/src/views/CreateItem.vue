@@ -14,11 +14,12 @@
               label="Item Name"
               :rules="nameRules"
               required
+              counter
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col cols="6">
             <v-select
               outlined
               v-model="formValues.category"
@@ -26,6 +27,16 @@
               label="Item Category"
               required
             ></v-select>
+          </v-col>
+          <v-col col="6">
+            <v-text-field
+              outlined
+              v-model="formValues.price"
+              label="Item Price"
+              :rules="priceRules"
+              required
+              :prepend-inner-icon="'$vuetify.icons.karmaDark'"
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -80,6 +91,7 @@ export default {
       formValues: {
         name: "",
         category: "All",
+        price: 0,
         description: "",
         media: []
       },
@@ -92,6 +104,11 @@ export default {
       formValid: false,
       imageWarning: false,
       nameRules: [v => !!v || "Name is required"],
+      priceRules: [
+        v => !!v || "Price is required",
+        v => v.match(/^[0-9]+$/) || "Price must only contain numbers",
+        v => !!Number(v) || "Price must be a whole number larger than 0"
+      ],
       descriptionRules: [v => !!v || "Description is required"]
     };
   },
@@ -116,13 +133,14 @@ export default {
       }
     },
     createForm() {
-      const { media, name, description, category } = this.formValues;
+      const { media, name, description, category, price } = this.formValues;
       const files = media.filter(file => !!file);
       const fd = new FormData();
 
       fd.append("name", name);
       fd.append("description", description);
       fd.append("category", category);
+      fd.append("price", Number(price));
 
       for (let i = 0; i < files.length; i++) {
         fd.append("media", files[i]);

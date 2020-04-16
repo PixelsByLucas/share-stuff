@@ -27,6 +27,19 @@ const itemSchema = new mongoose.Schema({
     default: 'Misc',
     required: true
   },
+  price: {
+    type: String,
+    default: 0,
+    required: true,
+    validate(value) {
+      if (typeof Number(value) !== 'number') {
+        throw new Error('Price is not a number')
+      }
+      if (value < 0) {
+        throw new Error('Price must be larger than 0')
+      }
+    }
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
