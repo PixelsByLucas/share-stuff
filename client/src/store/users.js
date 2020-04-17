@@ -19,7 +19,7 @@ const EMPTY_USER = {
   username: "",
   email: "",
   firstName: "",
-  lastName: "",
+  lastNameInitial: "",
   age: 0,
   primaryLocation: {
     lat: 43.64515353395524,

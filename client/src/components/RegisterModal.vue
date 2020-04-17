@@ -126,6 +126,7 @@
             :zoomProp="this.map.zoom"
             v-on:new-center="updateLocation"
             v-on:new-zoom="updateZoom"
+            marker="static"
           />
         </v-col>
       </v-row>
@@ -223,15 +224,23 @@ export default {
       showPassword: false,
       emailRules: [
         v => !!v || "E-mail is required",
-        v => isEmail(v) || "E-mail must be valid"
+        v => isEmail(v) || "E-mail must be valid",
+        v => v.length <= 100 || "Email cannot be longer than 100 characters"
       ],
       passwordRules: [
         v => !!v || "Password is required",
-        v => v.length >= 8 || "Password must be more than 8 characters"
+        v => v.length >= 8 || "Password must be more than 8 characters",
+        v => v.length <= 100 || "Password cannot be longer than 100 characters"
       ],
       // TODO: provide more rules here
-      fullNameRules: [v => !!v || "Full name is required"],
-      usernameRules: [v => !!v || "Username is required"]
+      fullNameRules: [
+        v => !!v || "Full name is required",
+        v => v.length <= 100 || "Name cannot be longer than 100 characters"
+      ],
+      usernameRules: [
+        v => !!v || "Username is required",
+        v => v.length <= 100 || "Username cannot be longer than 100 characters"
+      ]
     };
   },
   computed: {

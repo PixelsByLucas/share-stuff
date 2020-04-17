@@ -9,6 +9,9 @@ const sharp = require('sharp')
 router.post('/users', uploadSingle.single('avatar'), async (req, res) => {
   req.body.avatar = req.file.buffer
   req.body.primaryLocation = JSON.parse(req.body.primaryLocation)
+  req.body.lastNameInitial = req.body.lastName ? `${req.body.lastName.substring(0, 1).toUpperCase()}.` : ""
+
+
   const user = new User(req.body)
 
   try {

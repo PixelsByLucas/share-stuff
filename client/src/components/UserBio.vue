@@ -17,8 +17,8 @@ export default {
       const first =
         this.user.firstName.charAt(0).toUpperCase() +
         this.user.firstName.slice(1);
-      const lastInitial = this.user.lastName.charAt(0).toUpperCase() + ".";
-      return `${first} ${lastInitial}`;
+      // const lastInitial = this.user.lastName.charAt(0).toUpperCase() + ".";
+      return `${first} ${this.user.lastNameInitial}`;
     }
   }
 };

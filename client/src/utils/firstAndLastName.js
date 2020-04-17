@@ -2,11 +2,11 @@ export default fullName => {
   const fullNameArr = fullName.split(" ");
 
   if (fullNameArr.length < 1) {
-    return { firstName: "Unknown", lastName: "Unknown" };
+    return { firstName: "", lastName: "" };
   }
 
   if (fullNameArr.length < 2) {
-    return { firstName: fullName, lastName: "Unknown" };
+    return { firstName: fullName, lastName: "" };
   }
 
   const firstName = fullNameArr[0];

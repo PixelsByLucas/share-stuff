@@ -1,29 +1,32 @@
 <template>
   <div class="map">
-    <v-icon class="map__marker" x-large>mdi-map-marker</v-icon>
+    <v-icon v-if="marker === 'static'" class="map__marker" x-large>mdi-map-marker</v-icon>
     <l-map
       style="height: 100%; width: 100%; borderRadius: 4px; z-index: 0"
       :zoomAnimation="true"
       :zoom="zoom"
       :center="center"
+      :maxZoom="16"
       @update:zoom="zoomUpdated"
       @update:center="centerUpdated"
       ref="map"
     >
       <l-tile-layer :url="url"></l-tile-layer>
+      <l-marker v-if="marker === 'location'" :lat-lng="coords"></l-marker>
     </l-map>
   </div>
 </template>
 <script>
-import { LMap, LTileLayer } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import { latLng } from "leaflet";
 export default {
   name: "LeafletMap",
   components: {
     LMap,
-    LTileLayer
+    LTileLayer,
+    LMarker
   },
-  props: ["coords", "zoomProp"],
+  props: ["coords", "zoomProp", "marker"],
   data() {
     return {
       url:

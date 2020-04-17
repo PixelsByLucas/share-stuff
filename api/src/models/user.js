@@ -12,12 +12,17 @@ const userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: true,
+    default: undefined,
     trim: true
   },
   lastName: {
     type: String,
-    required: true,
+    default: undefined,
+    trim: true
+  },
+  lastNameInitial: {
+    type: String,
+    default: undefined,
     trim: true
   },
   age: {
@@ -96,6 +101,7 @@ userSchema.methods.toJSON = function () {
   delete userObject.password
   delete userObject.tokens
   delete userObject.avatar
+  delete userObject.lastName
 
   return userObject
 }

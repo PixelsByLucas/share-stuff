@@ -23,12 +23,12 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <!-- TODO: reviews here -->
+          <!-- == reviews == -->
           <ReviewList :reviews="reviews" />
         </v-col>
         <v-col cols="6">
-          <!-- TODO: map here -->
-          <LeafletMap />
+          <!-- == map == -->
+          <LeafletMap :coords="itemDetail.owner.primaryLocation" :zoomProp="13" marker="location" />
         </v-col>
       </v-row>
     </v-container>
