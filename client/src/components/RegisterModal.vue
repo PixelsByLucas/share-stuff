@@ -218,7 +218,7 @@ export default {
         geoCoords: "",
         zoom: 0
       },
-      formPage: 2,
+      formPage: 0,
       agreeToTerms: false,
       showPassword: false,
       emailRules: [

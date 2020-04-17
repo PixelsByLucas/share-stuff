@@ -50,7 +50,7 @@ const itemSchema = new mongoose.Schema({
       }
     }
   },
-  owner: {
+  ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'
@@ -64,13 +64,24 @@ const itemSchema = new mongoose.Schema({
     }
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+})
+
+// === virtuals ===
+itemSchema.virtual('owner', {
+  ref: 'User',
+  localField: 'ownerId',
+  foreignField: '_id',
+  justOne: true
 })
 
 // === instance methods ===
 itemSchema.methods.toJSON = function () {
   const item = this
   const itemObject = item.toObject()
+  console.log('ITEM SCHEMA ITEM', item)
 
   // TODO: Can I just delete itemObject.media entirely?
   itemObject.media.forEach((image, index) => {

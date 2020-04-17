@@ -22,7 +22,7 @@ router.post(
     );
 
     req.body.media = bufferArr.map(buffer => ({ buffer }));
-    req.body.owner = req.user._id;
+    req.body.ownerId = req.user._id;
 
     const item = new Item(req.body);
 
@@ -52,7 +52,7 @@ router.post(
     try {
       const item = await Item.findOne({
         _id: req.params.id,
-        owner: req.user._id
+        ownerId: req.user._id
       });
 
       if (!item) {
@@ -120,8 +120,12 @@ router.get("/items/:id", async (req, res) => {
     const item = await Item.findById(req.params.id);
 
     if (!item) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send({ error: `Could not find item with id: ${req.params.id}` });
     }
+
+    await item.populate({ path: "owner", select: "username primaryLocation rating -_id" }).execPopulate();
 
     res.send(item);
   } catch (error) {
@@ -162,7 +166,7 @@ router.patch("/items/:id", auth, async (req, res) => {
   try {
     const item = await Item.findOne({
       _id: req.params.id,
-      owner: req.user._id
+      ownerId: req.user._id
     });
 
     if (!item) {
@@ -182,7 +186,7 @@ router.delete("/items/:itemId/media/:imageId", auth, async (req, res) => {
   const { itemId, imageId } = req.params;
 
   try {
-    const item = await Item.findOne({ _id: itemId, owner: req.user._id });
+    const item = await Item.findOne({ _id: itemId, ownerId: req.user._id });
 
     if (!item) {
       return res.status(404).send();
@@ -204,7 +208,7 @@ router.delete("/items/:id", auth, async (req, res) => {
   try {
     const item = await Item.findOneAndDelete({
       _id: req.params.id,
-      owner: req.user._id
+      ownerId: req.user._id
     });
 
     if (!item) {

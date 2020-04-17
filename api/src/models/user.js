@@ -76,13 +76,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 })
 
 // === virtuals ===
 userSchema.virtual('items', {
   ref: 'Item',
   localField: '_id',
-  foreignField: 'owner'
+  foreignField: 'ownerId'
 })
 
 // === instance methods ===
