@@ -26,7 +26,7 @@
           v-bind:items="profileItems"
           v-bind:reviews="reviews"
         />
-        <h1 v-else>LOADING</h1>
+        <v-progress-circular v-else class="loading" indeterminate></v-progress-circular>
       </section>
     </div>
   </div>
@@ -89,5 +89,15 @@ export default {
   &__divider {
     margin: 0 1rem;
   }
+  &__gallery {
+    position: relative;
+  }
+}
+.loading {
+  margin: 0 auto;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
 }
 </style>

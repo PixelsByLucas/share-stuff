@@ -1,5 +1,8 @@
 <template>
-  <div class="create-item">
+  <div v-if="postingItem">
+    <v-progress-circular class="loading" indeterminate></v-progress-circular>
+  </div>
+  <div v-else class="create-item">
     <div>
       <h1 class="create-item__title">Create Item</h1>
       <v-divider class="create-item__divider" />
@@ -108,9 +111,9 @@ export default {
         v => v.length < 25 || "Name must less than 25 characters"
       ],
       priceRules: [
-        v => !!v || "Price is required",
-        v => v.match(/^[0-9]+$/) || "Price must only contain numbers",
-        v => !!Number(v) || "Price must be a whole number larger than 0"
+        v => v !== "" || "Price is required",
+        v => /^[0-9]+$/.test(v.toString()) || "Price must only contain numbers",
+        v => Number(v) >= 0 || "Price must be a whole number larger than 0"
       ],
       descriptionRules: [
         v => !!v || "Description is required",
@@ -119,7 +122,8 @@ export default {
     };
   },
   computed: mapState({
-    username: state => state.users.me.username
+    username: state => state.users.me.username,
+    postingItem: state => state.items.postingItem
   }),
   methods: {
     handleSubmit() {
@@ -133,7 +137,7 @@ export default {
 
       if (this.formValid) {
         this.$store.dispatch("newItem", this.createForm());
-        this.$router.push(`/profile/${this.username}`);
+        // this.$router.push(`/profile/${this.username}`);
       } else {
         this.$refs.form.validate();
       }
@@ -225,6 +229,13 @@ export default {
       top: 50%;
     }
   }
+}
+.loading {
+  margin: 0 auto;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
 }
 .square {
   position: relative;

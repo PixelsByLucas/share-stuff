@@ -1,11 +1,13 @@
 import { createItem, getItemsByOwner, getAllItemsAPI, getItemAPI } from "../apis/items";
+import router from '../router'
 export default {
   state: {
     userItems: [],
     profileItems: [],
     allItems: [],
     itemDetail: {},
-    fetchingItems: false
+    fetchingItems: false,
+    postingItem: false
   },
   mutations: {
     NEW_USER_ITEM(state, payload) {
@@ -22,19 +24,24 @@ export default {
     },
     FETCHING_ITEMS(state, payload) {
       state.fetchingItems = payload;
+    },
+    POSTING_ITEM(state, payload) {
+      state.postingItem = payload
     }
   },
   actions: {
     async newItem({ rootState, commit }, payload) {
-      commit("FETCHING_ITEMS", true);
+      commit("POSTING_ITEM", true);
       const { token } = rootState.users.me;
 
       const newItem = await createItem(payload, token);
 
       if (newItem) {
-        commit("NEW_USER_ITEM", newItem);
+        router.push(`/profile/${rootState.users.me.username}`);
+      } else {
+        // TODO: Going to want to provide feedback to the user if the POST req doesn't succeed.
       }
-      commit("FETCHING_ITEMS", false);
+      commit("POSTING_ITEM", false);
     },
     async getAllItems({ commit }, payload) {
       commit("FETCHING_ITEMS", true);

@@ -88,6 +88,7 @@ export default {
   padding: 0 3% 0 3%;
   &__logo {
     cursor: pointer;
+    font-family: "Knewave", cursive;
   }
   &__input {
     border-radius: 0;
