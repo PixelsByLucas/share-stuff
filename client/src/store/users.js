@@ -135,9 +135,10 @@ export default {
         commit("FETCHING_USER", false);
       }
     },
-    async uploadAvatar({ state }, payload) {
-      uploadAvatarRequest(payload, state.me.token);
-    },
+    // NOTE: no longer needed as avatar is sent in the create user request
+    // async uploadAvatar({ state }, payload) {
+    //   uploadAvatarRequest(payload, state.me.token);
+    // },
     async verifyUniqueEmail(context, payload) {
       const isUnique = await uniqueEmailRequest(payload);
       return isUnique;

@@ -23,8 +23,20 @@
       </v-row>
       <v-row>
         <v-col cols="6">
+          <!-- == avatar == -->
+          <v-row no-gutters>
+            <AvatarRating
+              :_id="itemDetail.ownerId"
+              :rating="itemDetail.owner.rating"
+              :username="itemDetail.owner.username"
+              size="small"
+              variant="wide"
+            />
+          </v-row>
           <!-- == reviews == -->
-          <ReviewList :reviews="reviews" />
+          <v-row>
+            <ReviewList :reviews="reviews" />
+          </v-row>
         </v-col>
         <v-col cols="6">
           <!-- == map == -->
@@ -43,6 +55,7 @@ import { mapState } from "vuex";
 import Carousel from "../components/Carousel";
 import ReviewList from "../components/ReviewList";
 import LeafletMap from "../components/LeafletMap";
+import AvatarRating from "../components/AvatarRating";
 import { profileDummyData } from "../utils/dummyData";
 
 export default {
@@ -50,7 +63,8 @@ export default {
   components: {
     Carousel,
     ReviewList,
-    LeafletMap
+    LeafletMap,
+    AvatarRating
   },
   data() {
     return {
