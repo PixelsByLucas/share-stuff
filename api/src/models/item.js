@@ -81,7 +81,6 @@ itemSchema.virtual('owner', {
 itemSchema.methods.toJSON = function () {
   const item = this
   const itemObject = item.toObject()
-  console.log('ITEM SCHEMA ITEM', item)
 
   // TODO: Can I just delete itemObject.media entirely?
   itemObject.media.forEach((image, index) => {

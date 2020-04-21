@@ -52,6 +52,7 @@ export default {
   },
   methods: {},
   created() {
+    // TODO: getAllItems should not fire if fetchingUser
     this.$store.dispatch("getAllItems");
   }
 };

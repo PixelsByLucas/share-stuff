@@ -239,8 +239,6 @@ export default {
 }
 .square {
   position: relative;
-  // border: 1px solid hotpink;
-  // cursor: pointer;
 }
 
 .square:nth-of-type(2) {

@@ -43,9 +43,10 @@ export default {
       }
       commit("POSTING_ITEM", false);
     },
-    async getAllItems({ commit }, payload) {
+    async getAllItems({ rootState, commit }, payload) {
+      // TODO: This action should not fire if fetchingUser
       commit("FETCHING_ITEMS", true);
-      const items = await getAllItemsAPI();
+      const items = await getAllItemsAPI(rootState.users.me._id);
       commit("SET_ALL_ITEMS", items);
       commit("FETCHING_ITEMS", false);
     },

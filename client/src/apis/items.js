@@ -31,10 +31,10 @@ export const getItemsByOwner = id => {
     });
 };
 
-export const getAllItemsAPI = () => {
+export const getAllItemsAPI = id => {
   return axios({
     method: "get",
-    url: `${SERVER_URL}/items`
+    url: `${SERVER_URL}/items/all/${id ? id : ''}`
   })
     .then(res => {
       return res.data

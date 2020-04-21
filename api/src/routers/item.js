@@ -100,13 +100,18 @@ router.get("/items/:itemId/media/:imageId", async (req, res) => {
 });
 
 // === Read Items ===
-router.get("/items", async (req, res) => {
+router.get("/items/all/:userId?", async (req, res) => {
+  const { userId } = req.params;
+  console.log('userid', userId, typeof userId)
+
   try {
-    const items = await Item.find({});
+    const items = userId ? await Item.find({ ownerId: { $ne: userId } }) : await Item.find({});
 
     if (!items) {
+      console.log("NO ITEMS")
       return res.status(404).send();
     }
+    // console.log('ITEMS', items)
 
     res.send(items);
   } catch (error) {

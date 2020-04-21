@@ -1,25 +1,16 @@
 <template>
-  <v-card class="register-modal">
-    <v-row dense>
+  <div>
+    <v-row dense no-gutters>
       <v-card-title>{{ modalTitle }}</v-card-title>
-      <v-spacer></v-spacer>
-      <v-btn v-on:click="$emit('close-dialog')" icon>
-        <v-icon color="black" large>mdi-close</v-icon>
-      </v-btn>
     </v-row>
-    <v-row v-if="modalSubtitle" dense>
+    <v-row v-if="modalSubtitle" dense no-gutters>
       <v-card-subtitle>{{ modalSubtitle }}</v-card-subtitle>
     </v-row>
     <v-divider></v-divider>
     <!-- === first form === -->
     <v-card-text class="card-text" v-if="formPage === 0">
-      <p class="firstForm__text">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure sit
-        maiores necessitatibus temporibus quasi officiis, unde et magni vitae
-        numquam sequi.
-      </p>
       <v-form v-model="valid.form0" ref="form0">
-        <v-row>
+        <v-row no-gutters>
           <v-col>
             <v-text-field
               v-model="formValues.email"
@@ -31,7 +22,7 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row no-gutters>
           <v-col>
             <v-text-field
               :type="showPassword ? 'text' : 'password'"
@@ -52,9 +43,9 @@
     <v-card-text class="card-text" v-if="formPage === 1">
       <v-form v-model="valid.form1" ref="form1">
         <v-container>
-          <v-row>
+          <v-row no-gutter>
             <v-col cols="8">
-              <v-row>
+              <v-row no-gutters>
                 <v-col>
                   <v-text-field
                     v-model="formValues.fullName"
@@ -65,7 +56,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row no-gutters>
                 <v-col>
                   <v-text-field
                     v-model="formValues.username"
@@ -79,7 +70,7 @@
               </v-row>
             </v-col>
             <v-col cols="4" class="secondForm__iconCol" align-self="center">
-              <v-row justify="center">
+              <v-row justify="center" no-gutters>
                 <v-btn icon class="secondForm__iconBtn" @click="pickFile">
                   <v-icon size="124px" v-if="!avatar.imageUrl">mdi-account-circle</v-icon>
                   <v-img
@@ -114,12 +105,12 @@
     <!-- === third form === -->
     <v-card-text v-if="formPage === 2" class="card-text">
       <!-- <v-container class="map-box"> -->
-      <v-row>
+      <v-row no-gutters>
         <v-col cols="12">
           <v-text-field v-model="map.addressInput" label="Search by address" outlined></v-text-field>
         </v-col>
       </v-row>
-      <v-row style="height: 15rem;">
+      <v-row style="height: 15rem;" no-gutters>
         <v-col cols="12">
           <LeafletMap
             :coords="this.map.geoCoords"
@@ -162,16 +153,15 @@
     </v-card-text>
 
     <!-- === form actions === -->
-    <v-divider></v-divider>
     <v-card-actions class="card-actions">
-      <v-row>
+      <v-row no-gutters>
         <v-btn v-if="formPage !== 0" v-on:click="handleBack">BACK</v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="formPage === 3" v-on:click="handleSubmit">SUBMIT</v-btn>
         <v-btn v-else v-on:click="handleNext">NEXT</v-btn>
       </v-row>
     </v-card-actions>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -185,10 +175,10 @@ export default {
   components: {
     LeafletMap
   },
+  props: ["closeOnComplete"],
   data() {
     return {
       formValues: {
-        // TODO: We'll want to sanitize these values to make sure they don't contain <, >, &, ', ", etc. characters
         email: "",
         password: "",
         fullName: "",
@@ -232,7 +222,6 @@ export default {
         v => v.length >= 8 || "Password must be more than 8 characters",
         v => v.length <= 100 || "Password cannot be longer than 100 characters"
       ],
-      // TODO: provide more rules here
       fullNameRules: [
         v => !!v || "Full name is required",
         v => v.length <= 100 || "Name cannot be longer than 100 characters"
@@ -327,7 +316,9 @@ export default {
       this.createForm();
       if (this.valid.form3) {
         this.$store.dispatch("registerUser", this.createForm());
-        this.$emit("close-dialog");
+        if (this.closeOnComplete) {
+          this.$emit("close-dialog");
+        }
       }
       this.$refs.form3.validate();
     },
@@ -387,10 +378,6 @@ export default {
 .map-box {
   height: "100%" !important;
   width: "100%" !important;
-}
-.register-modal {
-  padding: 2rem 3rem 2rem 3rem;
-  margin: 0 auto;
 }
 .firstForm {
   &__text {

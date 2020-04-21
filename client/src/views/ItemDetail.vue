@@ -14,7 +14,27 @@
             <v-icon class="karma-icon" color="black" v-text="'$vuetify.icons.karmaDark'"></v-icon>
             <span>{{itemDetail.price}}</span>
             <v-spacer></v-spacer>
-            <v-btn class="nav__register-btn">BORROW</v-btn>
+            <!-- == borrow modal == -->
+            <v-dialog
+              v-if="myUsername !== itemOwnerUsername"
+              :scrollable="true"
+              content-class="borrow-modal"
+              max-width="675px"
+              persistent
+              v-model="borrowDialog"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on">BORROW</v-btn>
+              </template>
+              <LoginRegisterModal
+                v-if="!isLoggedIn"
+                style="height: 100%"
+                v-on:close-dialog="borrowDialog = false"
+              />
+              <BorrowModal v-else style="height: 100%" v-on:close-dialog="borrowDialog = false" />
+            </v-dialog>
+            <!-- NOTE: render edit button if item belongs to user -->
+            <v-btn v-else>EDIT</v-btn>
           </v-row>
         </v-col>
       </v-row>
@@ -52,31 +72,40 @@
 <script>
 import { mapState } from "vuex";
 
-import Carousel from "../components/Carousel";
-import ReviewList from "../components/ReviewList";
-import LeafletMap from "../components/LeafletMap";
 import AvatarRating from "../components/AvatarRating";
+import BorrowModal from "../components/BorrowModal";
+import Carousel from "../components/Carousel";
+import LeafletMap from "../components/LeafletMap";
+import LoginRegisterModal from "../components/LoginRegisterModal";
 import { profileDummyData } from "../utils/dummyData";
+import ReviewList from "../components/ReviewList";
 
 export default {
   name: "ItemDetail",
   components: {
+    AvatarRating,
+    BorrowModal,
     Carousel,
-    ReviewList,
     LeafletMap,
-    AvatarRating
+    LoginRegisterModal,
+    ReviewList
   },
   data() {
     return {
-      ...profileDummyData
+      ...profileDummyData,
+      borrowDialog: false
     };
   },
   computed: {
     ...mapState({
       itemDetail: state => state.items.itemDetail,
-      fetchingItems: state => state.items.fetchingItems
+      fetchingItems: state => state.items.fetchingItems,
+      myUsername: state => state.users.me.username,
+      itemOwnerUsername: state => state.items.itemDetail.owner.username,
+      isLoggedIn: state => state.users.me.isLoggedIn
     })
   },
+  methods: {},
   created() {
     this.$store.dispatch("getItemDetail", this.$route.params.id);
   }
