@@ -1,4 +1,4 @@
-import { createItem, getItemsByOwner, getAllItemsAPI, getItemAPI } from "../apis/items";
+import { createItem, getItemsByOwner, searchItemsAPI, getItemAPI } from "../apis/items";
 import router from '../router'
 export default {
   state: {
@@ -46,7 +46,7 @@ export default {
     async getAllItems({ rootState, commit }, payload) {
       // TODO: This action should not fire if fetchingUser
       commit("FETCHING_ITEMS", true);
-      const items = await getAllItemsAPI(rootState.users.me._id);
+      const items = await searchItemsAPI({ ownerId: rootState.users.me._id });
       commit("SET_ALL_ITEMS", items);
       commit("FETCHING_ITEMS", false);
     },

@@ -31,10 +31,21 @@ export const getItemsByOwner = id => {
     });
 };
 
-export const getAllItemsAPI = id => {
+export const searchItemsAPI = (...params) => {
+  let queryString = params.reduce((result, query, index) => {
+    const queryKey = Object.keys(query)[0];
+
+    if (query[queryKey]) {
+      const symbol = result.includes('?') ? '&' : '?'
+      result += `${symbol}${queryKey}=${query[queryKey]}`
+    }
+
+    return result
+  }, '')
+
   return axios({
     method: "get",
-    url: `${SERVER_URL}/items/all/${id ? id : ''}`
+    url: `${SERVER_URL}/items/search${queryString}`
   })
     .then(res => {
       return res.data

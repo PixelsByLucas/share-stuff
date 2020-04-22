@@ -2,8 +2,7 @@
   <v-app>
     <Nav />
     <v-content>
-      <v-progress-circular v-if="fetchingUser" class="loading" indeterminate></v-progress-circular>
-      <router-view v-else></router-view>
+      <router-view></router-view>
     </v-content>
     <Footer />
   </v-app>

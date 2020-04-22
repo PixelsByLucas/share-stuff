@@ -99,13 +99,19 @@ router.get("/items/:itemId/media/:imageId", async (req, res) => {
   }
 });
 
-// === Read Items ===
-router.get("/items/all/:userId?", async (req, res) => {
-  const { userId } = req.params;
-  console.log('userid', userId, typeof userId)
+// === Search Items ===
+router.get("/items/search", async (req, res) => {
+  const queryObj = {};
+  for (const query in req.query) {
+    if (query === 'ownerId') {
+      queryObj[query] = { $ne: req.query[query] }
+    } else {
+      queryObj[query] = req.query[query]
+    }
+  }
 
   try {
-    const items = userId ? await Item.find({ ownerId: { $ne: userId } }) : await Item.find({});
+    const items = await Item.find(queryObj)
 
     if (!items) {
       console.log("NO ITEMS")
