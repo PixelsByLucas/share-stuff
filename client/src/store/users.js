@@ -60,7 +60,7 @@ export default {
       state.me.token = payload;
     },
     FETCHING_USER(state, payload) {
-      this.fetchingUser = payload;
+      state.fetchingUser = payload;
     },
     FETCHING_LOCATION(state, payload) {
       state.fetchingLocation = payload;

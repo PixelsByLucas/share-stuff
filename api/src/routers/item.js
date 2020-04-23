@@ -102,6 +102,7 @@ router.get("/items/:itemId/media/:imageId", async (req, res) => {
 // === Search Items ===
 router.get("/items/search", async (req, res) => {
   const queryObj = {};
+
   for (const query in req.query) {
     if (query === 'ownerId') {
       queryObj[query] = { $ne: req.query[query] }
@@ -114,10 +115,8 @@ router.get("/items/search", async (req, res) => {
     const items = await Item.find(queryObj)
 
     if (!items) {
-      console.log("NO ITEMS")
       return res.status(404).send();
     }
-    // console.log('ITEMS', items)
 
     res.send(items);
   } catch (error) {

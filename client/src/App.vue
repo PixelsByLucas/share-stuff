@@ -2,7 +2,8 @@
   <v-app>
     <Nav />
     <v-content>
-      <router-view></router-view>
+      <v-progress-circular v-if="fetchingUser" class="loading" indeterminate></v-progress-circular>
+      <router-view v-else></router-view>
     </v-content>
     <Footer />
   </v-app>
@@ -22,6 +23,9 @@ export default {
     Nav,
     Footer
   },
+  computed: mapState({
+    fetchingUser: state => state.users.fetchingUser
+  }),
   created() {
     const token = checkForCached("user_token");
     if (token) {

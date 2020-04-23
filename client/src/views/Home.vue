@@ -30,7 +30,6 @@
   </div>
 </template>
 <script>
-// import { ITEM_CATEGORIES } from "../utils/constants";
 import Item from "../components/Item";
 import { mapState } from "vuex";
 export default {
@@ -52,7 +51,6 @@ export default {
   },
   methods: {},
   created() {
-    // TODO: getAllItems should not fire if fetchingUser
     this.$store.dispatch("getAllItems");
   }
 };
