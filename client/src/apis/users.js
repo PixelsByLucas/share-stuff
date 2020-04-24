@@ -45,25 +45,6 @@ export const uniqueUsernameRequest = username => {
     });
 };
 
-// TODO: upload Avatar will potentially not return any data, remove return res.data
-export const uploadAvatarRequest = (avatar, token) => {
-  return axios({
-    method: "post",
-    url: `${SERVER_URL}/users/me/avatar`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data"
-    },
-    data: avatar
-  })
-    .then(res => {
-      return res.data;
-    })
-    .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
-
 export const getUserFromUsername = username => {
   return axios({
     method: "get",

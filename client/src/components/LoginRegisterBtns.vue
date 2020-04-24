@@ -4,8 +4,9 @@
       <template v-slot:activator="{ on }">
         <v-btn class="nav__login-btn" v-on="on">LOGIN</v-btn>
       </template>
-      <LoginModal v-on:close-dialog="loginDialog = false" />
+      <LoginRegisterModal :initialTab="0" v-on:close-dialog="loginDialog = false" />
     </v-dialog>
+
     <v-dialog
       :scrollable="true"
       content-class="register-modal"
@@ -16,20 +17,22 @@
       <template v-slot:activator="{ on }">
         <v-btn class="nav__register-btn" v-on="on">REGISTER</v-btn>
       </template>
-      <RegisterModal style="height: 100%;" v-on:close-dialog="registerDialog = false" />
+      <LoginRegisterModal
+        :initialTab="1"
+        v-on:close-dialog="registerDialog = false"
+        closeOnComplete
+      />
     </v-dialog>
   </div>
 </template>
 
 <script>
-import RegisterModal from "./RegisterModal";
-import LoginModal from "./LoginModal";
+import LoginRegisterModal from "./LoginRegisterModal";
 
 export default {
   name: "LoginRegisterBtns",
   components: {
-    RegisterModal,
-    LoginModal
+    LoginRegisterModal
   },
   data() {
     return {

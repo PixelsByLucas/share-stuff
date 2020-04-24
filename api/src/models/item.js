@@ -10,12 +10,22 @@ const itemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    validate(value) {
+      if (value > 25) {
+        throw new Error('Name must be less than 25 characters')
+      }
+    }
   },
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    validate(value) {
+      if (value > 500) {
+        throw new Error('Description must be less than 500 characters')
+      }
+    }
   },
   available: {
     type: Boolean,
@@ -27,7 +37,20 @@ const itemSchema = new mongoose.Schema({
     default: 'Misc',
     required: true
   },
-  owner: {
+  price: {
+    type: String,
+    default: 0,
+    required: true,
+    validate(value) {
+      if (typeof Number(value) !== 'number') {
+        throw new Error('Price is not a number')
+      }
+      if (value < 0) {
+        throw new Error('Price must be larger than 0')
+      }
+    }
+  },
+  ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'
@@ -41,7 +64,17 @@ const itemSchema = new mongoose.Schema({
     }
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+})
+
+// === virtuals ===
+itemSchema.virtual('owner', {
+  ref: 'User',
+  localField: 'ownerId',
+  foreignField: '_id',
+  justOne: true
 })
 
 // === instance methods ===

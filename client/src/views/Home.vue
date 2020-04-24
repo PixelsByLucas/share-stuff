@@ -30,7 +30,6 @@
   </div>
 </template>
 <script>
-// import { ITEM_CATEGORIES } from "../utils/constants";
 import Item from "../components/Item";
 import { mapState } from "vuex";
 export default {
@@ -47,10 +46,17 @@ export default {
   computed: {
     ...mapState({
       items: state => state.items.allItems,
-      fetchingItems: state => state.items.fetchingItems
+      fetchingItems: state => state.items.fetchingItems,
+      isLoggedIn: state => state.users.me.isLoggedIn
     })
   },
-  methods: {},
+  watch: {
+    isLoggedIn(isLoggedIn) {
+      if (!isLoggedIn) {
+        this.$store.dispatch("getAllItems");
+      }
+    }
+  },
   created() {
     this.$store.dispatch("getAllItems");
   }

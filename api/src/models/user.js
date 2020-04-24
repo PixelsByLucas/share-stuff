@@ -12,12 +12,17 @@ const userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: true,
+    default: undefined,
     trim: true
   },
   lastName: {
     type: String,
-    required: true,
+    default: undefined,
+    trim: true
+  },
+  lastNameInitial: {
+    type: String,
+    default: undefined,
     trim: true
   },
   age: {
@@ -76,13 +81,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 })
 
 // === virtuals ===
 userSchema.virtual('items', {
   ref: 'Item',
   localField: '_id',
-  foreignField: 'owner'
+  foreignField: 'ownerId'
 })
 
 // === instance methods ===
@@ -93,6 +101,7 @@ userSchema.methods.toJSON = function () {
   delete userObject.password
   delete userObject.tokens
   delete userObject.avatar
+  delete userObject.lastName
 
   return userObject
 }

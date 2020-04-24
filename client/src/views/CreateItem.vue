@@ -1,5 +1,8 @@
 <template>
-  <div class="create-item">
+  <div v-if="postingItem">
+    <v-progress-circular class="loading" indeterminate></v-progress-circular>
+  </div>
+  <div v-else class="create-item">
     <div>
       <h1 class="create-item__title">Create Item</h1>
       <v-divider class="create-item__divider" />
@@ -14,11 +17,12 @@
               label="Item Name"
               :rules="nameRules"
               required
+              counter
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col cols="6">
             <v-select
               outlined
               v-model="formValues.category"
@@ -26,6 +30,16 @@
               label="Item Category"
               required
             ></v-select>
+          </v-col>
+          <v-col col="6">
+            <v-text-field
+              outlined
+              v-model="formValues.price"
+              label="Item Price"
+              :rules="priceRules"
+              required
+              :prepend-inner-icon="'$vuetify.icons.karmaDark'"
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -80,6 +94,7 @@ export default {
       formValues: {
         name: "",
         category: "All",
+        price: 0,
         description: "",
         media: []
       },
@@ -91,12 +106,24 @@ export default {
       imgNum: 0,
       formValid: false,
       imageWarning: false,
-      nameRules: [v => !!v || "Name is required"],
-      descriptionRules: [v => !!v || "Description is required"]
+      nameRules: [
+        v => !!v || "Name is required",
+        v => v.length < 25 || "Name must less than 25 characters"
+      ],
+      priceRules: [
+        v => v !== "" || "Price is required",
+        v => /^[0-9]+$/.test(v.toString()) || "Price must only contain numbers",
+        v => Number(v) >= 0 || "Price must be a whole number larger than 0"
+      ],
+      descriptionRules: [
+        v => !!v || "Description is required",
+        v => v.length < 500 || "Description must be less than 500 character"
+      ]
     };
   },
   computed: mapState({
-    username: state => state.users.me.username
+    username: state => state.users.me.username,
+    postingItem: state => state.items.postingItem
   }),
   methods: {
     handleSubmit() {
@@ -110,19 +137,20 @@ export default {
 
       if (this.formValid) {
         this.$store.dispatch("newItem", this.createForm());
-        this.$router.push(`/profile/${this.username}`);
+        // this.$router.push(`/profile/${this.username}`);
       } else {
         this.$refs.form.validate();
       }
     },
     createForm() {
-      const { media, name, description, category } = this.formValues;
+      const { media, name, description, category, price } = this.formValues;
       const files = media.filter(file => !!file);
       const fd = new FormData();
 
       fd.append("name", name);
       fd.append("description", description);
       fd.append("category", category);
+      fd.append("price", Number(price));
 
       for (let i = 0; i < files.length; i++) {
         fd.append("media", files[i]);
@@ -202,10 +230,15 @@ export default {
     }
   }
 }
+.loading {
+  margin: 0 auto;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
 .square {
   position: relative;
-  // border: 1px solid hotpink;
-  // cursor: pointer;
 }
 
 .square:nth-of-type(2) {

@@ -1,17 +1,27 @@
 <template>
-  <div class="item">
+  <v-sheet
+    class="item"
+    @mousedown="goToItemDetail(item._id)"
+    @mouseover="isMouseOver = true"
+    @mouseleave="isMouseOver = false"
+  >
     <v-card>
       <v-img :src="url"></v-img>
     </v-card>
     <h3>{{ item.name }}</h3>
-    <p>{{ description }}</p>
-  </div>
+    <p class="no-margin">{{ description }}</p>
+  </v-sheet>
 </template>
 <script>
 import { SERVER_URL } from "../apis/users";
 export default {
   name: "Item",
   props: ["item"],
+  data() {
+    return {
+      isMouseOver: false
+    };
+  },
   computed: {
     url() {
       const itemId = this.item._id;
@@ -35,11 +45,19 @@ export default {
         return `${trimmedString}...`;
       }
     }
+  },
+  methods: {
+    goToItemDetail(id) {
+      this.$router.push(`/itemdetail/${id}`);
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
 .item {
   width: 100%;
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>

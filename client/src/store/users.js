@@ -19,7 +19,7 @@ const EMPTY_USER = {
   username: "",
   email: "",
   firstName: "",
-  lastName: "",
+  lastNameInitial: "",
   age: 0,
   primaryLocation: {
     lat: 43.64515353395524,
@@ -60,7 +60,7 @@ export default {
       state.me.token = payload;
     },
     FETCHING_USER(state, payload) {
-      this.fetchingUser = payload;
+      state.fetchingUser = payload;
     },
     FETCHING_LOCATION(state, payload) {
       state.fetchingLocation = payload;
@@ -84,7 +84,8 @@ export default {
       const LoggedOut = await logoutRequest(state.me.token);
       if (LoggedOut) {
         deleteCachedItem("user_token");
-        commit("USER_LOGIN", true);
+        // Why am I setting isLoggedIn to true in Logout?
+        // commit("USER_LOGIN", true);
         commit("USER", EMPTY_USER);
       }
     },
@@ -135,9 +136,10 @@ export default {
         commit("FETCHING_USER", false);
       }
     },
-    async uploadAvatar({ state }, payload) {
-      uploadAvatarRequest(payload, state.me.token);
-    },
+    // NOTE: no longer needed as avatar is sent in the create user request
+    // async uploadAvatar({ state }, payload) {
+    //   uploadAvatarRequest(payload, state.me.token);
+    // },
     async verifyUniqueEmail(context, payload) {
       const isUnique = await uniqueEmailRequest(payload);
       return isUnique;

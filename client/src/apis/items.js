@@ -31,10 +31,34 @@ export const getItemsByOwner = id => {
     });
 };
 
-export const getAllItemsAPI = () => {
+export const searchItemsAPI = (...params) => {
+  let queryString = params.reduce((result, query, index) => {
+    const queryKey = Object.keys(query)[0];
+
+    if (query[queryKey]) {
+      const symbol = result.includes('?') ? '&' : '?'
+      result += `${symbol}${queryKey}=${query[queryKey]}`
+    }
+
+    return result
+  }, '')
+
   return axios({
     method: "get",
-    url: `${SERVER_URL}/items`
+    url: `${SERVER_URL}/items/search${queryString}`
+  })
+    .then(res => {
+      return res.data
+    })
+    .catch(error => {
+      console.log("ERROR", error)
+    })
+}
+
+export const getItemAPI = id => {
+  return axios({
+    method: "get",
+    url: `${SERVER_URL}/items/${id}`
   })
     .then(res => {
       return res.data

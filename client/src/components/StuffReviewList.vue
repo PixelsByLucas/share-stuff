@@ -16,13 +16,7 @@
         </v-col>
       </v-row>
       <v-row v-if="toggle === 1" class="reviews">
-        <v-container fluid>
-          <v-row v-for="review in reviews" :key="review._id">
-            <v-col xs="12" sm="9" md="9">
-              <ReviewItem v-bind:review="review" />
-            </v-col>
-          </v-row>
-        </v-container>
+        <ReviewList :reviews="reviews" />
       </v-row>
     </v-container>
     <div v-if="toggle === 1" class="reviews"></div>
@@ -31,12 +25,12 @@
 <script>
 import { mapState } from "vuex";
 import Item from "../components/Item";
-import ReviewItem from "../components/ReviewItem";
+import ReviewList from "../components/ReviewList";
 export default {
   name: "StuffReviewList",
   components: {
     Item,
-    ReviewItem
+    ReviewList
   },
   data() {
     return {

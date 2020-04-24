@@ -1,24 +1,28 @@
 <template>
-  <v-card class="login-modal">
-    <v-row>
-      <v-spacer></v-spacer>
-      <v-btn v-on:click="$emit('close-dialog')" icon>
-        <v-icon large>mdi-close</v-icon>
-      </v-btn>
+  <div>
+    <v-row dense no-gutters>
+      <v-card-title>Login</v-card-title>
     </v-row>
-    <v-card-title>Login</v-card-title>
-    <div>
+    <v-divider></v-divider>
+    <v-card-text>
       <v-form v-model="valid" ref="loginForm" v-on:submit.prevent="handleSubmit">
-        <v-row>
+        <v-row no-gutters>
           <v-col>
-            <v-text-field v-model="formValues.email" label="email" :rules="emailRules" required></v-text-field>
+            <v-text-field
+              v-model="formValues.email"
+              label="email"
+              outlined
+              :rules="emailRules"
+              required
+            ></v-text-field>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row no-gutters>
           <v-col>
             <v-text-field
               v-model="formValues.password"
               label="password"
+              outlined
               :rules="passwordRules"
               required
               :type="showPassword ? 'text' : 'password'"
@@ -28,13 +32,16 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn type="submit">LOGIN</v-btn>
-        </v-card-actions>
       </v-form>
-    </div>
-  </v-card>
+    </v-card-text>
+    <v-card-actions>
+      <v-row no-gutters>
+        <v-spacer></v-spacer>
+        <v-btn type="submit" v-on:click.prevent="handleSubmit">LOGIN</v-btn>
+      </v-row>
+    </v-card-actions>
+  </div>
+  <!-- </v-card> -->
 </template>
 
 <script>
@@ -43,6 +50,7 @@ import { mapState } from "vuex";
 
 export default {
   name: "LoginModal",
+  props: ["closeOnComplete"],
   data() {
     return {
       formValues: {
@@ -66,7 +74,7 @@ export default {
   }),
   watch: {
     isLoggedIn(loggedIn) {
-      if (loggedIn) {
+      if (loggedIn && closeOnComplete) {
         this.$emit("close-dialog");
       }
     }
@@ -89,8 +97,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.login-modal {
-  padding: 3rem 4rem 3rem 4rem;
-  margin: 0 auto;
-}
 </style>

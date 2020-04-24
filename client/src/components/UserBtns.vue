@@ -11,11 +11,7 @@
       <template v-slot:activator="{ on }">
         <v-btn icon class="nav__icon" v-on="on">
           <v-avatar>
-            <img
-              v-if="_id"
-              :src="`${SERVER_URL}/users/${_id}/avatar`"
-              class="nav__img"
-            />
+            <img v-if="_id" :src="`${SERVER_URL}/users/${_id}/avatar`" class="nav__img" />
             <v-icon v-else>mdi-account-outline</v-icon>
           </v-avatar>
         </v-btn>
@@ -59,7 +55,10 @@ export default {
   methods: {
     clickHandler(e) {
       if (e.target.textContent === "Logout") {
-        this.$router.push("/");
+        if (this.$router.history.current.fullPath !== "/") {
+          this.$router.push("/");
+        }
+
         this.$store.dispatch("logout");
       }
     }
