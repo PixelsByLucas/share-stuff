@@ -84,7 +84,8 @@ export default {
       const LoggedOut = await logoutRequest(state.me.token);
       if (LoggedOut) {
         deleteCachedItem("user_token");
-        commit("USER_LOGIN", true);
+        // Why am I setting isLoggedIn to true in Logout?
+        // commit("USER_LOGIN", true);
         commit("USER", EMPTY_USER);
       }
     },
