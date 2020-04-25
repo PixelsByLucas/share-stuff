@@ -85,7 +85,8 @@ export default {
       if (LoggedOut) {
         deleteCachedItem("user_token");
         // Why am I setting isLoggedIn to true in Logout?
-        // commit("USER_LOGIN", true);
+        // Causes a bug in login/register if I remove, but why?
+        commit("USER_LOGIN", true);
         commit("USER", EMPTY_USER);
       }
     },
