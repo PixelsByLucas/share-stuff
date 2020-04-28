@@ -1,13 +1,25 @@
 <template>
   <v-card class="borrow-modal">
-    <v-row>
-      <v-spacer></v-spacer>
-      <v-btn v-on:click="$emit('close-dialog')" icon>
+    <v-row no-gutters justify="end">
+      <v-btn class="close-button" v-on:click="$emit('close-dialog')" icon>
         <v-icon large>mdi-close</v-icon>
       </v-btn>
     </v-row>
-    <v-card-title>Borrow</v-card-title>
-    <div></div>
+    <v-row dense no-gutters>
+      <v-card-title>Request to Borrow</v-card-title>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row dense no-gutters>
+      <v-card-subtitle>SUBTITLE!</v-card-subtitle>
+    </v-row>
+    <v-card-text>
+      <v-form>
+        <v-row dense no-gutters>
+          <v-date-picker v-model="dates" color="#272727" range></v-date-picker>
+        </v-row>
+      </v-form>
+    </v-card-text>
+    <v-card-actions></v-card-actions>
   </v-card>
 </template>
 
@@ -17,8 +29,11 @@ import { mapState } from "vuex";
 
 export default {
   name: "BorrowModal",
+  props: ["itemDetail"],
   data() {
-    return {};
+    return {
+      dates: [new Date().toISOString().substr(0, 10)]
+    };
   },
   computed: mapState({}),
   watch: {},
@@ -27,7 +42,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .borrow-modal {
-  padding: 3rem 4rem 3rem 4rem;
   margin: 0 auto;
+}
+.close-button {
+  margin: 1rem;
 }
 </style>

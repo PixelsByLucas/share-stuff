@@ -31,7 +31,12 @@
                 style="height: 100%"
                 v-on:close-dialog="borrowDialog = false"
               />
-              <BorrowModal v-else style="height: 100%" v-on:close-dialog="borrowDialog = false" />
+              <BorrowModal
+                v-else
+                :itemDetail="itemDetail"
+                style="height: 100%"
+                v-on:close-dialog="borrowDialog = false"
+              />
             </v-dialog>
             <!-- NOTE: render edit button if item belongs to user -->
             <v-btn v-else>EDIT</v-btn>

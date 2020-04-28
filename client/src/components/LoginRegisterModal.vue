@@ -13,7 +13,7 @@
       <LoginModal
         v-if="tab === 0"
         v-on:close-dialog="closeDialog"
-        :clonseOnComplete="closeOnComplete"
+        :closeOnComplete="closeOnComplete"
       />
       <RegisterModal v-else v-on:close-dialog="closeDialog" :closeOnComplete="closeOnComplete" />
     </div>
@@ -49,7 +49,6 @@ export default {
   margin: 1rem;
 }
 .login-register-modal {
-  // padding: 3rem 4rem 3rem 4rem;
   margin: 0 auto;
 }
 .modal-content {
