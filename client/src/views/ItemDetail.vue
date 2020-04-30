@@ -15,29 +15,26 @@
             <span>{{itemDetail.price}}</span>
             <v-spacer></v-spacer>
             <!-- == borrow modal == -->
-            <v-dialog
-              v-if="myUsername !== itemOwnerUsername"
-              :scrollable="true"
-              content-class="borrow-modal"
-              max-width="675px"
-              persistent
-              v-model="borrowDialog"
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on">BORROW</v-btn>
-              </template>
-              <LoginRegisterModal
+            <div v-if="myUsername !== itemOwnerUsername">
+              <v-dialog
                 v-if="!isLoggedIn"
-                style="height: 100%"
-                v-on:close-dialog="borrowDialog = false"
-              />
-              <BorrowModal
-                v-else
-                :itemDetail="itemDetail"
-                style="height: 100%"
-                v-on:close-dialog="borrowDialog = false"
-              />
-            </v-dialog>
+                :scrollable="true"
+                content-class="borrow-modal"
+                max-width="675px"
+                persistent
+                v-model="borrowDialog"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on">BORROW</v-btn>
+                </template>
+                <LoginRegisterModal
+                  v-if="!isLoggedIn"
+                  style="height: 100%"
+                  v-on:close-dialog="borrowDialog = false"
+                />
+              </v-dialog>
+              <v-btn v-else to="/item-borrow">BORROW</v-btn>
+            </div>
             <!-- NOTE: render edit button if item belongs to user -->
             <v-btn v-else>EDIT</v-btn>
           </v-row>
@@ -78,7 +75,6 @@
 import { mapState } from "vuex";
 
 import AvatarRating from "../components/AvatarRating";
-import BorrowModal from "../components/BorrowModal";
 import Carousel from "../components/Carousel";
 import LeafletMap from "../components/LeafletMap";
 import LoginRegisterModal from "../components/LoginRegisterModal";
@@ -89,7 +85,6 @@ export default {
   name: "ItemDetail",
   components: {
     AvatarRating,
-    BorrowModal,
     Carousel,
     LeafletMap,
     LoginRegisterModal,

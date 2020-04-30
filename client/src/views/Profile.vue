@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <div v-if="fetchingUser || !profileUser.username">
-      <h1>LOADING</h1>
+      <v-progress-circular class="loading" indeterminate></v-progress-circular>
     </div>
     <div v-else>
       <v-container fluid class="profile__header">
