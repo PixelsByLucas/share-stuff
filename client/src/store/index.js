@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate"
 
 import users from "./users";
 import items from "./items";
@@ -15,5 +16,6 @@ export default new Vuex.Store({
     items,
     search,
     users
-  }
+  },
+  plugins: [createPersistedState()]
 });

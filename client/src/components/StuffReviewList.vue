@@ -32,12 +32,12 @@ export default {
     Item,
     ReviewList
   },
+  props: ["items", "reviews"],
   data() {
     return {
       toggle: 0
     };
   },
-  props: ["items", "reviews"],
   computed: mapState({
     isUserMe: state => state.users.profileUser.isUserMe
   })
