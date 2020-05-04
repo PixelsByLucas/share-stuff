@@ -63,7 +63,11 @@
               <v-date-picker v-model="dropOffDate" scrollable>
                 <v-btn text color="primary" @mousedown="closeModal('dropOffDateModal')">Cancel</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @mousedown="$refs.dropOffDateDialog.save(pickUpDate)">OK</v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @mousedown="$refs.dropOffDateDialog.save(dropOffDate)"
+                >OK</v-btn>
               </v-date-picker>
             </v-dialog>
           </v-col>
