@@ -14,7 +14,7 @@
       </v-card-subtitle>
     </v-row>
     <v-card-text>
-      <v-form>
+      <v-form v-model="formValid" ref="form">
         <v-row>
           <!-- pickup date -->
           <v-col cols="12" md="6">
@@ -31,8 +31,10 @@
                   outlined
                   label="Pick Up Date"
                   prepend-icon="mdi-calendar"
+                  required
                   readonly
                   v-on="on"
+                  :rules="startDateRules"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -68,8 +70,10 @@
                   outlined
                   label="Drop Off Date"
                   prepend-icon="mdi-calendar"
+                  required
                   readonly
                   v-on="on"
+                  :rules="endDateRules"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -104,8 +108,10 @@
                   label="Pick Up Time"
                   prepend-icon="mdi-clock-outline"
                   outlined
+                  required
                   readonly
                   v-on="on"
+                  :rules="startTimeRules"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -140,8 +146,10 @@
                   label="Drop Off Time"
                   prepend-icon="mdi-clock-outline"
                   outlined
+                  required
                   readonly
                   v-on="on"
+                  :rules="endTimeRules"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -194,7 +202,7 @@
     <v-card-actions class="card-actions">
       <v-row no-gutters>
         <v-spacer></v-spacer>
-        <v-btn v-on:click="handleSubmit">SUBMIT</v-btn>
+        <v-btn v-on:click="handleSubmit" :disabled="loadingTransactions ? true : false">SUBMIT</v-btn>
       </v-row>
     </v-card-actions>
   </v-card>
@@ -204,6 +212,7 @@ import { mapState } from "vuex";
 import moment from "moment";
 
 export default {
+  // TODO: set min/max times when date is the same
   name: "ItemBorrow",
   data() {
     return {
@@ -214,9 +223,14 @@ export default {
         dropOffTime: "",
         message: ""
       },
+      formValid: false,
       messageRules: [
         v => v.length < 1000 || "Message must be less than 1000 character"
       ],
+      startDateRules: [v => !!v || "Pick up date is required"],
+      endDateRules: [v => !!v || "Drop off date is required"],
+      startTimeRules: [v => !!v || "Pick up time is required"],
+      endTimeRules: [v => !!v || "Drop off time is required"],
       dateToday: new Date().toISOString().substr(0, 10),
       pickUpDateModal: false,
       pickUpTimeModal: false,
@@ -226,13 +240,18 @@ export default {
   },
   computed: {
     ...mapState({
-      itemDetail: state => state.items.itemDetail
+      itemDetail: state => state.items.itemDetail,
+      loadingTransactions: state => state.transactions.loading
     })
   },
 
   watch: {},
   methods: {
     convertTo12hr(time24Format) {
+      if (!time24Format) {
+        return "";
+      }
+
       let hours = Number(time24Format.substr(0, 2));
       let minutes = Number(time24Format.substr(3, 2));
       const amOrPm = hours >= 12 ? "PM" : "AM";
@@ -274,7 +293,11 @@ export default {
       return result;
     },
     handleSubmit() {
-      console.log("Submitting");
+      if (this.formValid) {
+        this.$store.dispatch("sendBorrowRequest", this.formValues);
+      } else {
+        this.$refs.form.validate();
+      }
     },
     closeModal(modalName) {
       this[modalName] = false;
