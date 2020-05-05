@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import store from "../store"
 
 Vue.use(VueRouter);
 
@@ -38,10 +39,20 @@ const routes = [
       )
   },
   {
-    path: "/createitem",
-    name: "createItem",
+    path: "/item-create",
+    name: "itemCreate",
     component: () =>
-      import(/* webpackChunkName: "createItem"*/ "../views/CreateItem.vue")
+      import(/* webpackChunkName: "createItem"*/ "../views/ItemCreate.vue")
+  },
+  {
+    path: "/item-borrow",
+    name: "itemBorrow",
+    component: () => import(/* webpackChunkName: "borrowItem"*/ "../views/ItemBorrow.vue"),
+    beforeEnter: (to, from, next) => {
+      // NOTE: not working as expected.  Refresh will return false.
+      console.log('STORE', store.getters.isLoggedIn)
+      next()
+    }
   },
   {
     path: "/itemdetail/:id",

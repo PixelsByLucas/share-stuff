@@ -87,7 +87,7 @@
 import { ITEM_CATEGORIES } from "../utils/constants";
 import { mapState } from "vuex";
 export default {
-  name: "CreateItem",
+  name: "ItemCreate",
   data() {
     return {
       ITEM_CATEGORIES,

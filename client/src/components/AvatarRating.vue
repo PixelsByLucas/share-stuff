@@ -11,12 +11,7 @@
       <v-icon v-else>mdi-account-outline</v-icon>
     </v-avatar>
     <div class="rating-username-box">
-      <router-link
-        v-if="variant === 'wide'"
-        :to="`/profile/${username}`"
-        tag="a"
-        class="nav__logo"
-      >{{username}}</router-link>
+      <router-link v-if="variant === 'wide'" :to="`/profile/${username}`" tag="a">{{username}}</router-link>
       <Rating v-bind:rating="rating" :size="size" />
     </div>
   </div>
