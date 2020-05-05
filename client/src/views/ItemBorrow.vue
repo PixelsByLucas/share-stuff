@@ -15,18 +15,19 @@
     </v-row>
     <v-card-text>
       <v-form>
-        <v-row dense no-gutters>
-          <v-col cols="12">
+        <v-row>
+          <!-- pickup date -->
+          <v-col cols="12" md="6">
             <v-dialog
               ref="pickUpDialog"
               v-model="pickUpDateModal"
-              :return-value.sync="pickUpDate"
+              :return-value.sync="formValues.pickUpDate"
               persistent
               width="290px"
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="pickUpDate"
+                  v-model="formValues.pickUpDate"
                   outlined
                   label="Pick Up Date"
                   prepend-icon="mdi-calendar"
@@ -34,25 +35,35 @@
                   v-on="on"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="pickUpDate" scrollable>
+              <v-date-picker
+                v-model="formValues.pickUpDate"
+                :min="dateToday"
+                scrollable
+                header-color="#272727"
+                color="#272727"
+              >
                 <v-btn text color="primary" @mousedown="closeModal('pickUpDateModal')">Cancel</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @mousedown="$refs.pickUpDialog.save(pickUpDate)">OK</v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @mousedown="$refs.pickUpDialog.save(formValues.pickUpDate)"
+                >OK</v-btn>
               </v-date-picker>
             </v-dialog>
           </v-col>
-
-          <v-col cols="12">
+          <!-- drop off date -->
+          <v-col cols="12" md="6">
             <v-dialog
               ref="dropOffDateDialog"
               v-model="dropOffDateModal"
-              :return-value.sync="dropOffDate"
+              :return-value.sync="formValues.dropOffDate"
               persistent
               width="290px"
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="dropOffDate"
+                  v-model="formValues.dropOffDate"
                   outlined
                   label="Drop Off Date"
                   prepend-icon="mdi-calendar"
@@ -60,15 +71,93 @@
                   v-on="on"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="dropOffDate" scrollable>
+              <v-date-picker
+                v-model="formValues.dropOffDate"
+                :min="formValues.pickUpDate"
+                scrollable
+                header-color="#272727"
+                color="#272727"
+              >
                 <v-btn text color="primary" @mousedown="closeModal('dropOffDateModal')">Cancel</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                   text
                   color="primary"
-                  @mousedown="$refs.dropOffDateDialog.save(dropOffDate)"
+                  @mousedown="$refs.dropOffDateDialog.save(formValues.dropOffDate)"
                 >OK</v-btn>
               </v-date-picker>
+            </v-dialog>
+          </v-col>
+          <!-- pick up time -->
+          <v-col cols="12" md="6">
+            <v-dialog
+              ref="pickUpTimeDialog"
+              v-model="pickUpTimeModal"
+              :return-value-sync="formValues.pickUpTime"
+              persistent
+              width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :value="convertTo12hr(formValues.pickUpTime)"
+                  label="Pick Up Time"
+                  prepend-icon="mdi-clock-outline"
+                  outlined
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="pickUpTimeModal"
+                v-model="formValues.pickUpTime"
+                full-width
+                header-color="#272727"
+                color="#272727"
+              >
+                <v-btn text color="primary" @click="pickUpTimeModal = false">Cancel</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.pickUpTimeDialog.save(formValues.pickUpTime)"
+                >OK</v-btn>
+              </v-time-picker>
+            </v-dialog>
+          </v-col>
+          <!-- drop off time -->
+          <v-col cols="12" md="6">
+            <v-dialog
+              ref="dropOffTimeDialog"
+              v-model="dropOffTimeModal"
+              :return-value-sync="formValues.dropOffTime"
+              persistent
+              width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :value="convertTo12hr(formValues.dropOffTime)"
+                  label="Drop Off Time"
+                  prepend-icon="mdi-clock-outline"
+                  outlined
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="dropOffTimeModal"
+                v-model="formValues.dropOffTime"
+                full-width
+                header-color="#272727"
+                color="#272727"
+              >
+                <v-btn text color="primary" @click="dropOffTimeModal = false">Cancel</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.dropOffTimeDialog.save(formValues.dropOffTime)"
+                >OK</v-btn>
+              </v-time-picker>
             </v-dialog>
           </v-col>
         </v-row>
@@ -89,41 +178,51 @@ export default {
   name: "ItemBorrow",
   data() {
     return {
+      formValues: {
+        pickUpDate: "",
+        pickUpTime: "",
+        dropOffDate: "",
+        dropOffTime: ""
+      },
       dateToday: new Date().toISOString().substr(0, 10),
-      formPage: 0,
-      subtitles: ["Select a pick up and drop off date."],
-      pickUpDate: new Date().toISOString().substr(0, 10),
-      dropOffDate: new Date().toISOString().substr(0, 10),
-
       pickUpDateModal: false,
-      dropOffDateModal: false
+      pickUpTimeModal: false,
+      dropOffDateModal: false,
+      dropOffTimeModal: false
     };
   },
   computed: {
     ...mapState({
       itemDetail: state => state.items.itemDetail
-    }),
-    datePickerHeader() {
-      const moments = this.dates
-        .map(date => moment(date))
-        .sort((date1, date2) => date2 - date1);
-
-      let numberOfDays =
-        moments[0].diff(moments[moments.length - 1], "days") + 1;
-
-      return `${numberOfDays} ${numberOfDays > 1 ? "days" : "day"}`;
-    }
+    })
   },
 
   watch: {},
   methods: {
+    convertTo12hr(time24Format) {
+      let hours = Number(time24Format.substr(0, 2));
+      let minutes = Number(time24Format.substr(3, 2));
+      const amOrPm = hours >= 12 ? "PM" : "AM";
+
+      if (hours < 1) {
+        hours = 12;
+      }
+
+      if (hours > 12) {
+        hours = hours - 12;
+      }
+
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+
+      return `${hours}:${minutes} ${amOrPm}`;
+    },
     handleSubmit() {
       console.log("Submitting");
     },
     closeModal(modalName) {
-      console.log("modal", this[modalName], modalName);
       this[modalName] = false;
-      console.log("modal", this[modalName], modalName);
     }
   }
 };
