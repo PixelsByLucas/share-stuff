@@ -38,6 +38,7 @@
               <v-date-picker
                 v-model="formValues.pickUpDate"
                 :min="dateToday"
+                :max="formValues.dropOffDate"
                 scrollable
                 header-color="#272727"
                 color="#272727"
@@ -161,10 +162,38 @@
             </v-dialog>
           </v-col>
         </v-row>
+        <v-divider></v-divider>
+        <v-row>
+          <v-col cols="12" sm="6">
+            <h3 class="duration">
+              Requesting to borrow for
+              <span class="bold">{{`${duration()} ${days()}`}}</span>
+            </h3>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <h3 class="total">
+              <span>{{`Total: `}}</span>
+              <v-icon class="karma-icon" color="black" v-text="'$vuetify.icons.karmaDark'"></v-icon>
+              <span class="bold">{{totalCost()}}</span>
+            </h3>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row>
+          <v-col cols="12">
+            <v-textarea
+              outlined
+              :label="`Message to ${itemDetail.owner.username}`"
+              v-model="formValues.message"
+              :rules="messageRules"
+            ></v-textarea>
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
     <v-card-actions class="card-actions">
       <v-row no-gutters>
+        <v-spacer></v-spacer>
         <v-btn v-on:click="handleSubmit">SUBMIT</v-btn>
       </v-row>
     </v-card-actions>
@@ -182,8 +211,12 @@ export default {
         pickUpDate: "",
         pickUpTime: "",
         dropOffDate: "",
-        dropOffTime: ""
+        dropOffTime: "",
+        message: ""
       },
+      messageRules: [
+        v => v.length < 1000 || "Message must be less than 1000 character"
+      ],
       dateToday: new Date().toISOString().substr(0, 10),
       pickUpDateModal: false,
       pickUpTimeModal: false,
@@ -218,6 +251,28 @@ export default {
 
       return `${hours}:${minutes} ${amOrPm}`;
     },
+    totalCost() {
+      return Number(this.itemDetail.price) * this.duration();
+    },
+    duration() {
+      const { pickUpDate, dropOffDate } = this.formValues;
+      let result = 0;
+
+      if (pickUpDate && dropOffDate) {
+        const timeDifference =
+          new Date(dropOffDate).getTime() - new Date(pickUpDate).getTime();
+
+        result = timeDifference / (1000 * 3600 * 24) + 1;
+      }
+      return result;
+    },
+    days() {
+      let result = "days";
+      if (this.duration() === 1) {
+        result = "day";
+      }
+      return result;
+    },
     handleSubmit() {
       console.log("Submitting");
     },
@@ -228,8 +283,18 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.bold {
+  font-weight: 800;
+  color: black;
+}
 .borrow-card {
   max-width: 875px;
   margin: 16px auto;
+}
+.duration {
+  text-align: center;
+}
+.total {
+  text-align: center;
 }
 </style>
