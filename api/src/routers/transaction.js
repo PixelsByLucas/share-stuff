@@ -9,6 +9,7 @@ router.post(
   auth,
   async (req, res) => {
     req.body.borrowerId = req.user._id;
+    req.body.status = 'pending'
 
     const transaction = new Transaction(req.body);
 
