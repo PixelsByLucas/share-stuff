@@ -209,7 +209,6 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import moment from "moment";
 
 export default {
   // TODO: set min/max times when date is the same
