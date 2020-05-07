@@ -90,7 +90,22 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('items', {
   ref: 'Item',
   localField: '_id',
-  foreignField: 'ownerId'
+  foreignField: 'ownerId',
+  justOne: true
+})
+
+userSchema.virtual('borrowTransactions', {
+  ref: 'Transaction',
+  localField: '_id',
+  foreignField: 'borrowerId',
+  justOne: true
+})
+
+userSchema.virtual('lendTransactions', {
+  ref: 'Transaction',
+  localField: '_id',
+  foreignField: 'lenderId',
+  justOne: true
 })
 
 // === instance methods ===

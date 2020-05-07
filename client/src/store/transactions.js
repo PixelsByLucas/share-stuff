@@ -4,18 +4,17 @@ import router from "../router"
 export default {
   state: {
     loading: false,
-    pendingBorrowReqests: [],
-    activeBorrowRequests: []
+    transactions: []
   },
   mutations: {
     SET_LOADING(state, payload) {
       state.loading = payload;
     },
-    SET_PENDING_BORROW_REQUEST(state, payload) {
-      state.pendingBorrowReqests = payload;
+    SET_TRANSACTIONS(state, payload) {
+      state.transactions = payload;
     },
-    SET_ACTIVE_BORROW_REQUESTS(state, payload) {
-      state.activeBorrowRequests = payload
+    NEW_TRANSACTION(state, payload) {
+      state.transactions = [...state.transactions, payload];
     }
   },
   actions: {
@@ -26,6 +25,7 @@ export default {
       const newRequest = await createBorrowRequestAPI(payload, token);
 
       if (newRequest) {
+        commit("NEW_TRANSACTION", newRequest)
         router.go(-1)
         // TODO: Probably want to display feedback of successful POST here.
       } else {

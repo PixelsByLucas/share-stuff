@@ -96,17 +96,6 @@ router.post('/users/logoutAll', auth, async (req, res) => {
   }
 })
 
-// NOTE: no longer needed as avatar is sent in the create user request
-// === Create Avatar ===
-// router.post('/users/me/avatar', auth, uploadSingle.single('avatar'), async (req, res) => {
-//   const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
-//   req.user.avatar = buffer
-//   await req.user.save()
-//   res.send()
-// }, (error, req, res, next) => {
-//   res.status(400).send({ error: error.message })
-// })
-
 // === Read User Avatar ===
 router.get('/users/:id/avatar', async (req, res) => {
 

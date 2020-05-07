@@ -240,7 +240,9 @@ export default {
   computed: {
     ...mapState({
       itemDetail: state => state.items.itemDetail,
-      loadingTransactions: state => state.transactions.loading
+      loadingTransactions: state => state.transactions.loading,
+      itemId: state => state.items.itemDetail._id,
+      lenderId: state => state.items.itemDetail.ownerId
     })
   },
 
@@ -293,7 +295,11 @@ export default {
     },
     handleSubmit() {
       if (this.formValid) {
-        this.$store.dispatch("sendBorrowRequest", this.formValues);
+        this.$store.dispatch("sendBorrowRequest", {
+          lenderId: this.lenderId,
+          itemId: this.itemId,
+          ...this.formValues
+        });
       } else {
         this.$refs.form.validate();
       }
