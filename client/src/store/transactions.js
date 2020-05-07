@@ -22,6 +22,7 @@ export default {
     async sendBorrowRequest({ commit, rootState }, payload) {
       commit("SET_LOADING", true);
       const { token } = rootState.users.me;
+      console.log("STORE TOKEN", token)
 
       const newRequest = await createBorrowRequestAPI(payload, token);
 

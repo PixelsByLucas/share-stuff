@@ -2,6 +2,7 @@ const path = require('path')
 require('./db/mongoose')
 const userRouter = require('./routers/user')
 const itemRouter = require('./routers/item')
+const transactionRouter = require('./routers/transaction')
 const express = require('express')
 const cors = require('cors')
 
@@ -13,6 +14,7 @@ app.use(cors())
 app.use(express.json())
 app.use(userRouter)
 app.use(itemRouter)
+app.use(transactionRouter)
 
 
 app.listen(port, () => {
