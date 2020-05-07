@@ -2,7 +2,6 @@ import axios from "axios";
 import { SERVER_URL } from "./users";
 
 export const createBorrowRequestAPI = (formData, token) => {
-  console.log('API TOKEN:', token)
   return axios({
     method: "post",
     url: `${SERVER_URL}/transactions`,
