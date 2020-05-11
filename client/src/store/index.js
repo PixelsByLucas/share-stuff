@@ -19,5 +19,8 @@ export default new Vuex.Store({
     transactions,
     users
   },
-  plugins: [createPersistedState()]
+  // TODO: Uncomment this and set it up
+  // docs: https://www.npmjs.com/package/vuex-persistedstate
+  // Using it to persist state after refresh but is causing some auth bugs related to user.me.token being stored in local storage 
+  // plugins: [createPersistedState()]
 });
