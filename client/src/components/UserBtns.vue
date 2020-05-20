@@ -5,7 +5,9 @@
       <v-icon>mdi-message-text-outline</v-icon>
     </v-btn>
     <v-btn icon class="nav__icon nav__icon--middle" to="/notifications">
-      <v-icon>mdi-bell-outline</v-icon>
+      <v-badge :content="unseenNotifications.length" :value="unseenNotifications.length">
+        <v-icon>mdi-bell-outline</v-icon>
+      </v-badge>
     </v-btn>
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
@@ -50,7 +52,11 @@ export default {
     };
   },
   computed: mapState({
-    _id: state => state.users.me._id
+    _id: state => state.users.me._id,
+    unseenNotifications: state =>
+      state.users.me.notifications.filter(
+        ({ notification }) => notification.status === "unseen"
+      )
   }),
   methods: {
     clickHandler(e) {

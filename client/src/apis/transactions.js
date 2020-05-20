@@ -10,6 +10,6 @@ export const createBorrowRequestAPI = (formData, token) => {
       Authorization: `Bearer ${token}`
     }
   })
-    .then(res => res.status(200).end())
-    .catch(error => console.log('ERROR createBorrowRequestAPI: ', error))
-}
+    .then(res => res)
+    .catch(error => console.log("ERROR createBorrowRequestAPI: ", error));
+};

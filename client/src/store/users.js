@@ -103,6 +103,7 @@ export default {
     async loginWithEmail({ commit }, payload) {
       commit("FETCHING_USER", true);
       const { user, token } = await loginRequest(payload);
+      console.log('USER/TOKEN', user, token)
       if (user && token) {
         commit("USER", user);
         commit("USER_LOGIN", true);

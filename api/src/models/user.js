@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+mongoose.set('debug', true);
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -80,7 +81,19 @@ const userSchema = new mongoose.Schema({
   bio: {
     type: String,
     default: ""
-  }
+  },
+  notifications: [{
+    notification: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      refPath: "notifications.notificationType"
+    },
+    notificationType: {
+      type: String,
+      required: true,
+      enum: ["BorrowRequest"]
+    }
+  }]
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
@@ -90,22 +103,7 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('items', {
   ref: 'Item',
   localField: '_id',
-  foreignField: 'ownerId',
-  justOne: true
-})
-
-userSchema.virtual('borrowTransactions', {
-  ref: 'Transaction',
-  localField: '_id',
-  foreignField: 'borrowerId',
-  justOne: true
-})
-
-userSchema.virtual('lendTransactions', {
-  ref: 'Transaction',
-  localField: '_id',
-  foreignField: 'lenderId',
-  justOne: true
+  foreignField: 'ownerId'
 })
 
 // === instance methods ===

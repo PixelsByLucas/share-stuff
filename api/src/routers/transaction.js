@@ -1,7 +1,9 @@
 const express = require("express");
 const router = new express.Router();
 const Transaction = require("../models/transaction");
-const Notifications = require("../models/notifications")
+const BorrowRequest = require("../models/notifications/borrowRequest")
+const User = require("../models/user")
+// const Notifications = require("../models/notifications/notifications")
 const auth = require("../middleware/auth");
 
 // === Create Borrow Request ===
@@ -13,24 +15,38 @@ router.post(
     req.body.status = 'pending'
 
     try {
-      const transaction = new Transaction(req.body);
-      await transaction.save();
 
-      // == get lender notifications and push new transaction id ==
-      let notifications = await Notifications.findOne({ userId: req.body.lenderId });
+      console.log('HIT')
+      // == create new transaction ==
+      const transactionRequest = new Transaction(req.body);
+      console.log('TRANSACTION REQ', transactionRequest)
+      await transactionRequest.save();
 
-      if (notifications) {
-        notifications.unseenIds.push(transaction._id)
-      } else {
-        notifications = new Notifications({ userId: req.body.lenderId })
-        notifications.unseenIds.push(transaction._id)
+      // == create new notification ==
+      const { itemId, pickUpDate, pickUpTime, dropOffDate, dropOffTime, message } = req.body
+      const borrowRequestData = {
+        borrowerUsername: req.user.username,
+        transactionId: transactionRequest._id,
+        itemId,
+        pickUpDate,
+        pickUpTime,
+        dropOffDate,
+        dropOffTime,
+        message
       }
 
-      await notifications.save()
+      const borrowRequest = new BorrowRequest(borrowRequestData);
+      await borrowRequest.save();
 
-      res.status(201).send(transaction);
+      // == associate notification with lender ==
+      const lender = await User.findById(req.body.lenderId)
+      lender.notifications.push({ notification: borrowRequest._id, notificationType: "BorrowRequest" })
+      console.log('LENDER', lender.notifications)
+      await lender.save()
+
+      res.status(201).send();
     } catch (error) {
-      res.status(400).send(error);
+      res.status(500).json({ error: error.message });
     }
   }
 )

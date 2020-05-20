@@ -56,18 +56,27 @@ router.post('/users/username', async (req, res) => {
 // === Login User ===
 router.post('/users/login', async (req, res) => {
   try {
-    const user = await User.findByCredentials(req.body.email, req.body.password)
+    const prePopulatedUser = await User.findByCredentials(req.body.email, req.body.password)
+    const user = await prePopulatedUser.populate("notifications.notification").execPopulate();
+    console.log('POPULATED USER', user)
     const token = await user.generateAuthToken()
 
     res.send({ user, token })
-  } catch (err) {
-    res.status(400).send(err)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
   }
 })
 
 // === Get User From Token ===
 router.post('/users/userFromToken', auth, async (req, res) => {
-  res.send(req.user)
+  try {
+    // TODO: populate is not working here
+    const user = await req.user.populate("notifications.notification")
+
+    res.send(user)
+  } catch (error) {
+    res.status(500).send()
+  }
 })
 
 // === Logout User ===

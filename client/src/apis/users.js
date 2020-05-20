@@ -81,6 +81,7 @@ export const loginRequest = formValues => {
     data: { email: formValues.email, password: formValues.password }
   })
     .then(res => {
+      console.log('RES', res)
       return res.data;
     })
     .catch(error => {
