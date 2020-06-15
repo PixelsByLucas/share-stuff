@@ -5,7 +5,9 @@
       <v-icon>mdi-message-text-outline</v-icon>
     </v-btn>
     <v-btn icon class="nav__icon nav__icon--middle" to="/notifications">
-      <v-icon>mdi-bell-outline</v-icon>
+      <v-badge :content="unseenNotifications.length" :value="shouldDisplayBadge">
+        <v-icon>mdi-bell-outline</v-icon>
+      </v-badge>
     </v-btn>
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { SERVER_URL } from "../apis/users";
 export default {
   name: "UserBtns",
@@ -49,9 +51,24 @@ export default {
       SERVER_URL
     };
   },
-  computed: mapState({
-    _id: state => state.users.me._id
-  }),
+  computed: {
+    shouldDisplayBadge() {
+      let result = false;
+
+      if (this.unseenNotifications.length) {
+        result = true;
+      }
+
+      return result;
+    },
+
+    ...mapState({
+      _id: state => state.users.me._id
+    }),
+    ...mapGetters({
+      unseenNotifications: "unseenNotifications"
+    })
+  },
   methods: {
     clickHandler(e) {
       if (e.target.textContent === "Logout") {
