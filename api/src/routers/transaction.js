@@ -60,8 +60,6 @@ router.post(
   }
 )
 
-// /transaction/status/
-
 router.put("/transaction/status/:id", auth, verifyNotification, async (req, res) => {
   try {
     const { transaction } = req.notification;
