@@ -6,10 +6,12 @@ import {
   loginRequest,
   getUserFromToken,
   logoutRequest,
-  uploadAvatarRequest,
   getUserFromUsername
-  // updateUser
 } from "../apis/users";
+import {
+  editNotificationStatusAPI,
+} from "../apis/notifications"
+import { editTransactionStatusAPI } from '../apis/transactions'
 import { geocode } from "../apis/geocoding";
 
 const EMPTY_USER = {
@@ -49,9 +51,9 @@ export default {
     fetchingLocation: false
   },
   mutations: {
-    // TODO: potentially replace Object.assign with vue.set()
     USER(state, payload) {
-      state = Object.assign(state.me, payload);
+      // changed from state = Object.assign(state.me, payload); <- this was not reactive
+      state.me = Object.assign({}, state.me, payload);
     },
     USER_LOGIN(state, payload) {
       state.me.isLoggedIn = payload;
@@ -103,7 +105,6 @@ export default {
     async loginWithEmail({ commit }, payload) {
       commit("FETCHING_USER", true);
       const { user, token } = await loginRequest(payload);
-      console.log('USER/TOKEN', user, token)
       if (user && token) {
         commit("USER", user);
         commit("USER_LOGIN", true);
@@ -138,10 +139,6 @@ export default {
         commit("FETCHING_USER", false);
       }
     },
-    // NOTE: no longer needed as avatar is sent in the create user request
-    // async uploadAvatar({ state }, payload) {
-    //   uploadAvatarRequest(payload, state.me.token);
-    // },
     async verifyUniqueEmail(context, payload) {
       const isUnique = await uniqueEmailRequest(payload);
       return isUnique;
@@ -149,6 +146,20 @@ export default {
     async verifyUniqueUserName(context, payload) {
       const isUnique = await uniqueUsernameRequest(payload);
       return isUnique;
+    },
+    // === User Notifications ===
+    async setNotificationSeen({ state, commit }, payload) {
+      const user = await editNotificationStatusAPI(state.me.token, payload)
+      commit("USER", user);
+    },
+    // async declineBorrowRequest({ state, commit }, payload) {
+    //   const user = await declineBorrowRequestAPI(state.me.token, payload)
+    //   commit("USER", user)
+    // },
+    // === User Transactions ===
+    async acceptDeclineTransaction({ state, commit }, payload) {
+      const user = await editTransactionStatusAPI(state.me.token, payload.id, payload.status)
+      commit("USER", user)
     }
   },
   getters: {
@@ -157,6 +168,11 @@ export default {
     },
     token(state) {
       return state.me.token;
+    },
+    unseenNotifications(state) {
+      return state.me.notifications.filter(
+        ({ notification }) => notification.status === "unseen"
+      )
     }
   }
-};
+}

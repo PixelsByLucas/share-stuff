@@ -1,4 +1,5 @@
 const path = require('path')
+const unicodeLogo = require('./utils/unicodeLogo')
 require('./db/mongoose')
 const userRouter = require('./routers/user')
 const itemRouter = require('./routers/item')
@@ -20,5 +21,6 @@ app.use(transactionRouter)
 
 
 app.listen(port, () => {
+  console.log(unicodeLogo)
   console.log('server listening on port: ', port)
 })

@@ -75,12 +75,22 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.getProfileData(to.params);
+    if (
+      this.$store.state.users.profileUser.username !==
+      this.$route.params.username
+    ) {
+      this.getProfileData(this.$route.params);
+    }
 
     next();
   },
   created() {
-    this.getProfileData(this.$route.params);
+    if (
+      this.$store.state.users.profileUser.username !==
+      this.$route.params.username
+    ) {
+      this.getProfileData(this.$route.params);
+    }
   }
 };
 </script>

@@ -209,6 +209,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import { combineDateAndTimeToUTC } from "../utils/dateFormat";
 
 export default {
   // TODO: set min/max times when date is the same
@@ -298,7 +299,15 @@ export default {
         this.$store.dispatch("sendBorrowRequest", {
           lenderId: this.lenderId,
           itemId: this.itemId,
-          ...this.formValues
+          message: this.formValues.message,
+          pickUpTime: combineDateAndTimeToUTC(
+            this.formValues.pickUpDate,
+            this.formValues.pickUpTime
+          ).toISOString(),
+          dropOffTime: combineDateAndTimeToUTC(
+            this.formValues.dropOffDate,
+            this.formValues.dropOffTime
+          ).toISOString()
         });
       } else {
         this.$refs.form.validate();

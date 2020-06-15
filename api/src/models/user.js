@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-mongoose.set('debug', true);
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -91,7 +90,7 @@ const userSchema = new mongoose.Schema({
     notificationType: {
       type: String,
       required: true,
-      enum: ["BorrowRequest"]
+      enum: ["LendingRequest", "BorrowRequest"]
     }
   }]
 }, {

@@ -4,7 +4,6 @@ import createPersistedState from "vuex-persistedstate"
 
 import alerts from "./alerts";
 import items from "./items";
-import notifications from "./notifications"
 import search from "./search";
 import transactions from "./transactions"
 import users from "./users";
@@ -16,7 +15,6 @@ export default new Vuex.Store({
   modules: {
     alerts,
     items,
-    notifications,
     search,
     transactions,
     users

@@ -5,7 +5,7 @@
         <div class="card-header-text">
           <div>
             <v-card-title class="title">
-              <span>{{`Borrow Request - `}}</span>
+              <span>{{`Lending Request - `}}</span>
               <span :class="statusClass">{{transactionStatus}}</span>
             </v-card-title>
             <p class="no-margin">{{notificationDate}}</p>
@@ -14,9 +14,9 @@
             <span>{{` from: `}}</span>
             <router-link
               class="subtitle"
-              :to="`/profile/${notification.lenderUsername}`"
+              :to="`/profile/${notification.borrowerUsername}`"
               tag="a"
-            >{{notification.lenderUsername}}</router-link>
+            >{{notification.borrowerUsername}}</router-link>
 
             <p class="no-margin">
               <span>{{`Requesting to borrow `}}</span>
@@ -69,11 +69,11 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions class="actions">
-              <!-- <div v-if="notification.transaction.status !== 'pending'">
+              <div v-if="notification.transaction.status === 'pending'">
                 <v-btn @click="acceptDeclineRequest('active')">ACCEPT</v-btn>
                 <v-btn class="decline-button" @click="acceptDeclineRequest('declined')">DECLINE</v-btn>
-              </div>-->
-              <v-btn icon large tile>
+              </div>
+              <v-btn v-else icon large tile>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-card-actions>
@@ -90,6 +90,12 @@ export default {
   name: "BorrowRequest",
   props: ["notification", "selectedNotification"],
   methods: {
+    acceptDeclineRequest(status) {
+      this.$store.dispatch("acceptDeclineTransaction", {
+        id: this.notification._id,
+        status
+      });
+    },
     selectNotification() {
       this.$emit("select-notification", this.notification._id);
 

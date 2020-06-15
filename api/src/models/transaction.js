@@ -18,17 +18,9 @@ const transactionSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'completed', 'rejected', 'active']
-  },
-  pickUpDate: {
-    type: String,
-    required: true,
+    enum: ['pending', 'completed', 'declined', 'active']
   },
   pickUpTime: {
-    type: String,
-    required: true
-  },
-  dropOffDate: {
     type: String,
     required: true
   },
