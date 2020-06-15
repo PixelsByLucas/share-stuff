@@ -80,7 +80,19 @@ const userSchema = new mongoose.Schema({
   bio: {
     type: String,
     default: ""
-  }
+  },
+  notifications: [{
+    notification: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      refPath: "notifications.notificationType"
+    },
+    notificationType: {
+      type: String,
+      required: true,
+      enum: ["LendingRequest", "BorrowRequest"]
+    }
+  }]
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }

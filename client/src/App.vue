@@ -24,8 +24,16 @@ export default {
     Footer
   },
   computed: mapState({
-    fetchingUser: state => state.users.fetchingUser
+    fetchingUser: state => state.users.fetchingUser,
+    isLoggedIn: state => state.users.me.isLoggedIn
   }),
+  watch: {
+    // isLoggedIn(isLoggedIn) {
+    //   if (isLoggedIn) {
+    //     this.$store.dispatch("getAllNotifications");
+    //   }
+    // }
+  },
   created() {
     const token = checkForCached("user_token");
     if (token) {

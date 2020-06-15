@@ -57,17 +57,30 @@ router.post('/users/username', async (req, res) => {
 router.post('/users/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
+    await user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
+    // TODO: Figure out how to attach creation timestamp to notification
+
+    // user.notifications.map(({notification, notificationType}) => (
+    //   {notification:{...notification, created_at: _id.getTimestamp()}, }
+    //   ))
+
     const token = await user.generateAuthToken()
 
     res.send({ user, token })
-  } catch (err) {
-    res.status(400).send(err)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
   }
 })
 
 // === Get User From Token ===
 router.post('/users/userFromToken', auth, async (req, res) => {
-  res.send(req.user)
+  try {
+    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
+
+    res.send(user)
+  } catch (error) {
+    res.status(500).send()
+  }
 })
 
 // === Logout User ===

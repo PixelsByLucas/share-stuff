@@ -47,12 +47,7 @@ const routes = [
   {
     path: "/item-borrow",
     name: "itemBorrow",
-    component: () => import(/* webpackChunkName: "borrowItem"*/ "../views/ItemBorrow.vue"),
-    beforeEnter: (to, from, next) => {
-      // NOTE: not working as expected.  Refresh will return false.
-      console.log('STORE', store.getters.isLoggedIn)
-      next()
-    }
+    component: () => import(/* webpackChunkName: "borrowItem"*/ "../views/ItemBorrow.vue")
   },
   {
     path: "/itemdetail/:id",
