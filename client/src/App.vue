@@ -2,8 +2,9 @@
   <v-app>
     <Nav />
     <v-content>
-      <v-progress-circular v-if="fetchingUser" class="loading" indeterminate></v-progress-circular>
-      <router-view v-else></router-view>
+      <!-- NOTE: commented out as it was causing user profile to reload / fire network requests continuously -->
+      <!-- <v-progress-circular v-if="fetchingUser" class="loading" indeterminate></v-progress-circular> -->
+      <router-view></router-view>
     </v-content>
     <Footer />
   </v-app>
@@ -27,13 +28,6 @@ export default {
     fetchingUser: state => state.users.fetchingUser,
     isLoggedIn: state => state.users.me.isLoggedIn
   }),
-  watch: {
-    // isLoggedIn(isLoggedIn) {
-    //   if (isLoggedIn) {
-    //     this.$store.dispatch("getAllNotifications");
-    //   }
-    // }
-  },
   created() {
     const token = checkForCached("user_token");
     if (token) {
