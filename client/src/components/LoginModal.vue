@@ -74,7 +74,7 @@ export default {
   }),
   watch: {
     isLoggedIn(loggedIn) {
-      if (loggedIn && closeOnComplete) {
+      if (loggedIn && this.closeOnComplete) {
         this.$emit("close-dialog");
       }
     }

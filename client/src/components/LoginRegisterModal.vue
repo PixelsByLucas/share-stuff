@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import LoginModal from "../components/LoginModal";
 import RegisterModal from "../components/RegisterModal";
 
