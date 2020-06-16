@@ -103,7 +103,7 @@ userSchema.virtual('items', {
   ref: 'Item',
   localField: '_id',
   foreignField: 'ownerId',
-  justOne: true
+  justOne: false
 })
 
 userSchema.virtual('borrowTransactions', {

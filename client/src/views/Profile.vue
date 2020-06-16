@@ -74,23 +74,21 @@ export default {
       this.getProfileData(this.$route.params);
     }
   },
-  beforeRouteUpdate(to, from, next) {
-    if (
-      this.$store.state.users.profileUser.username !==
-      this.$route.params.username
-    ) {
-      this.getProfileData(this.$route.params);
-    }
+  // NOTE: beforeRouteUpdate() didn't seem to be doing anything so turned it off.
 
-    next();
-  },
+  // beforeRouteUpdate(to, from, next) {
+  //   // if (
+  //   //   this.$store.state.users.profileUser.username !==
+  //   //   this.$route.params.username
+  //   // ) {
+  //   console.log("HGITTAWWDA");
+  //   this.getProfileData(to.params);
+  //   // }
+
+  //   next();
+  // },
   created() {
-    if (
-      this.$store.state.users.profileUser.username !==
-      this.$route.params.username
-    ) {
-      this.getProfileData(this.$route.params);
-    }
+    this.getProfileData(this.$route.params);
   }
 };
 </script>
