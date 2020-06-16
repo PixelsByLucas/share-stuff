@@ -24,31 +24,30 @@ const days = [
 ]
 
 const convertTimeTo12Format = (hourIn24, minutes) => {
-  debugger
-  let hours = Number(hourIn24);
-  const amOrPm = hours >= 12 ? "PM" : "AM";
+  let hours = Number(hourIn24)
+  const amOrPm = hours >= 12 ? "PM" : "AM"
 
   if (hours < 1) {
-    hours = 12;
+    hours = 12
   }
 
   if (hours > 12) {
-    hours = hours - 12;
+    hours = hours - 12
   }
 
   if (Number(minutes) < 10) {
-    minutes = `0${minutes}`;
+    minutes = `0${minutes}`
   }
 
   return `${hours}:${minutes}${amOrPm}`
 }
 
 export const dateFormat = (date) => {
-  date = new Date(date);
-  const year = date.getFullYear();
-  const month = months[date.getMonth()];
-  const dayOfMonth = date.getDate();
-  const dayOfWeek = days[date.getDay()];
+  date = new Date(date)
+  // const year = date.getFullYear()
+  const month = months[date.getMonth()]
+  const dayOfMonth = date.getDate()
+  const dayOfWeek = days[date.getDay()]
   const time = convertTimeTo12Format(date.getHours(), date.getMinutes())
 
   return `${dayOfWeek} ${month} ${dayOfMonth} - ${time}`
@@ -64,20 +63,20 @@ export const combineDateAndTimeToUTC = (date, time) => {
 }
 
 export const getDurationInDays = (pickUpDate, dropOffDate) => {
-  pickUpDate = new Date(pickUpDate);
-  pickUpDate.setHours(0);
-  pickUpDate.setMinutes(0);
+  pickUpDate = new Date(pickUpDate)
+  pickUpDate.setHours(0)
+  pickUpDate.setMinutes(0)
 
-  dropOffDate = new Date(dropOffDate);
-  dropOffDate.setHours(0);
-  dropOffDate.setMinutes(0);
+  dropOffDate = new Date(dropOffDate)
+  dropOffDate.setHours(0)
+  dropOffDate.setMinutes(0)
 
-  let result = 0;
+  let result = 0
 
-  const timeDifference = dropOffDate - pickUpDate;
+  const timeDifference = dropOffDate - pickUpDate
 
-  result = timeDifference / (1000 * 3600 * 24) + 1;
+  result = timeDifference / (1000 * 3600 * 24) + 1
 
-  return result;
+  return result
 
 }

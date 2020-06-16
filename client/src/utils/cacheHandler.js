@@ -1,49 +1,49 @@
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"
 
 const localStorageIsAvailable = () => {
   if (localStorage) {
     try {
-      localStorage.setItem("_localstoragetest", "localstoragetestdata");
+      localStorage.setItem("_localstoragetest", "localstoragetestdata")
     } catch (err) {
-      return false;
+      return false
     }
-    localStorage.removeItem("_localstoragetest");
-    return true;
+    localStorage.removeItem("_localstoragetest")
+    return true
   }
-  return false;
-};
+  return false
+}
 
 export const cacheItem = (name, data) => {
   if (typeof data !== "string") {
-    data = JSON.stringify(data);
+    data = JSON.stringify(data)
   }
 
   if (localStorageIsAvailable()) {
-    localStorage.setItem(name, data);
+    localStorage.setItem(name, data)
   } else {
-    Cookies.set(name, data);
+    Cookies.set(name, data)
   }
-};
+}
 
 export const deleteCachedItem = name => {
   if (localStorageIsAvailable()) {
-    localStorage.removeItem(name);
+    localStorage.removeItem(name)
   } else {
-    Cookies.remove(name);
+    Cookies.remove(name)
   }
-};
+}
 
 export const checkForCached = name => {
-  let item = null;
+  let item = null
   if (localStorageIsAvailable()) {
-    item = localStorage.getItem(name);
+    item = localStorage.getItem(name)
   } else {
-    item = Cookies.get(name);
+    item = Cookies.get(name)
   }
 
   try {
-    return JSON.parse(item);
+    return JSON.parse(item)
   } catch (err) {
-    return item;
+    return item
   }
-};
+}

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { SERVER_URL } from "./users";
+import axios from "axios"
+import { SERVER_URL } from "./users"
 
 export const createBorrowRequestAPI = (formData, token) => {
   return axios({
@@ -11,8 +11,8 @@ export const createBorrowRequestAPI = (formData, token) => {
     }
   })
     .then(res => res)
-    .catch(error => console.log("ERROR createBorrowRequestAPI: ", error));
-};
+    .catch(error => console.log("ERROR createBorrowRequestAPI: ", error))
+}
 
 export const editTransactionStatusAPI = (token, id, status) => {
   return axios({
