@@ -1,4 +1,4 @@
-import { cacheItem, deleteCachedItem } from "../utils/cacheHandler";
+import { cacheItem, deleteCachedItem } from "../utils/cacheHandler"
 import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
@@ -7,12 +7,12 @@ import {
   getUserFromToken,
   logoutRequest,
   getUserFromUsername
-} from "../apis/users";
+} from "../apis/users"
 import {
   editNotificationStatusAPI,
 } from "../apis/notifications"
-import { editTransactionStatusAPI } from '../apis/transactions'
-import { geocode } from "../apis/geocoding";
+import { editTransactionStatusAPI } from "../apis/transactions"
+import { geocode } from "../apis/geocoding"
 
 const EMPTY_USER = {
   _id: null,
@@ -36,7 +36,7 @@ const EMPTY_USER = {
     up: 0,
     down: 0
   }
-};
+}
 
 export default {
   state: {
@@ -53,104 +53,104 @@ export default {
   mutations: {
     USER(state, payload) {
       // changed from state = Object.assign(state.me, payload); <- this was not reactive
-      state.me = Object.assign({}, state.me, payload);
+      state.me = Object.assign({}, state.me, payload)
     },
     USER_LOGIN(state, payload) {
-      state.me.isLoggedIn = payload;
+      state.me.isLoggedIn = payload
     },
     USER_TOKEN(state, payload) {
-      state.me.token = payload;
+      state.me.token = payload
     },
     FETCHING_USER(state, payload) {
-      state.fetchingUser = payload;
+      state.fetchingUser = payload
     },
     FETCHING_LOCATION(state, payload) {
-      state.fetchingLocation = payload;
+      state.fetchingLocation = payload
     },
     SET_PROFILE_USER(state, payload) {
-      state.profileUser = { ...state.profileUser, ...payload };
+      state.profileUser = { ...state.profileUser, ...payload }
     }
   },
   actions: {
     async getLatLng({ commit }, payload) {
-      commit("FETCHING_LOCATION", true);
+      commit("FETCHING_LOCATION", true)
       return geocode(payload).then(candidates => {
         if (candidates.length) {
-          const { x, y } = candidates[0].location;
-          return { lat: y, lng: x };
+          const { x, y } = candidates[0].location
+          return { lat: y, lng: x }
         }
-        commit("FETCHING_LOCATION", false);
-      });
+        commit("FETCHING_LOCATION", false)
+      })
     },
     async logout({ state, commit }) {
-      const LoggedOut = await logoutRequest(state.me.token);
+      const LoggedOut = await logoutRequest(state.me.token)
       if (LoggedOut) {
-        deleteCachedItem("user_token");
+        deleteCachedItem("user_token")
         // Why am I setting isLoggedIn to true in Logout?
         // Causes a bug in login/register if I remove, but why?
-        commit("USER_LOGIN", true);
-        commit("USER", EMPTY_USER);
+        commit("USER_LOGIN", true)
+        commit("USER", EMPTY_USER)
       }
     },
     async loginFromToken({ commit }, payload) {
-      commit("FETCHING_USER", true);
-      const user = await getUserFromToken(payload);
+      commit("FETCHING_USER", true)
+      const user = await getUserFromToken(payload)
       if (user) {
-        commit("USER_LOGIN", true);
-        commit("USER_TOKEN", payload);
-        commit("USER", user);
+        commit("USER_LOGIN", true)
+        commit("USER_TOKEN", payload)
+        commit("USER", user)
       }
-      commit("FETCHING_USER", false);
+      commit("FETCHING_USER", false)
     },
     async loginWithEmail({ commit }, payload) {
-      commit("FETCHING_USER", true);
-      const { user, token } = await loginRequest(payload);
+      commit("FETCHING_USER", true)
+      const { user, token } = await loginRequest(payload)
       if (user && token) {
-        commit("USER", user);
-        commit("USER_LOGIN", true);
-        commit("USER_TOKEN", token);
-        cacheItem("user_token", token);
+        commit("USER", user)
+        commit("USER_LOGIN", true)
+        commit("USER_TOKEN", token)
+        cacheItem("user_token", token)
       }
-      commit("FETCHING_USER", false);
+      commit("FETCHING_USER", false)
     },
     async registerUser({ commit }, payload) {
-      commit("FETCHING_USER", true);
-      const { token, user } = await registerRequest(payload);
+      commit("FETCHING_USER", true)
+      const { token, user } = await registerRequest(payload)
       if (token) {
-        commit("USER_TOKEN", token);
-        cacheItem("user_token", token);
+        commit("USER_TOKEN", token)
+        cacheItem("user_token", token)
       }
       if (user) {
-        commit("USER", user);
-        commit("USER_LOGIN", true);
+        commit("USER", user)
+        commit("USER_LOGIN", true)
       }
-      commit("FETCHING_USER", false);
+      commit("FETCHING_USER", false)
     },
     async getUserProfileData(
       { commit, state },
       { username: usernameFromParam }
     ) {
       if (state.me.username === usernameFromParam) {
-        commit("SET_PROFILE_USER", { ...state.me, isUserMe: true });
+        commit("SET_PROFILE_USER", { ...state.me, isUserMe: true })
       } else {
-        commit("FETCHING_USER", true);
-        const user = await getUserFromUsername(usernameFromParam);
-        commit("SET_PROFILE_USER", { ...user, isUserMe: false });
-        commit("FETCHING_USER", false);
+        commit("FETCHING_USER", true)
+        const user = await getUserFromUsername(usernameFromParam)
+        commit("SET_PROFILE_USER", { ...user, isUserMe: false })
+        commit("FETCHING_USER", false)
       }
     },
     async verifyUniqueEmail(context, payload) {
-      const isUnique = await uniqueEmailRequest(payload);
-      return isUnique;
+      const isUnique = await uniqueEmailRequest(payload)
+      return isUnique
     },
     async verifyUniqueUserName(context, payload) {
-      const isUnique = await uniqueUsernameRequest(payload);
-      return isUnique;
+      const isUnique = await uniqueUsernameRequest(payload)
+      return isUnique
     },
     // === User Notifications ===
     async setNotificationSeen({ state, commit }, payload) {
       const user = await editNotificationStatusAPI(state.me.token, payload)
-      commit("USER", user);
+      commit("USER", user)
     },
     // async declineBorrowRequest({ state, commit }, payload) {
     //   const user = await declineBorrowRequestAPI(state.me.token, payload)
@@ -164,10 +164,10 @@ export default {
   },
   getters: {
     isLoggedIn(state) {
-      return state.me.isLoggedIn;
+      return state.me.isLoggedIn
     },
     token(state) {
-      return state.me.token;
+      return state.me.token
     },
     unseenNotifications(state) {
       return state.me.notifications.filter(

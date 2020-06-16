@@ -1,5 +1,5 @@
-import axios from "axios";
-import { SERVER_URL } from "./users";
+import axios from "axios"
+import { SERVER_URL } from "./users"
 
 export const createItem = (formData, token) => {
   return axios({
@@ -11,12 +11,12 @@ export const createItem = (formData, token) => {
     }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const getItemsByOwner = id => {
   return axios({
@@ -24,24 +24,24 @@ export const getItemsByOwner = id => {
     url: `${SERVER_URL}/items/user/${id}`
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR:", error);
-    });
-};
+      console.log("ERROR:", error)
+    })
+}
 
 export const searchItemsAPI = (...params) => {
-  let queryString = params.reduce((result, query, index) => {
-    const queryKey = Object.keys(query)[0];
+  let queryString = params.reduce((result, query) => {
+    const queryKey = Object.keys(query)[0]
 
     if (query[queryKey]) {
-      const symbol = result.includes('?') ? '&' : '?'
+      const symbol = result.includes("?") ? "&" : "?"
       result += `${symbol}${queryKey}=${query[queryKey]}`
     }
 
     return result
-  }, '')
+  }, "")
 
   return axios({
     method: "get",

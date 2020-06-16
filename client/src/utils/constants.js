@@ -17,4 +17,4 @@ export const ITEM_CATEGORIES = [
   "Sports",
   "Tools",
   "Travel"
-];
+]

@@ -1,8 +1,8 @@
-import Vue from "vue";
-import Vuetify from "vuetify/lib";
-import KarmaIcon from "../assets/KarmaIcon";
+import Vue from "vue"
+import Vuetify from "vuetify/lib"
+import KarmaIcon from "../assets/KarmaIcon"
 
-Vue.use(Vuetify);
+Vue.use(Vuetify)
 
 export default new Vuetify({
   icons: {
@@ -23,4 +23,4 @@ export default new Vuetify({
       }
     }
   }
-});
+})

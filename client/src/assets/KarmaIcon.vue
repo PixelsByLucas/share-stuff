@@ -30,7 +30,7 @@
 export default {
   name: "KarmaIcon",
   props: ["dark"]
-};
+}
 </script>
 <style lang="scss" scoped>
 .karma {
