@@ -1,8 +1,12 @@
 {
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSaveTimeout": 1200,
+  // "editor.codeActionsOnSaveTimeout": 1200,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.validate": [ "javascript", "javascriptreact" ]
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ]
 }

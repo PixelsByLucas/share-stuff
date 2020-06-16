@@ -1,5 +1,5 @@
-import axios from "axios";
-import { SERVER_URL } from "./users";
+import axios from "axios"
+import { SERVER_URL } from "./users"
 
 export const editNotificationStatusAPI = (token, id) => {
   return axios({
@@ -15,4 +15,4 @@ export const editNotificationStatusAPI = (token, id) => {
     .catch(error => {
       console.log("ERROR", error.message)
     })
-};
+}

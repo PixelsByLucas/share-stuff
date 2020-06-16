@@ -55,7 +55,7 @@
                     readonly
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                   <v-textarea
                     outlined
                     :label="`Message from ${notification.borrowerUsername}`"
@@ -64,7 +64,7 @@
                     disabled
                     readonly
                   ></v-textarea>
-                </v-col>
+                </v-col>-->
               </v-row>
             </v-card-text>
             <v-divider></v-divider>

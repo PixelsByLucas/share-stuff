@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from "axios"
 // import firstAndLastName from "../utils/firstAndLastName";
 
-export const SERVER_URL = process.env.VUE_APP_SERVER_URL;
+export const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
 export const registerRequest = formData => {
   return axios({
@@ -10,12 +10,12 @@ export const registerRequest = formData => {
     data: formData
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const uniqueEmailRequest = email => {
   return axios({
@@ -24,12 +24,12 @@ export const uniqueEmailRequest = email => {
     data: { email }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const uniqueUsernameRequest = username => {
   return axios({
@@ -38,12 +38,12 @@ export const uniqueUsernameRequest = username => {
     data: { username }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const getUserFromUsername = username => {
   return axios({
@@ -51,12 +51,12 @@ export const getUserFromUsername = username => {
     url: `${SERVER_URL}/users/${username}`
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const getUserFromToken = token => {
   return axios({
@@ -67,12 +67,12 @@ export const getUserFromToken = token => {
     }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const loginRequest = formValues => {
   return axios({
@@ -81,13 +81,13 @@ export const loginRequest = formValues => {
     data: { email: formValues.email, password: formValues.password }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-      return { user: undefined, token: undefined };
-    });
-};
+      console.log("ERROR: ", error)
+      return { user: undefined, token: undefined }
+    })
+}
 
 export const logoutRequest = token => {
   return axios({
@@ -99,15 +99,15 @@ export const logoutRequest = token => {
   })
     .then(res => {
       if (res.status === 200) {
-        return true;
+        return true
       } else {
-        return false;
+        return false
       }
     })
     .catch(error => {
-      console.log("ERROR: ", error);
-    });
-};
+      console.log("ERROR: ", error)
+    })
+}
 
 export const updateUser = (primaryLocation, token) => {
   return axios({
@@ -121,9 +121,9 @@ export const updateUser = (primaryLocation, token) => {
     }
   })
     .then(res => {
-      return res.data;
+      return res.data
     })
     .catch(error => {
-      console.log("ERROR in updateUser request: ", error);
-    });
-};
+      console.log("ERROR in updateUser request: ", error)
+    })
+}
