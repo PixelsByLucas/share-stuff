@@ -53,6 +53,11 @@ router.post(
       lender.notifications.push({ notification: lendingRequest._id, notificationType: "LendingRequest" })
       await lender.save()
 
+      // == send lender socket notification ==
+      if (lender.isLoggedIn && lender.socketId) {
+        // TODO: emit notification
+      }
+
       res.status(201).send();
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -60,6 +65,7 @@ router.post(
   }
 )
 
+// Update Transaction accept/decline
 router.put("/transaction/status/:id", auth, verifyNotification, async (req, res) => {
   try {
     const { transaction } = req.notification;

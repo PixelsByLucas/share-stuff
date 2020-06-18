@@ -33,6 +33,8 @@ export default {
     if (token) {
       this.$store.dispatch("loginFromToken", token);
     }
+
+    // io("http://localhost:3001");
   }
 };
 </script>

@@ -1,4 +1,5 @@
 import { cacheItem, deleteCachedItem } from "../utils/cacheHandler"
+import { socketConnect } from "../utils/sockets"
 import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
@@ -18,6 +19,7 @@ const EMPTY_USER = {
   _id: null,
   token: null,
   isLoggedIn: false,
+  socket: null,
   username: "",
   email: "",
   firstName: "",
@@ -61,6 +63,9 @@ export default {
     USER_TOKEN(state, payload) {
       state.me.token = payload
     },
+    USER_SOCKET(state, payload) {
+      state.me.socket = payload
+    },
     FETCHING_USER(state, payload) {
       state.fetchingUser = payload
     },
@@ -99,6 +104,7 @@ export default {
         commit("USER_LOGIN", true)
         commit("USER_TOKEN", payload)
         commit("USER", user)
+        socketConnect(payload)
       }
       commit("FETCHING_USER", false)
     },
@@ -110,6 +116,7 @@ export default {
         commit("USER_LOGIN", true)
         commit("USER_TOKEN", token)
         cacheItem("user_token", token)
+        socketConnect(token)
       }
       commit("FETCHING_USER", false)
     },

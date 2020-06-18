@@ -5,7 +5,7 @@ const verifyNotification = require("../middleware/verifyNotification")
 const BorrowRequest = require("../models/notifications/borrowRequest")
 const User = require("../models/user")
 
-// === Read Notifications ===
+// === Update Notification seen/unseen ===
 router.put("/notification/status/:id", auth, verifyNotification, async (req, res) => {
   try {
     req.notification.status = "seen"
@@ -13,7 +13,6 @@ router.put("/notification/status/:id", auth, verifyNotification, async (req, res
     console.log('req.notification', req.notification)
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
-    console.log("USER", user)
     res.send(user)
 
   } catch (error) {
@@ -21,23 +20,23 @@ router.put("/notification/status/:id", auth, verifyNotification, async (req, res
   }
 });
 
-router.put("/notification/borrow/decline/:id", auth, verifyNotification, async (req, res) => {
-  try {
-    const { transaction } = req.notification;
-    if (transaction.status !== "pending") {
-      throw new Error(`${transaction.status} transactions cannot be declined`);
-    }
+// router.put("/notification/borrow/decline/:id", auth, verifyNotification, async (req, res) => {
+//   try {
+//     const { transaction } = req.notification;
+//     if (transaction.status !== "pending") {
+//       throw new Error(`${transaction.status} transactions cannot be declined`);
+//     }
 
-    transaction.status = "declined";
-    transaction.save();
+//     transaction.status = "declined";
+//     transaction.save();
 
-    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
-    res.send(user)
+//     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
+//     res.send(user)
 
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// });
 
 // router.put("/notification/borrow/accept/:id", auth, verifyNotification, async (req, res) => {
 //   try {
