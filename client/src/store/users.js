@@ -1,5 +1,5 @@
 import { cacheItem, deleteCachedItem } from "../utils/cacheHandler"
-import { socketConnect } from "../utils/sockets"
+import { socketConnect, socketDisconnect } from "../utils/socket"
 import {
   uniqueEmailRequest,
   uniqueUsernameRequest,
@@ -25,6 +25,7 @@ const EMPTY_USER = {
   firstName: "",
   lastNameInitial: "",
   age: 0,
+  notifications: [],
   primaryLocation: {
     lat: 43.64515353395524,
     lng: -79.41002994775774
@@ -74,6 +75,9 @@ export default {
     },
     SET_PROFILE_USER(state, payload) {
       state.profileUser = { ...state.profileUser, ...payload }
+    },
+    PUSH_SOCKET_NOTIFICATION(state, payload) {
+      state.me.notifications = [...state.me.notifications, payload]
     }
   },
   actions: {
@@ -95,6 +99,7 @@ export default {
         // Causes a bug in login/register if I remove, but why?
         commit("USER_LOGIN", true)
         commit("USER", EMPTY_USER)
+        socketDisconnect()
       }
     },
     async loginFromToken({ commit }, payload) {
@@ -158,6 +163,13 @@ export default {
     async setNotificationSeen({ state, commit }, payload) {
       const user = await editNotificationStatusAPI(state.me.token, payload)
       commit("USER", user)
+    },
+    async socketNotification({ state, commit }, payload) {
+      const alreadyExists = state.me.notifications.find(({ notification }) => { notification.id === payload.notification.id })
+
+      if (!alreadyExists) {
+        commit("PUSH_SOCKET_NOTIFICATION", payload)
+      }
     },
     // async declineBorrowRequest({ state, commit }, payload) {
     //   const user = await declineBorrowRequestAPI(state.me.token, payload)

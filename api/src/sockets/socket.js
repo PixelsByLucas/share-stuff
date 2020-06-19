@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const io = require('./sio').get()
 
 const sockets = {
   async connect(user, socketId) {
@@ -22,7 +23,7 @@ const sockets = {
     }
   },
   emitNotification(notification, socketId) {
-    console.log('NOTIFICATION', notification, "ID", socketId)
+    io.to(socketId).emit('new notification', notification)
   }
 }
 

@@ -8,6 +8,8 @@ const Item = require("../models/item")
 // const Notifications = require("../models/notifications/notifications")
 const verifyNotification = require('../middleware/verifyNotification')
 const auth = require("../middleware/auth");
+const socket = require("../sockets/socket");
+const { path } = require("../server");
 
 // === Create Borrow Request ===
 router.post(
@@ -53,9 +55,11 @@ router.post(
       lender.notifications.push({ notification: lendingRequest._id, notificationType: "LendingRequest" })
       await lender.save()
 
-      // == send lender socket notification ==
+      // == send socket notification to lender ==
       if (lender.isLoggedIn && lender.socketId) {
-        // TODO: emit notification
+        const notification = await lendingRequest.populate({ path: "transaction" }).execPopulate()
+
+        socket.emitNotification({ notification, notificationType: "LendingRequest" }, lender.socketId)
       }
 
       res.status(201).send();
@@ -73,7 +77,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
       throw new Error(`${transaction.status} transactions cannot be accepted`);
     }
 
-    // == Send borrowRequest notification to borrower ==
+    // == send borrowRequest notification to borrower ==
     const borrowRequest = new BorrowRequest({
       transactionId: transaction._id,
       lenderUsername: req.user.username,
@@ -88,9 +92,17 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     borrower.notifications.push({ notification: borrowRequest._id, notificationType: "BorrowRequest" });
     borrower.save();
 
-    // == Update transaction status to active == 
+
+    // == update transaction status to active == 
     transaction.status = req.body.status;
-    transaction.save();
+    await transaction.save();
+
+    // == send socket notification to borrower ==
+    if (borrower.isLoggedIn && borrower.socketId) {
+      const notification = await borrowRequest.populate({ path: "transaction" }).execPopulate()
+
+      socket.emitNotification({ notification, notificationType: "BorrowRequest" }, borrower.socketId)
+    }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
     res.send(user);
