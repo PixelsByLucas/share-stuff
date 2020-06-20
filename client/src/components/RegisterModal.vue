@@ -184,8 +184,8 @@ export default {
         fullName: "",
         username: "",
         primaryLocation: {
-          lat: 0,
-          lng: 0
+          lat: 42.032974332441405,
+          lng: -0.3515625
         }
       },
       avatar: {
@@ -258,6 +258,7 @@ export default {
     "map.addressInput": async function(input) {
       const coords = await this.debouncedDispatch("getLatLng", input);
       if (coords) {
+        this.formValues.primaryLocation = coords;
         this.map.geoCoords = coords;
         this.map.zoom = 16;
       }
