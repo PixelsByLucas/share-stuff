@@ -11,6 +11,7 @@ import {
 } from "../apis/users"
 import {
   editNotificationStatusAPI,
+  deleteNotificationAPI
 } from "../apis/notifications"
 import { editTransactionStatusAPI } from "../apis/transactions"
 import { geocode } from "../apis/geocoding"
@@ -164,6 +165,10 @@ export default {
       const user = await editNotificationStatusAPI(state.me.token, payload)
       commit("USER", user)
     },
+    async deleteNotification({ state, commit }, payload) {
+      const user = await deleteNotificationAPI(state.me.token, payload)
+      commit("USER", user)
+    },
     async socketNotification({ state, commit }, payload) {
       const alreadyExists = state.me.notifications.find(({ notification }) => { notification.id === payload.notification.id })
 
@@ -171,10 +176,7 @@ export default {
         commit("PUSH_SOCKET_NOTIFICATION", payload)
       }
     },
-    // async declineBorrowRequest({ state, commit }, payload) {
-    //   const user = await declineBorrowRequestAPI(state.me.token, payload)
-    //   commit("USER", user)
-    // },
+
     // === User Transactions ===
     async acceptDeclineTransaction({ state, commit }, payload) {
       const user = await editTransactionStatusAPI(state.me.token, payload.id, payload.status)
