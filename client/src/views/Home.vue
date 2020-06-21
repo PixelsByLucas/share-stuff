@@ -19,7 +19,7 @@
       </v-row>
       <v-divider></v-divider>
       <v-row v-if="!fetchingItems">
-        <v-col v-for="item in items" :key="item._id" xs="12" sm="4" md="3">
+        <v-col v-for="item in filteredItems" :key="item._id" xs="12" sm="4" md="3">
           <Item v-bind:item="item" />
         </v-col>
       </v-row>
@@ -47,8 +47,16 @@ export default {
     ...mapState({
       items: state => state.items.allItems,
       fetchingItems: state => state.items.fetchingItems,
-      isLoggedIn: state => state.users.me.isLoggedIn
-    })
+      isLoggedIn: state => state.users.me.isLoggedIn,
+      me: state => state.users.me
+    }),
+    filteredItems() {
+      let result = this.items;
+      if (this.isLoggedIn) {
+        result = result.filter(item => item.ownerId !== this.me.id);
+      }
+      return result;
+    }
   },
   watch: {
     isLoggedIn(isLoggedIn) {
