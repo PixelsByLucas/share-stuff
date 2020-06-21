@@ -55,25 +55,11 @@
                     readonly
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12">
-                  <v-textarea
-                    outlined
-                    :label="`Message from ${notification.borrowerUsername}`"
-                    v-model="notification.message"
-                    prepend-icon="mdi-android-messages"
-                    disabled
-                    readonly
-                  ></v-textarea>
-                </v-col>-->
               </v-row>
             </v-card-text>
-            <v-divider></v-divider>
+            <v-divider v-if="ableToDelete"></v-divider>
             <v-card-actions class="actions">
-              <!-- <div v-if="notification.transaction.status !== 'pending'">
-                <v-btn @click="acceptDeclineRequest('active')">ACCEPT</v-btn>
-                <v-btn class="decline-button" @click="acceptDeclineRequest('declined')">DECLINE</v-btn>
-              </div>-->
-              <v-btn icon large tile>
+              <v-btn v-if="ableToDelete" icon large tile @click="deleteNotification()">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-card-actions>
@@ -90,6 +76,9 @@ export default {
   name: "BorrowRequest",
   props: ["notification", "selectedNotification"],
   methods: {
+    deleteNotification() {
+      this.$store.dispatch("deleteNotification", this.notification._id);
+    },
     selectNotification() {
       this.$emit("select-notification", this.notification._id);
 
@@ -99,6 +88,20 @@ export default {
     }
   },
   computed: {
+    ableToDelete() {
+      let result = false;
+
+      switch (this.notification.transaction.status) {
+        case "declined":
+          result = true;
+          break;
+        case "completed":
+          result = true;
+          break;
+      }
+
+      return result;
+    },
     url() {
       const itemId = this.notification.itemId;
       const imageId = this.notification.itemImageId;
