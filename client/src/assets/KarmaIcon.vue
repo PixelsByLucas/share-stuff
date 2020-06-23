@@ -15,7 +15,6 @@
         version="1.1"
         x="0px"
         y="0px"
-        viewBox="0 0 100% 100%"
         style="enable-background:new 0 0 100% 100%;"
         xml:space="preserve"
       >
@@ -30,7 +29,7 @@
 export default {
   name: "KarmaIcon",
   props: ["dark"]
-}
+};
 </script>
 <style lang="scss" scoped>
 .karma {

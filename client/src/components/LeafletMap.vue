@@ -2,7 +2,7 @@
   <div class="map">
     <v-icon v-if="marker === 'static'" class="map__marker" x-large>mdi-map-marker</v-icon>
     <l-map
-      style="height: 100%; width: 100%; borderRadius: 4px; z-index: 0"
+      style="borderRadius: 4px; z-index: 0"
       :zoomAnimation="true"
       :zoom="zoom"
       :center="center"
