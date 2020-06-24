@@ -229,8 +229,18 @@ export default {
       ],
       startDateRules: [v => !!v || "Pick up date is required"],
       endDateRules: [v => !!v || "Drop off date is required"],
-      startTimeRules: [v => !!v || "Pick up time is required"],
-      endTimeRules: [v => !!v || "Drop off time is required"],
+      startTimeRules: [
+        v => !!v || "Pick up time is required",
+        () =>
+          this.validatePickupNotBeforeNow() ||
+          "Pick up time must not be earlier than the present"
+      ],
+      endTimeRules: [
+        v => !!v || "Drop off time is required",
+        () =>
+          this.validateDropOffNotBeforePickUp() ||
+          "Drop off cannot be before pick up"
+      ],
       dateToday: new Date().toISOString().substr(0, 10),
       pickUpDateModal: false,
       pickUpTimeModal: false,
@@ -246,9 +256,66 @@ export default {
       lenderId: state => state.items.itemDetail.ownerId
     })
   },
-
-  watch: {},
   methods: {
+    // combineStartTimeAndDate() {
+    //   let result;
+    //   const {
+    //     pickUpDate,
+    //     pickUpTime,
+    //   } = this.formValues;
+
+    //   if (pickUpDate && pickUpTime) {
+    //     result = combineDateAndTimeToUTC(
+    //       pickUpDate,
+    //       pickUpTime
+    //     ).toISOString();
+    //   }
+
+    //   return result;
+    // },
+    validatePickupNotBeforeNow() {
+      let result = true;
+      const { pickUpDate, pickUpTime } = this.formValues;
+
+      if (pickUpDate && pickUpTime) {
+        const pickUp = combineDateAndTimeToUTC(
+          pickUpDate,
+          pickUpTime
+        ).toISOString();
+
+        if (new Date(pickUp) <= new Date()) {
+          result = false;
+        }
+      }
+
+      return result;
+    },
+    validateDropOffNotBeforePickUp() {
+      let result = true;
+      const {
+        pickUpDate,
+        pickUpTime,
+        dropOffDate,
+        dropOffTime
+      } = this.formValues;
+
+      if (pickUpDate && pickUpTime && dropOffDate && dropOffTime) {
+        const pickUp = combineDateAndTimeToUTC(
+          pickUpDate,
+          pickUpTime
+        ).toISOString();
+        const dropOff = combineDateAndTimeToUTC(
+          dropOffDate,
+          dropOffTime
+        ).toISOString();
+
+        if (new Date(pickUp) >= new Date(dropOff)) {
+          result = false;
+        }
+      }
+
+      return result;
+    },
     convertTo12hr(time24Format) {
       if (!time24Format) {
         return "";

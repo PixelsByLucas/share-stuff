@@ -21,12 +21,26 @@ const transactionSchema = new mongoose.Schema({
     enum: ['pending', 'completed', 'declined', 'active']
   },
   pickUpTime: {
-    type: String,
-    required: true
+    type: Date,
+    required: true,
+    validate: [
+      function (value) {
+        if (value < new Date()) {
+          throw new Error(`Pick up date and time must not be earlier than the present moment`)
+        }
+      }
+    ]
   },
   dropOffTime: {
-    type: String,
-    required: true
+    type: Date,
+    required: true,
+    validate: [
+      function (value) {
+        if (this.pickUpTime > value) {
+          throw new Error(`Drop off must not be earlier than pick up`)
+        }
+      }
+    ]
   },
   message: {
     type: String,
