@@ -4,6 +4,8 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const { uploadSingle } = require('../middleware/upload')
 const sharp = require('sharp')
+const sendTextEmail = require('../emails/send')
+const { welcomeText } = require('../emails/body')
 
 // === Create User ===
 router.post('/users', uploadSingle.single('avatar'), async (req, res) => {
@@ -17,6 +19,7 @@ router.post('/users', uploadSingle.single('avatar'), async (req, res) => {
   try {
     await user.save()
     const token = await user.generateAuthToken()
+    sendTextEmail(user.email, "You're all set!", welcomeText(user.firstName))
     res.status(201).send({ user, token })
   } catch (err) {
     res.status(400).send(err)
