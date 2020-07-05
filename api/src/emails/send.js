@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const { toLocaleUpperCase } = require('../src/utils/unicodeLogo')
+const { toLocaleUpperCase } = require('../utils/unicodeLogo')
 
 const transport = nodemailer.createTransport({
   host: 'smtp.mailtrap.io',
@@ -19,12 +19,11 @@ const sendTextEmail = (recipient, title, message) => {
     text: message
   }
 
-  transport.sendMail(email, (err, info) => {
+  transport.sendMail(email, (error, info) => {
     if (error) {
       console.log('EMAIL ERROR: ', error)
     } else {
-      console.log('mail sent successfully')
-      console.log(info)
+      console.log(`mail sent successfully to ${info.accepted[0]}`)
     }
   })
 

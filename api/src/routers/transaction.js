@@ -10,8 +10,10 @@ const verifyNotification = require('../middleware/verifyNotification')
 const auth = require("../middleware/auth");
 const socket = require("../sockets/socket");
 const { path } = require("../server");
+const { lendingRequestText, borrowRequestText } = require('../emails/body')
+const sendTextEmail = require('../emails/send')
 
-// === Create Borrow Request ===
+// === Create Lending Request ===
 router.post(
   '/transaction',
   auth,
@@ -55,11 +57,13 @@ router.post(
       lender.notifications.push({ notification: lendingRequest._id, notificationType: "LendingRequest" })
       await lender.save()
 
-      // == send socket notification to lender ==
-      if (lender.isLoggedIn && lender.socketId) {
-        const notification = await lendingRequest.populate({ path: "transaction" }).execPopulate()
+      // == send socket notification or email to lender ==
+      const notification = await lendingRequest.populate({ path: "transaction" }).execPopulate()
 
+      if (lender.isLoggedIn && lender.socketId) {
         socket.emitNotification({ notification, notificationType: "LendingRequest" }, lender.socketId)
+      } else {
+        sendTextEmail(lender.email, 'New Lending Request', lendingRequestText(notification, lender.username))
       }
 
       res.status(201).send();
@@ -98,10 +102,13 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     await transaction.save();
 
     // == send socket notification to borrower ==
-    if (borrower.isLoggedIn && borrower.socketId) {
-      const notification = await borrowRequest.populate({ path: "transaction" }).execPopulate()
+    const notification = await borrowRequest.populate({ path: "transaction" }).execPopulate()
 
+    if (borrower.isLoggedIn && borrower.socketId) {
       socket.emitNotification({ notification, notificationType: "BorrowRequest" }, borrower.socketId)
+    } else {
+      const status = transaction.status === 'declined' ? 'Declined' : 'Accepted'
+      sendTextEmail(borrower.email, `Borrow Request ${status}`, borrowRequestText(notification, borrower.username, status))
     }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();

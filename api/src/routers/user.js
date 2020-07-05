@@ -4,8 +4,8 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const { uploadSingle } = require('../middleware/upload')
 const sharp = require('sharp')
-const sendTextEmail = require('../../emails/send')
-const welcomeText = require('../../emails/body')
+const sendTextEmail = require('../emails/send')
+const { welcomeText } = require('../emails/body')
 
 // === Create User ===
 router.post('/users', uploadSingle.single('avatar'), async (req, res) => {
