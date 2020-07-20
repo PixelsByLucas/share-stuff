@@ -44,8 +44,6 @@
                     prepend-icon="mdi-calendar"
                     readonly
                   ></v-text-field>
-                </v-col>
-                <v-col cols="6">
                   <v-text-field
                     disabled
                     v-model="dropOffTime"
@@ -54,6 +52,15 @@
                     prepend-icon="mdi-calendar"
                     readonly
                   ></v-text-field>
+                </v-col>
+                <v-col class="map-box" cols="6">
+                  <LeafletMap
+                    :coords="this.notification.itemLocation.primaryLocation"
+                    :zoomProp="13"
+                    marker="location"
+                    :invalidate="shouldMapInvalidate"
+                    markerTooltip="Item Location"
+                  />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -72,15 +79,25 @@
 <script>
 import { SERVER_URL } from "../../apis/users";
 import { dateFormat, getDurationInDays } from "../../utils/dateFormat";
+import LeafletMap from "../LeafletMap";
 export default {
   name: "BorrowRequest",
   props: ["notification", "selectedNotification"],
+  data() {
+    return {
+      shouldMapInvalidate: false
+    };
+  },
+  components: {
+    LeafletMap
+  },
   methods: {
     deleteNotification() {
       this.$store.dispatch("deleteNotification", this.notification._id);
     },
     selectNotification() {
       this.$emit("select-notification", this.notification._id);
+      this.shouldMapInvalidate = true;
 
       if (this.notification.status === "unseen") {
         this.$emit("notification-seen", this.notification._id);
@@ -187,6 +204,9 @@ export default {
 .image-container {
   max-width: 150px;
   max-height: 150px;
+}
+.map-box {
+  height: 300px;
 }
 .no-margin {
   margin: 0;

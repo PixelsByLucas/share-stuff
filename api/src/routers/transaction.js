@@ -102,7 +102,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     await transaction.save();
 
     // == send socket notification to borrower ==
-    const notification = await borrowRequest.populate({ path: "transaction" }).execPopulate()
+    const notification = await borrowRequest.populate({ path: "transaction" }).populate({ path: "itemLocation", select: "primaryLocation -_id" }).execPopulate()
 
     if (borrower.isLoggedIn && borrower.socketId) {
       socket.emitNotification({ notification, notificationType: "BorrowRequest" }, borrower.socketId)

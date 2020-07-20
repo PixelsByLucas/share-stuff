@@ -49,6 +49,13 @@ borrowRequestSchema.virtual('transaction', {
   justOne: true
 })
 
+borrowRequestSchema.virtual('itemLocation', {
+  ref: 'User',
+  localField: 'lenderUsername',
+  foreignField: 'username',
+  justOne: true
+})
+
 // === instance methods ===
 borrowRequestSchema.methods.toJSON = function () {
   const borrowRequest = this
