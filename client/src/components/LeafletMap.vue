@@ -12,21 +12,24 @@
       ref="map"
     >
       <l-tile-layer :url="url"></l-tile-layer>
-      <l-marker v-if="marker === 'location'" :lat-lng="coords"></l-marker>
+      <l-marker v-if="marker === 'location'" :lat-lng="coords">
+        <l-tooltip v-if="markerTooltip" :options="{permanent: true}">{{markerTooltip}}</l-tooltip>
+      </l-marker>
     </l-map>
   </div>
 </template>
 <script>
-import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LTooltip } from "vue2-leaflet";
 import { latLng } from "leaflet";
 export default {
   name: "LeafletMap",
   components: {
     LMap,
     LTileLayer,
-    LMarker
+    LMarker,
+    LTooltip
   },
-  props: ["coords", "zoomProp", "marker"],
+  props: ["coords", "zoomProp", "marker", "invalidate", "markerTooltip"],
   data() {
     return {
       url:
@@ -50,6 +53,11 @@ export default {
         latLng(parseFloat(coords.lat), parseFloat(coords.lng)),
         16
       );
+    },
+    invalidate(invalidate) {
+      if (invalidate) {
+        this.$refs.map.mapObject.invalidateSize();
+      }
     }
   },
   methods: {
