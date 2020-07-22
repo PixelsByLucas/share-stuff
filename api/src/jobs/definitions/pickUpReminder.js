@@ -4,8 +4,6 @@ const Transaction = require('../../models/transaction')
 const socket = require('../../sockets/socket')
 const sendTextEmail = require('../../emails/send')
 const { borrowerPickUpReminderText, lenderPickUpReminderText } = require('../../emails/body')
-const agenda = require('../agenda')
-// https://www.codementor.io/@miguelkouam/how-to-schedule-tasks-in-node-js-express-using-agenda-h8sdo6b9p
 
 const pickUpReminder = agenda => {
   agenda.define("pick up reminder", async job => {
@@ -64,8 +62,6 @@ const pickUpReminder = agenda => {
       } else {
         sendTextEmail(lender.email, 'Pick Up Reminder', lenderPickUpReminderText(lenderPickUpReminder, borrower.username))
       }
-
-      // TODO: TEST THE ABOVE!
 
     } catch (error) {
       job.fail(error.message)
