@@ -12,6 +12,7 @@ const socket = require("../sockets/socket");
 const { path } = require("../server");
 const { lendingRequestText, borrowRequestText } = require('../emails/body')
 const sendTextEmail = require('../emails/send')
+const agenda = require('../jobs/agenda')
 
 // === Create Lending Request ===
 router.post(
@@ -109,6 +110,15 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     } else {
       const status = transaction.status === 'declined' ? 'Declined' : 'Accepted'
       sendTextEmail(borrower.email, `Borrow Request ${status}`, borrowRequestText(notification, borrower.username, status))
+    }
+
+    // == schedule agenda reminders ==
+    if (transaction.status === 'active') {
+      const pickUpReminderTime = new Date(new Date(transaction.pickUpTime).getTime() - 60 * 60 * 24 * 1000)
+      const dropOffReminderTime = new Date(new Date(transaction.dropOffTime).getTime() - 60 * 60 * 24 * 1000)
+
+      agenda.schedule(pickUpReminderTime, "pick up reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
+      // agenda.schedule(dropOffReminderTime, "drop off reminder")
     }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();

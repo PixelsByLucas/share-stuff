@@ -7,7 +7,7 @@ const agenda = new Agenda(connectionOptions)
 const jobTypes = process.env.JOB_TYPES ? process.env.JOB_TYPES.split(',') : []
 
 jobTypes.forEach(type => {
-  require('./jobs/' + type)(agenda)
+  require('./definitions/' + type)(agenda)
 })
 
 if (jobTypes.length) {
