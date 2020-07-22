@@ -23,9 +23,26 @@ const borrowRequestText = (notification, borrowerUsername, status) =>
   \n\nDo good,
   \nShareStuff`
 
+const borrowerPickUpReminderText = (notification, borrowerUsername) =>
+  `Hey ${borrowerUsername}
+  \n\nyour pick up date to borrow ${notification.itemName} from ${notification.lenderUsername} in less than 24 hours away.
+  \nLogin to view your notifications.
+  \n${process.env.CLIENT_URL}/
+  \n\nDo good,
+  \nShareStuff`
+
+const lenderPickUpReminderText = (notification, borrowerUsername) =>
+  `Hey ${notification.lenderUsername}
+  \n\n${borrowerUsername} will be arriving to pick up ${notification.itemName} in less than 24 hours.
+  \nLogin to view your notifications.
+  \n${process.env.CLIENT_URL}/
+  \n\nDo good,
+  \nShareStuff`
+
 module.exports = {
   welcomeText,
   lendingRequestText,
-  borrowRequestText
+  borrowRequestText,
+  borrowerPickUpReminderText
 }
 
