@@ -11,7 +11,13 @@ router.put("/notification/status/:id", auth, verifyNotification, async (req, res
     req.notification.status = "seen"
     await req.notification.save()
 
-    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
+    const user = await req.user.populate({
+      path: "notifications.notification",
+      populate: [
+        { path: "transaction" },
+        { path: "itemLocation", select: "primaryLocation -_id" }]
+    }).execPopulate();
+
     res.send(user)
 
   } catch (error) {
@@ -33,7 +39,12 @@ router.delete("/notification/status/:id", auth, verifyNotification, async (req, 
 
     await req.user.save()
 
-    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
+    const user = await req.user.populate({
+      path: "notifications.notification",
+      populate: [
+        { path: "transaction" },
+        { path: "itemLocation", select: "primaryLocation -_id" }]
+    }).execPopulate();
 
     res.send(user)
 

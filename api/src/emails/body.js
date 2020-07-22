@@ -25,7 +25,7 @@ const borrowRequestText = (notification, borrowerUsername, status) =>
 
 const borrowerPickUpReminderText = (notification, borrowerUsername) =>
   `Hey ${borrowerUsername}
-  \n\nyour pick up date to borrow ${notification.itemName} from ${notification.lenderUsername} in less than 24 hours away.
+  \n\nyour pick up date to borrow ${notification.itemName} from ${notification.lenderUsername} is less than 24 hours away.
   \nLogin to view your notifications.
   \n${process.env.CLIENT_URL}/
   \n\nDo good,
