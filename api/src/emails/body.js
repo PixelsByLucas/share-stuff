@@ -1,3 +1,4 @@
+// == Welcome ==
 const welcomeText = (firstName) =>
   `Hey  ${firstName},
   \n\nthanks for joining the ShareStuff community!  
@@ -6,6 +7,7 @@ const welcomeText = (firstName) =>
   \n\nDo good,
   \nShareStuff`
 
+// == Lending Request ==
 const lendingRequestText = (notification, lenderUsername) =>
   `Hey ${lenderUsername},
   \n\nyou've just received a new lending request!
@@ -15,25 +17,44 @@ const lendingRequestText = (notification, lenderUsername) =>
   \n\nDo good,
   \nShareStuff`
 
+// == Borrow Request ==
 const borrowRequestText = (notification, borrowerUsername, status) =>
-  `Hey ${borrowerUsername}
+  `Hey ${borrowerUsername},
   \n\nyour request to borrow ${notification.itemName} from ${notification.lenderUsername} has been ${status.toLowerCase()}.
   \nLogin to view your notifications. 
   \n${process.env.CLIENT_URL}/
   \n\nDo good,
   \nShareStuff`
 
-const borrowerPickUpReminderText = (notification, borrowerUsername) =>
-  `Hey ${borrowerUsername}
+// == Pick Up Reminder ==
+const borrowerPickUpReminderText = (notification) =>
+  `Hey ${notification.borrowerUsername},
   \n\nyour pick up date to borrow ${notification.itemName} from ${notification.lenderUsername} is less than 24 hours away.
   \nLogin to view your notifications.
   \n${process.env.CLIENT_URL}/
   \n\nDo good,
   \nShareStuff`
 
-const lenderPickUpReminderText = (notification, borrowerUsername) =>
+const lenderPickUpReminderText = (notification) =>
   `Hey ${notification.lenderUsername}
-  \n\n${borrowerUsername} will be arriving to pick up ${notification.itemName} in less than 24 hours.
+  \n\n${notification.borrowerUsername} will be arriving to pick up ${notification.itemName} in less than 24 hours.
+  \nLogin to view your notifications.
+  \n${process.env.CLIENT_URL}/
+  \n\nDo good,
+  \nShareStuff`
+
+// == Drop Off Reminder ==
+const borrowerDropOffReminder = (notification) =>
+  `Hey ${notification.borrowerUsername},
+  \n\nThe drop off date for ${notification.itemName} from ${notification.lenderUsername} is less than 24 hours away.
+  \nLogin to view your notification.
+  \n${process.env.CLIENT_URL}/
+  \n\nDo good,
+  \nShareStuff`
+
+const lenderDropOffReminder = (notification) =>
+  `Hey ${notification.lenderUsername},
+  \n\n${notification.borrowerUsername} will be arriving to drop off ${notification.itemName} in less than 24 hours.
   \nLogin to view your notifications.
   \n${process.env.CLIENT_URL}/
   \n\nDo good,
