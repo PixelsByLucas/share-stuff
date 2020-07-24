@@ -32,6 +32,7 @@ const pickUpReminder = agenda => {
       const borrowerPickUpReminder = new PickUpReminder({
         transactionId,
         lenderUsername: lender.username,
+        borrowerUsername: borrower.username,
         itemName
       })
       await borrowerPickUpReminder.save()
@@ -41,6 +42,7 @@ const pickUpReminder = agenda => {
       const lenderPickUpReminder = new PickUpReminder({
         transactionId,
         lenderUsername: lender.username,
+        borrowerUsername: borrower.username,
         itemName
       })
       await lenderPickUpReminder.save()
@@ -52,7 +54,7 @@ const pickUpReminder = agenda => {
       if (borrower.isLoggedIn && borrower.socketId) {
         socket.emitNotification({ borrowerNotification, notificationType: "PickUpReminder" }, borrower.socketId)
       } else {
-        sendTextEmail(borrower.email, 'Pick Up Reminder', borrowerPickUpReminderText(borrowerPickUpReminder, borrower.username))
+        sendTextEmail(borrower.email, 'Pick Up Reminder', borrowerPickUpReminderText(borrowerPickUpReminder))
       }
 
       // == email/socket notification to lender ==
@@ -60,17 +62,13 @@ const pickUpReminder = agenda => {
       if (lender.isLoggedIn && lender.socketId) {
         socket.emitNotification({ lenderNotification, notificationType: 'PickUpReminder' }, lender.socketId)
       } else {
-        sendTextEmail(lender.email, 'Pick Up Reminder', lenderPickUpReminderText(lenderPickUpReminder, borrower.username))
+        sendTextEmail(lender.email, 'Pick Up Reminder', lenderPickUpReminderText(lenderPickUpReminder))
       }
 
     } catch (error) {
       job.fail(error.message)
       await job.save()
     }
-
-
-
-
   })
 }
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const pickUpReminderSchema = new mongoose.Schema({
+const dropOffReminderSchema = new mongoose.Schema({
   transactionId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
@@ -34,14 +34,14 @@ const pickUpReminderSchema = new mongoose.Schema({
 });
 
 // === virtuals ===
-pickUpReminderSchema.virtual('transaction', {
+dropOffReminderSchema.virtual('transaction', {
   ref: 'Transaction',
   localField: 'transactionId',
   foreignField: '_id',
   justOne: true
 })
 
-pickUpReminderSchema.virtual('itemLocation', {
+dropOffReminderSchema.virtual('itemLocation', {
   ref: 'User',
   localField: 'lenderUsername',
   foreignField: 'username',
@@ -49,13 +49,13 @@ pickUpReminderSchema.virtual('itemLocation', {
 })
 
 // === instance methods ===
-pickUpReminderSchema.methods.toJSON = function () {
-  const pickUpReminder = this
-  const pickUpReminderObject = pickUpReminder.toObject()
+dropOffReminderSchema.methods.toJSON = function () {
+  const dropOffReminder = this
+  const dropOffReminderObject = dropOffReminder.toObject()
 
-  return pickUpReminderObject
+  return dropOffReminderObject
 }
 
-const PickUpReminder = mongoose.model('PickUpReminder', pickUpReminderSchema)
+const DropOffReminder = mongoose.model('DropOffReminder', dropOffReminderSchema)
 
-module.exports = PickUpReminder
+module.exports = DropOffReminder
