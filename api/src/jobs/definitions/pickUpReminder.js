@@ -37,6 +37,7 @@ const pickUpReminder = agenda => {
       })
       await borrowerPickUpReminder.save()
       borrower.notifications.push({ notification: borrowerPickUpReminder._id, notificationType: "PickUpReminder" })
+      await borrower.save()
 
       // == create new pick up reminder for lender ==
       const lenderPickUpReminder = new PickUpReminder({
@@ -47,6 +48,7 @@ const pickUpReminder = agenda => {
       })
       await lenderPickUpReminder.save()
       lender.notifications.push({ notification: lenderPickUpReminder._id, notificationType: "PickUpReminder" })
+      await lender.save()
 
       // == email/socket notification to borrower ==
       const borrowerNotification = await borrowerPickUpReminder.populate({ path: "transaction" }).execPopulate()
