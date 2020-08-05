@@ -1,20 +1,18 @@
 <template>
-  <div class="PickUpReminder">
+  <div class="drop-off-reminder">
     <v-container fluid>
       <v-card :class="notification.status === `unseen` ? `card-unseen` : null">
         <div class="card-header-text">
           <div>
-            <v-card-title class="title">Pick Up Reminder</v-card-title>
+            <v-card-title class="title">Drop Off Reminder</v-card-title>
             <p class="no-margin">{{notificationDate}}</p>
           </div>
           <div>
             <span>{{userIsBorrower() ? "Lender: " : "Borrower: "}}</span>
             <router-link
-              class="subtitle"
               :to="`/profile/${userIsBorrower() ? notification.lenderUsername : notification.borrowerUsername}`"
               tag="a"
             >{{userIsBorrower() ? notification.lenderUsername : notification.borrowerUsername}}</router-link>
-
             <p class="no-margin">
               <span>{{userIsBorrower() ? "Borowing " : "Lending "}}</span>
               <strong>{{notification.itemName}}</strong>
@@ -37,9 +35,9 @@
                   <p>{{userIsBorrower() ? borrowerText : lenderText}}</p>
                   <v-text-field
                     disabled
-                    :value="pickUpTime"
+                    :value="dropOffTime"
                     outlined
-                    label="Pick Up Time"
+                    label="Drop Off Time"
                     prepend-icon="mdi-calendar"
                     readonly
                   ></v-text-field>
@@ -51,7 +49,7 @@
                     :zoomProp="13"
                     marker="location"
                     :invalidate="shouldMapInvalidate"
-                    markerTooltip="Item Location"
+                    markerTooltip="Drop Off Location"
                   />
                 </v-col>
               </v-row>
@@ -69,12 +67,11 @@
   </div>
 </template>
 <script>
-// import { SERVER_URL } from "../../apis/users";
 import { dateFormat, getDurationInDays } from "../../utils/dateFormat";
 import { mapState } from "vuex";
 import LeafletMap from "../LeafletMap";
 export default {
-  name: "PickUpReminder",
+  name: "DropOffReminder",
   props: ["notification", "selectedNotification"],
   components: {
     LeafletMap
@@ -88,6 +85,9 @@ export default {
     deleteNotification() {
       this.$store.dispatch("deleteNotification", this.notification._id);
     },
+    userIsBorrower() {
+      return this.notification.borrowerUsername === this.username;
+    },
     selectNotification() {
       this.$emit("select-notification", this.notification._id);
       this.shouldMapInvalidate = true;
@@ -95,17 +95,11 @@ export default {
       if (this.notification.status === "unseen") {
         this.$emit("notification-seen", this.notification._id);
       }
-    },
-    userIsBorrower() {
-      return this.notification.borrowerUsername === this.username;
     }
   },
   computed: {
     borrowerText() {
-      return `You're due to pick up ${this.notification.itemName} from ${this.notification.lenderUsername} in less than 24 hours.`;
-    },
-    lenderText() {
-      return `${this.notification.borrowerUsername} is due to arrive to pick up ${this.notification.itemName} in less than 24 hours.`;
+      return `You're due to return ${this.notification.itemName} to ${this.notification.lenderUsername} in less than 24 hours.`;
     },
     days() {
       let result = "days";
@@ -128,6 +122,9 @@ export default {
       }
 
       return result;
+    },
+    lenderText() {
+      return `${this.notification.borrowerUsername} is due to arrive to return ${this.notification.itemName} in less than 24 hours.`;
     },
     notificationDate() {
       return dateFormat(this.notification.createdAt);
