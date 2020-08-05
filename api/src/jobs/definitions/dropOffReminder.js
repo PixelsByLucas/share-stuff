@@ -39,6 +39,7 @@ const dropOffReminder = agenda => {
       })
       await borrowerDropOffReminder.save()
       borrower.notifications.push({ notification: borrowerDropOffReminder._id, notificationType: "DropOffReminder" })
+      await borrower.save()
 
       // == create new drop off reminder for lender ==
       const lenderDropOffReminder = new DropOffReminder({
@@ -49,6 +50,7 @@ const dropOffReminder = agenda => {
       })
       await lenderDropOffReminder.save()
       lender.notifications.push({ notification: lenderDropOffReminder._id, notificationType: "DropOffReminder" })
+      await lender.save()
 
       // == email/socket notification to borrower ==
       const borrowerNotification = await borrowerDropOffReminder.populate({ path: "transaction" }).execPopulate()

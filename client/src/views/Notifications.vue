@@ -24,6 +24,7 @@ import { mapState } from "vuex";
 import LendingRequest from "../components/notifications/LendingRequest";
 import BorrowRequest from "../components/notifications/BorrowRequest";
 import PickUpReminder from "../components/notifications/PickUpReminder";
+import DropOffReminder from "../components/notifications/DropOffReminder";
 export default {
   name: "Notifications",
   components: {
@@ -54,6 +55,8 @@ export default {
           return BorrowRequest;
         case "PickUpReminder":
           return PickUpReminder;
+        case "DropOffReminder":
+          return DropOffReminder;
       }
     },
     setSelectedNotification(id) {

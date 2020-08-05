@@ -1,6 +1,7 @@
 const LendingRequest = require("../models/notifications/lendingRequest")
 const BorrowRequest = require("../models/notifications/borrowRequest")
-const PickUpRequest = require("../models/notifications/pickUpReminder")
+const PickUpReminder = require("../models/notifications/pickUpReminder")
+const DropOffReminder = require("../models/notifications/dropOffReminder")
 const User = require("../models/user");
 
 const verifyNotification = async (req, res, next) => {
@@ -23,8 +24,10 @@ const verifyNotification = async (req, res, next) => {
         notification = await (await BorrowRequest.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
         break;
       case "PickUpReminder":
-        notification = await (await PickUpRequest.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
+        notification = await (await PickUpReminder.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
         break;
+      case "DropOffReminder":
+        notification = await (await DropOffReminder.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
       default:
         break;
     }
@@ -33,7 +36,7 @@ const verifyNotification = async (req, res, next) => {
     next()
 
   } catch (error) {
-    console.log('ERROR')
+    console.log('ERROR: ', error)
     res.status(401).send({ error: error.message });
   }
 }
