@@ -1,11 +1,11 @@
 const express = require("express");
+const dateMath = require("../utils/dateMath")
 const router = new express.Router();
 const LendingRequest = require("../models/notifications/lendingRequest")
 const BorrowRequest = require('../models/notifications/borrowRequest')
 const Transaction = require("../models/transaction");
 const User = require("../models/user")
 const Item = require("../models/item")
-// const Notifications = require("../models/notifications/notifications")
 const verifyNotification = require('../middleware/verifyNotification')
 const auth = require("../middleware/auth");
 const socket = require("../sockets/socket");
@@ -19,6 +19,7 @@ router.post(
   '/transaction',
   auth,
   async (req, res) => {
+    const { itemId, pickUpTime, dropOffTime, message } = req.body
     req.body.borrowerId = req.user._id;
     req.body.status = 'pending'
 
@@ -31,10 +32,10 @@ router.post(
         throw new Error({ message: 'Item does not exist' })
       }
 
-      if (borrower.karma < item.price) {
+      // FIX THIS: should be (borrower.karma < )
+      if (borrower.karma < item.price * dateMath.duration(pickUpTime, dropOffTime)) {
         throw new Error({ message: 'Not enough karma to borrow this item' })
       }
-
       if (!item.available) {
         throw new Error({ message: 'Item is currently unavailable' })
       }
@@ -44,8 +45,6 @@ router.post(
       await transactionRequest.save();
 
       // == create new notification ==
-      const { itemId, pickUpTime, dropOffTime, message } = req.body
-
       const lendingRequestData = {
         borrowerUsername: req.user.username,
         transactionId: transactionRequest._id,
