@@ -228,7 +228,12 @@ export default {
         v => v.length < 1000 || "Message must be less than 1000 character"
       ],
       startDateRules: [v => !!v || "Pick up date is required"],
-      endDateRules: [v => !!v || "Drop off date is required"],
+      endDateRules: [
+        v => !!v || "Drop off date is required",
+        () =>
+          this.totalCost() < this.$store.state.users.me.karma ||
+          "Not enough Karma"
+      ],
       startTimeRules: [
         v => !!v || "Pick up time is required",
         () =>
@@ -253,7 +258,8 @@ export default {
       itemDetail: state => state.items.itemDetail,
       loadingTransactions: state => state.transactions.loading,
       itemId: state => state.items.itemDetail._id,
-      lenderId: state => state.items.itemDetail.ownerId
+      lenderId: state => state.items.itemDetail.ownerId,
+      myKarma: state => state.users.me.karma
     })
   },
   methods: {
