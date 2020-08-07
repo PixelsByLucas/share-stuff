@@ -33,7 +33,7 @@
                   v-on:close-dialog="borrowDialog = false"
                 />
               </v-dialog>
-              <v-btn v-else to="/item-borrow">BORROW</v-btn>
+              <v-btn v-else @click="toBorrowPage()">BORROW</v-btn>
             </div>
             <!-- NOTE: render edit button if item belongs to user -->
             <v-btn v-else>EDIT</v-btn>
@@ -80,6 +80,7 @@ import LeafletMap from "../components/LeafletMap";
 import LoginRegisterModal from "../components/LoginRegisterModal";
 import { profileDummyData } from "../utils/dummyData";
 import ReviewList from "../components/ReviewList";
+import router from "../router";
 
 export default {
   name: "ItemDetail",
@@ -101,11 +102,20 @@ export default {
       itemDetail: state => state.items.itemDetail,
       fetchingItems: state => state.items.fetchingItems,
       myUsername: state => state.users.me.username,
+      myKarma: state => state.users.me.karma,
       itemOwnerUsername: state => state.items.itemDetail.owner.username,
       isLoggedIn: state => state.users.me.isLoggedIn
     })
   },
-  methods: {},
+  methods: {
+    toBorrowPage() {
+      if (this.myKarma < this.itemDetail.price) {
+        alert("You don't have enough karma for this item");
+      } else {
+        router.push("/item-borrow");
+      }
+    }
+  },
   created() {
     this.$store.dispatch("getItemDetail", this.$route.params.id);
   }

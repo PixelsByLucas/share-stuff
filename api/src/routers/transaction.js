@@ -24,8 +24,15 @@ router.post(
 
     try {
       const item = await Item.findById(req.body.itemId)
+      const borrower = await User.findById(req.user._id)
+
+
       if (!item) {
         throw new Error({ message: 'Item does not exist' })
+      }
+
+      if (borrower.karma < item.price) {
+        throw new Error({ message: 'Not enough karma to borrow this item' })
       }
 
       if (!item.available) {

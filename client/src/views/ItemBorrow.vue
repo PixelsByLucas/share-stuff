@@ -257,22 +257,6 @@ export default {
     })
   },
   methods: {
-    // combineStartTimeAndDate() {
-    //   let result;
-    //   const {
-    //     pickUpDate,
-    //     pickUpTime,
-    //   } = this.formValues;
-
-    //   if (pickUpDate && pickUpTime) {
-    //     result = combineDateAndTimeToUTC(
-    //       pickUpDate,
-    //       pickUpTime
-    //     ).toISOString();
-    //   }
-
-    //   return result;
-    // },
     validatePickupNotBeforeNow() {
       let result = true;
       const { pickUpDate, pickUpTime } = this.formValues;

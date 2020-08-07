@@ -7,7 +7,7 @@ A web application designed to facilitate and encourage the borrowing and lending
 ## File Structure
 
 ### .vscode
-This contains configuration for eslint which works in combination with prittier to format and standardize syntax.
+This contains configuration for eslint which works in combination with prettier to format and standardize syntax.
 
 ### api
 This directory contains all back-end files.  The back-end is built with Express and MongoDB.  A more in-depth README specific to this repository can be found within it.
