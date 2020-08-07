@@ -11,7 +11,7 @@ export const createBorrowRequestAPI = (formData, token) => {
     }
   })
     .then(res => res)
-    .catch(error => console.log("ERROR createBorrowRequestAPI: ", error))
+    .catch(error => console.log("ERROR createBorrowRequestAPI: ", error.message))
 }
 
 export const editTransactionStatusAPI = (token, id, status) => {
