@@ -202,7 +202,7 @@
     <v-card-actions class="card-actions">
       <v-row no-gutters>
         <v-spacer></v-spacer>
-        <v-btn v-on:click="handleSubmit" :disabled="loadingTransactions ? true : false">SUBMIT</v-btn>
+        <v-btn v-on:click="handleSubmit" :disabled="fetchingTransaction ? true : false">SUBMIT</v-btn>
       </v-row>
     </v-card-actions>
   </v-card>
@@ -256,7 +256,7 @@ export default {
   computed: {
     ...mapState({
       itemDetail: state => state.items.itemDetail,
-      loadingTransactions: state => state.transactions.loading,
+      fetchingTransaction: state => state.users.fetchingTransaction,
       itemId: state => state.items.itemDetail._id,
       lenderId: state => state.items.itemDetail.ownerId,
       myKarma: state => state.users.me.karma

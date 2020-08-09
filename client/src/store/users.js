@@ -14,7 +14,9 @@ import {
   deleteNotificationAPI
 } from "../apis/notifications"
 import { editTransactionStatusAPI } from "../apis/transactions"
+import { createBorrowRequestAPI } from "../apis/transactions"
 import { geocode } from "../apis/geocoding"
+import router from "../router"
 
 const EMPTY_USER = {
   _id: null,
@@ -52,7 +54,8 @@ export default {
       ...EMPTY_USER
     },
     fetchingUser: false,
-    fetchingLocation: false
+    fetchingLocation: false,
+    fetchingTransaction: false
   },
   mutations: {
     USER(state, payload) {
@@ -73,6 +76,9 @@ export default {
     },
     FETCHING_LOCATION(state, payload) {
       state.fetchingLocation = payload
+    },
+    FETCHING_TRANSACTION(state, payload) {
+      state.fetchingTransaction = payload
     },
     SET_PROFILE_USER(state, payload) {
       state.profileUser = { ...state.profileUser, ...payload }
@@ -160,6 +166,9 @@ export default {
       const isUnique = await uniqueUsernameRequest(payload)
       return isUnique
     },
+    async socketKarma({ state, commit }, payload) {
+      commit("USER", { karma: state.me.karma + payload })
+    },
     // === User Notifications ===
     async setNotificationSeen({ state, commit }, payload) {
       const user = await editNotificationStatusAPI(state.me.token, payload)
@@ -170,7 +179,9 @@ export default {
       commit("USER", user)
     },
     async socketNotification({ state, commit }, payload) {
-      const alreadyExists = state.me.notifications.find(({ notification }) => { notification.id === payload.notification.id })
+      const alreadyExists = state.me.notifications.find(({ notification }) => {
+        notification.id === payload.notification.id
+      })
 
       if (!alreadyExists) {
         commit("PUSH_SOCKET_NOTIFICATION", payload)
@@ -178,6 +189,23 @@ export default {
     },
 
     // === User Transactions ===
+    async sendBorrowRequest({ state, commit }, payload) {
+      commit("FETCHING_TRANSACTION", true)
+      const { token } = state.me
+
+      const reducedKarma = await createBorrowRequestAPI(payload, token)
+
+      if (reducedKarma) {
+        commit("USER", { karma: reducedKarma })
+        router.go(-1)
+        // TODO: Probably want to display feedback of successful POST here.
+      } else {
+        // TODO: Going to want to provide feedback to the user if the POST req doesn't succeed.
+      }
+
+      commit("FETCHING_TRANSACTION", false)
+    },
+
     async acceptDeclineTransaction({ state, commit }, payload) {
       const user = await editTransactionStatusAPI(state.me.token, payload.id, payload.status)
       commit("USER", user)

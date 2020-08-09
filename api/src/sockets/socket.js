@@ -24,6 +24,9 @@ const sockets = {
   },
   emitNotification(notification, socketId) {
     io.to(socketId).emit('new notification', notification)
+  },
+  emitKarma(amount, socketId) {
+    io.to(socketId).emit('karma', amount)
   }
 }
 

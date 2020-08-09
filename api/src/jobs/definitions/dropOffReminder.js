@@ -3,9 +3,7 @@ const DropOffReminder = require('../../models/notifications/dropOffReminder')
 const Transaction = require('../../models/transaction')
 const socket = require('../../sockets/socket')
 const sendTextEmail = require('../../emails/send')
-const { dropOffReminderText } = require('../../emails/body')
-const agenda = require('../agenda')
-// https://www.codementor.io/@miguelkouam/how-to-schedule-tasks-in-node-js-express-using-agenda-h8sdo6b9p
+const { borrowerDropOffReminderText, lenderDropOffReminderText } = require('../../emails/body')
 
 const dropOffReminder = agenda => {
   agenda.define("drop off reminder", async job => {
@@ -13,13 +11,13 @@ const dropOffReminder = agenda => {
       const { transactionId, itemName } = job.attrs.data
 
       if (!transactionId || !itemName) {
-        throw new Error('Either transactionId or itemName was not provided to the job')
+        throw new Error('TransactionId and/or itemName were not provided to the job')
       }
 
       const transaction = await Transaction.findById(transactionId)
 
       if (!transaction) {
-        throw new Error(`No transaction found with id: ${transactionId}`)
+        throw new Error(`No transaction found with ID: ${transactionId}`)
       }
 
       const borrower = await User.findById(transaction.borrowerId)
@@ -56,7 +54,7 @@ const dropOffReminder = agenda => {
       const borrowerNotification = await borrowerDropOffReminder.populate({ path: "transaction" }).execPopulate()
 
       if (borrower.isLoggedIn && borrower.socketId) {
-        socket.emitNotification({ borrowerNotification, notificationType: "DropOffReminder" }, borrower.socketId)
+        socket.emitNotification({ notification: borrowerNotification, notificationType: "DropOffReminder" }, borrower.socketId)
       } else {
         sendTextEmail(borrower.email, 'Drop Off Reminder', borrowerDropOffReminderText(borrowerDropOffReminder))
       }
@@ -64,7 +62,7 @@ const dropOffReminder = agenda => {
       // == email/socket notification to lender ==
       const lenderNotification = await lenderDropOffReminder.populate({ path: "transaction" }).execPopulate()
       if (lender.isLoggedIn && lender.socketId) {
-        socket.emitNotification({ lenderNotification, notificationType: 'DropOffReminder' }, lender.socketId)
+        socket.emitNotification({ notification: lenderNotification, notificationType: 'DropOffReminder' }, lender.socketId)
       } else {
         sendTextEmail(lender.email, 'Drop Off Reminder', lenderDropOffReminderText(lenderDropOffReminder))
       }
@@ -75,5 +73,4 @@ const dropOffReminder = agenda => {
   })
 }
 
-// TODO: "TEST THE ABOVE"
 module.exports = dropOffReminder
