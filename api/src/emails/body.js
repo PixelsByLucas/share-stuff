@@ -44,7 +44,7 @@ const lenderPickUpReminderText = (notification) =>
   \nShareStuff`
 
 // == Drop Off Reminder ==
-const borrowerDropOffReminder = (notification) =>
+const borrowerDropOffReminderText = (notification) =>
   `Hey ${notification.borrowerUsername},
   \n\nThe drop off date for ${notification.itemName} from ${notification.lenderUsername} is less than 24 hours away.
   \nLogin to view your notification.
@@ -52,7 +52,7 @@ const borrowerDropOffReminder = (notification) =>
   \n\nDo good,
   \nShareStuff`
 
-const lenderDropOffReminder = (notification) =>
+const lenderDropOffReminderText = (notification) =>
   `Hey ${notification.lenderUsername},
   \n\n${notification.borrowerUsername} will be arriving to drop off ${notification.itemName} in less than 24 hours.
   \nLogin to view your notifications.
@@ -64,6 +64,9 @@ module.exports = {
   welcomeText,
   lendingRequestText,
   borrowRequestText,
-  borrowerPickUpReminderText
+  borrowerPickUpReminderText,
+  lenderPickUpReminderText,
+  borrowerDropOffReminderText,
+  lenderDropOffReminderText
 }
 

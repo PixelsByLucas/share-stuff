@@ -54,7 +54,7 @@ const pickUpReminder = agenda => {
       const borrowerNotification = await borrowerPickUpReminder.populate({ path: "transaction" }).execPopulate()
 
       if (borrower.isLoggedIn && borrower.socketId) {
-        socket.emitNotification({ borrowerNotification, notificationType: "PickUpReminder" }, borrower.socketId)
+        socket.emitNotification({ notification: borrowerNotification, notificationType: "PickUpReminder" }, borrower.socketId)
       } else {
         sendTextEmail(borrower.email, 'Pick Up Reminder', borrowerPickUpReminderText(borrowerPickUpReminder))
       }
@@ -62,7 +62,7 @@ const pickUpReminder = agenda => {
       // == email/socket notification to lender ==
       const lenderNotification = await lenderPickUpReminder.populate({ path: "transaction" }).execPopulate()
       if (lender.isLoggedIn && lender.socketId) {
-        socket.emitNotification({ lenderNotification, notificationType: 'PickUpReminder' }, lender.socketId)
+        socket.emitNotification({ notification: lenderNotification, notificationType: 'PickUpReminder' }, lender.socketId)
       } else {
         sendTextEmail(lender.email, 'Pick Up Reminder', lenderPickUpReminderText(lenderPickUpReminder))
       }

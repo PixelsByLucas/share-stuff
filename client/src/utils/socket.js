@@ -19,4 +19,8 @@ const initListeners = () => {
     store.dispatch("socketNotification", notification)
     sounds.notification.play()
   })
+
+  socket.on("karma", (amount) => {
+    store.dispatch("socketKarma", amount)
+  })
 }

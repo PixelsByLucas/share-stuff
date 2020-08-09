@@ -32,16 +32,16 @@ router.post(
         throw new Error({ message: 'Item does not exist' })
       }
 
-      // FIX THIS: should be (borrower.karma < )
       if (borrower.karma < item.price * dateMath.duration(pickUpTime, dropOffTime)) {
         throw new Error({ message: 'Not enough karma to borrow this item' })
       }
+
       if (!item.available) {
         throw new Error({ message: 'Item is currently unavailable' })
       }
 
       // == create new transaction ==
-      const transactionRequest = new Transaction(req.body);
+      const transactionRequest = new Transaction({ ...req.body, price: item.price * dateMath.duration(pickUpTime, dropOffTime) });
       await transactionRequest.save();
 
       // == create new notification ==
@@ -57,7 +57,7 @@ router.post(
       }
 
       const lendingRequest = new LendingRequest(lendingRequestData);
-      await lendingRequest.save();
+      await lendingRequest.save()
 
       // == associate notification with lender ==
       const lender = await User.findById(req.body.lenderId)
@@ -73,9 +73,13 @@ router.post(
         sendTextEmail(lender.email, 'New Lending Request', lendingRequestText(notification, lender.username))
       }
 
-      res.status(201).send();
+      // == deduct karma from borrower ==
+      borrower.karma = borrower.karma - item.price * dateMath.duration(pickUpTime, dropOffTime)
+      await borrower.save()
+
+      res.status(201).json(borrower.karma)
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message })
     }
   }
 )
@@ -101,7 +105,9 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
 
     const borrower = await User.findById(transaction.borrowerId)
     borrower.notifications.push({ notification: borrowRequest._id, notificationType: "BorrowRequest" });
-    borrower.save();
+    // NOTE: following line returns borrower karma if declined
+    borrower.karma = req.body.status === "declined" ? borrower.karma + transaction.price : borrower.karma
+    await borrower.save();
 
 
     // == update transaction status to active == 
@@ -113,6 +119,11 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
 
     if (borrower.isLoggedIn && borrower.socketId) {
       socket.emitNotification({ notification, notificationType: "BorrowRequest" }, borrower.socketId)
+
+      if (transaction.status === "declined" && borrower.isLoggedIn && borrower.socketId) {
+        socket.emitKarma(transaction.price, borrower.socketId)
+      }
+
     } else {
       const status = transaction.status === 'declined' ? 'Declined' : 'Accepted'
       sendTextEmail(borrower.email, `Borrow Request ${status}`, borrowRequestText(notification, borrower.username, status))
@@ -122,12 +133,14 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     if (transaction.status === 'active') {
       const pickUpReminderTime = new Date(new Date(transaction.pickUpTime).getTime() - 60 * 60 * 24 * 1000)
       const dropOffReminderTime = new Date(new Date(transaction.dropOffTime).getTime() - 60 * 60 * 24 * 1000)
+      const karmaPaymentTime = new Date(transaction.dropOffTime).getTime()
 
       agenda.schedule(pickUpReminderTime, "pick up reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
       agenda.schedule(dropOffReminderTime, "drop off reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
+      agenda.schedule(karmaPaymentTime, "allocate karma", { transactionId: transaction._id, recipientId: transaction.lenderId })
     }
 
-    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate();
+    const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
     res.send(user);
   } catch (error) {
     res.status(400).json({ error: error.message });
