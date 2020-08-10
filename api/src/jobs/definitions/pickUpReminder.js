@@ -51,7 +51,7 @@ const pickUpReminder = agenda => {
       await lender.save()
 
       // == email/socket notification to borrower ==
-      const borrowerNotification = await borrowerPickUpReminder.populate({ path: "transaction" }).execPopulate()
+      const borrowerNotification = await borrowerPickUpReminder.populate({ path: "transaction" }).populate({ path: "itemLocation", select: "primaryLocation -_id" }).execPopulate()
 
       if (borrower.isLoggedIn && borrower.socketId) {
         socket.emitNotification({ notification: borrowerNotification, notificationType: "PickUpReminder" }, borrower.socketId)
