@@ -120,7 +120,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     if (borrower.isLoggedIn && borrower.socketId) {
       socket.emitNotification({ notification, notificationType: "BorrowRequest" }, borrower.socketId)
 
-      if (transaction.status === "declined" && borrower.isLoggedIn && borrower.socketId) {
+      if (transaction.status === "declined") {
         socket.emitKarma(transaction.price, borrower.socketId)
       }
 
@@ -129,8 +129,8 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
       sendTextEmail(borrower.email, `Borrow Request ${status}`, borrowRequestText(notification, borrower.username, status))
     }
 
-    // == schedule agenda reminders ==
     if (transaction.status === 'active') {
+      // == schedule agenda jobs ==
       const pickUpReminderTime = new Date(new Date(transaction.pickUpTime).getTime() - 60 * 60 * 24 * 1000)
       const dropOffReminderTime = new Date(new Date(transaction.dropOffTime).getTime() - 60 * 60 * 24 * 1000)
       const karmaPaymentTime = new Date(transaction.dropOffTime).getTime()
@@ -138,6 +138,23 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
       agenda.schedule(pickUpReminderTime, "pick up reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
       agenda.schedule(dropOffReminderTime, "drop off reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
       agenda.schedule(karmaPaymentTime, "allocate karma", { transactionId: transaction._id, recipientId: transaction.lenderId })
+
+      // == decline conflicting pending requests ==
+      const conflictingTransactions = await Transaction.find({ itemId: transaction.itemId, status: "pending" }).populate("borrowerId").exec()
+      conflictingTransactions.forEach(transaction => {
+        transaction.status = "declined"
+        transaction.save()
+
+        // TODO: could potentially send socket notification to borrower here to update pending (now declined) notification in real time.
+
+        // NOTE: following line returns borrower karma if declined
+        transaction.borrowerId.karma = transaction.borrowerId.karma + transaction.price
+        transaction.borrowerId.save()
+
+        if (transaction.borrowerId.isLoggedIn && transaction.borrowerId.socketId) {
+          socket.emitKarma(transaction.price, transaction.borrowerId.socketId)
+        }
+      })
     }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
