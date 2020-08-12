@@ -29,15 +29,15 @@ router.post(
 
 
       if (!item) {
-        throw new Error({ message: 'Item does not exist' })
+        throw new Error('Item does not exist')
       }
 
       if (borrower.karma < item.price * dateMath.duration(pickUpTime, dropOffTime)) {
-        throw new Error({ message: 'Not enough karma to borrow this item' })
+        throw new Error('Not enough karma to borrow this item')
       }
 
       if (!item.available) {
-        throw new Error({ message: 'Item is currently unavailable' })
+        throw new Error('Item is currently unavailable')
       }
 
       // == create new transaction ==
@@ -79,6 +79,7 @@ router.post(
 
       res.status(201).json(borrower.karma)
     } catch (error) {
+      console.log("ERROR", error)
       res.status(500).json({ error: error.message })
     }
   }
@@ -130,6 +131,16 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     }
 
     if (transaction.status === 'active') {
+      // == toggle item to unailable ==
+      const item = await Item.findById(transaction.itemId)
+
+      if (!item || !item.available) {
+        throw new Error(!item ? `${req.notification.itemName} could not be found` : `${req.notification.itemName} is currently unavailableme`)
+      }
+
+      item.available = false
+      await item.save()
+
       // == schedule agenda jobs ==
       const pickUpReminderTime = new Date(new Date(transaction.pickUpTime).getTime() - 60 * 60 * 24 * 1000)
       const dropOffReminderTime = new Date(new Date(transaction.dropOffTime).getTime() - 60 * 60 * 24 * 1000)
@@ -160,7 +171,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
     res.send(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).send(error);
   }
 })
 
