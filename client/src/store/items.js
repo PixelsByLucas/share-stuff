@@ -1,11 +1,12 @@
 import { createItem, getItemsByOwner, searchItemsAPI, getItemAPI } from "../apis/items"
 import router from "../router"
+// NOTE: this.$state.store.items.itemDetail will NOT return an empty object if: state = { itemDetail: {} }
 export default {
   state: {
     userItems: [],
     profileItems: [],
     allItems: [],
-    itemDetail: {},
+    itemDetail: null,
     fetchingItems: false,
     postingItem: false
   },

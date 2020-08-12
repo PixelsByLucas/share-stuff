@@ -210,6 +210,7 @@
 <script>
 import { mapState } from "vuex";
 import { combineDateAndTimeToUTC } from "../utils/dateFormat";
+import router from "../router";
 
 export default {
   // TODO: set min/max times when date is the same
@@ -372,6 +373,12 @@ export default {
     },
     closeModal(modalName) {
       this[modalName] = false;
+    }
+  },
+  created() {
+    // TODO: This works but I am getting type error in the console
+    if (!this.$store.state.items.itemDetail) {
+      router.go(-1);
     }
   }
 };
