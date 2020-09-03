@@ -42,8 +42,8 @@ const convertTimeTo12Format = (hourIn24, minutes) => {
   return `${hours}:${minutes}${amOrPm}`
 }
 
-export const dateFormat = (date) => {
-  date = new Date(date)
+export const dateFormat = (dateString) => {
+  const date = new Date(dateString)
   // const year = date.getFullYear()
   const month = months[date.getMonth()]
   const dayOfMonth = date.getDate()
@@ -53,6 +53,11 @@ export const dateFormat = (date) => {
   return `${dayOfWeek} ${month} ${dayOfMonth} - ${time}`
 }
 
+export const getTimeFromDate = (dateString) => {
+  const date = new Date(dateString)
+  return convertTimeTo12Format(date.getHours(), date.getMinutes())
+}
+
 export const combineDateAndTimeToUTC = (date, time) => {
   // NOTE: date arrives as yyyy-mm-dd
   const dateParts = date.split("-")
@@ -60,6 +65,12 @@ export const combineDateAndTimeToUTC = (date, time) => {
   date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], timeParts[0], timeParts[1])
 
   return date
+}
+
+export const getVuetifyDateFormat = (date) => {
+  const month = date.getMonth() >= 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+  const day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
+  return `${date.getFullYear()}-${month}-${day}`
 }
 
 export const getDurationInDays = (pickUpDate, dropOffDate) => {

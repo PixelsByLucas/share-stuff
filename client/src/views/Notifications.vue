@@ -25,11 +25,16 @@ import LendingRequest from "../components/notifications/LendingRequest";
 import BorrowRequest from "../components/notifications/BorrowRequest";
 import PickUpReminder from "../components/notifications/PickUpReminder";
 import DropOffReminder from "../components/notifications/DropOffReminder";
+import ItemReturnFlow from "../components/notifications/ItemReturnFlow";
+
 export default {
   name: "Notifications",
   components: {
     LendingRequest,
-    BorrowRequest
+    BorrowRequest,
+    DropOffReminder,
+    PickUpReminder,
+    ItemReturnFlow
   },
   data() {
     return {
@@ -57,6 +62,8 @@ export default {
           return PickUpReminder;
         case "DropOffReminder":
           return DropOffReminder;
+        case "ItemReturnFlow":
+          return ItemReturnFlow;
       }
     },
     setSelectedNotification(id) {

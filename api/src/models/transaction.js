@@ -14,6 +14,7 @@ const transactionSchema = new mongoose.Schema({
   itemId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: 'Item'
   },
   price: {
     type: Number,
@@ -23,7 +24,19 @@ const transactionSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'completed', 'declined', 'active']
+    enum: ['pending', 'completed', 'incomplete', 'declined', 'active']
+  },
+  reviews: {
+    borrower: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: 'Review'
+    },
+    lender: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: 'Review'
+    }
   },
   pickUpTime: {
     type: Date,

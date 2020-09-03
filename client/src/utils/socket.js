@@ -11,6 +11,7 @@ export const socketConnect = (token) => {
 }
 
 export const socketDisconnect = () => {
+  // NOTE: socket here is undefined.  Why?
   socket.emit('logout')
 }
 

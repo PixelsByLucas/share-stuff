@@ -6,7 +6,7 @@
     @mouseleave="isMouseOver = false"
   >
     <v-card>
-      <v-img :src="url"></v-img>
+      <v-img :src="url" :class="!item.available ? 'image-unavailable' : null"></v-img>
     </v-card>
     <h3>{{ item.name }}</h3>
     <p class="no-margin">{{ description }}</p>
@@ -54,6 +54,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.image-unavailable {
+  opacity: 0.8;
+}
 .item {
   width: 100%;
   &:hover {

@@ -79,7 +79,6 @@ router.post(
 
       res.status(201).json(borrower.karma)
     } catch (error) {
-      console.log("ERROR", error)
       res.status(500).json({ error: error.message })
     }
   }
@@ -145,10 +144,13 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
       const pickUpReminderTime = new Date(new Date(transaction.pickUpTime).getTime() - 60 * 60 * 24 * 1000)
       const dropOffReminderTime = new Date(new Date(transaction.dropOffTime).getTime() - 60 * 60 * 24 * 1000)
       const karmaPaymentTime = new Date(transaction.dropOffTime).getTime()
+      const returnFlowTime = new Date(transaction.dropOffTime).getTime()
 
       agenda.schedule(pickUpReminderTime, "pick up reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
       agenda.schedule(dropOffReminderTime, "drop off reminder", { transactionId: transaction._id, itemName: req.notification.itemName })
       agenda.schedule(karmaPaymentTime, "allocate karma", { transactionId: transaction._id, recipientId: transaction.lenderId })
+      // TODO: change below time to returnFlowTime
+      agenda.schedule(karmaPaymentTime, "item return", { transactionId: transaction._id, itemName: req.notification.itemName })
 
       // == decline conflicting pending requests ==
       const conflictingTransactions = await Transaction.find({ itemId: transaction.itemId, status: "pending" }).populate("borrowerId").exec()
@@ -171,7 +173,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
     res.send(user);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).json({ error: error.message })
   }
 })
 

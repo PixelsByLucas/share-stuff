@@ -3,6 +3,7 @@ import Vuex from "vuex"
 
 import alerts from "./alerts"
 import items from "./items"
+import reviews from "./reviews"
 import search from "./search"
 import users from "./users"
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
   modules: {
     alerts,
     items,
+    reviews,
     search,
     users
   },

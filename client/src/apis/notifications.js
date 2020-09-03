@@ -15,6 +15,21 @@ export const editNotificationStatusAPI = (token, id) => {
     })
 }
 
+export const editReturnStatusAPI = (token, id, itemReturned) => {
+  return axios({
+    method: "put",
+    url: `${SERVER_URL}/notifications/return/${id}`,
+    data: { itemReturned },
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(error => {
+      console.log("ERROR editReturnStatusAPI: ", error.message)
+    })
+}
+
 export const deleteNotificationAPI = (token, id) => {
   return axios({
     method: "delete",
