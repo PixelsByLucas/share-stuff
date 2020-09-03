@@ -98,9 +98,26 @@ const userSchema = new mongoose.Schema({
     notificationType: {
       type: String,
       required: true,
-      enum: ["LendingRequest", "BorrowRequest", 'PickUpReminder', 'DropOffReminder']
+      enum: ["LendingRequest", "BorrowRequest", 'PickUpReminder', 'DropOffReminder', "ItemReturnFlow"]
     }
-  }]
+  }],
+  reviews: [{
+    review: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Review"
+    }
+  }],
+  rating: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  totalRatings: {
+    type: Number,
+    required: true,
+    default: 0
+  }
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }

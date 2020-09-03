@@ -11,7 +11,8 @@ import {
 } from "../apis/users"
 import {
   editNotificationStatusAPI,
-  deleteNotificationAPI
+  deleteNotificationAPI,
+  editReturnStatusAPI
 } from "../apis/notifications"
 import { editTransactionStatusAPI } from "../apis/transactions"
 import { createBorrowRequestAPI } from "../apis/transactions"
@@ -172,6 +173,10 @@ export default {
     // === User Notifications ===
     async setNotificationSeen({ state, commit }, payload) {
       const user = await editNotificationStatusAPI(state.me.token, payload)
+      commit("USER", user)
+    },
+    async setReturnStatus({ state, commit }, payload) {
+      const user = await editReturnStatusAPI(state.me.token, payload.id, payload.itemReturned)
       commit("USER", user)
     },
     async deleteNotification({ state, commit }, payload) {

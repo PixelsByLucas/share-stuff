@@ -209,7 +209,10 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { combineDateAndTimeToUTC } from "../utils/dateFormat";
+import {
+  combineDateAndTimeToUTC,
+  getVuetifyDateFormat
+} from "../utils/dateFormat";
 import router from "../router";
 
 export default {
@@ -247,7 +250,7 @@ export default {
           this.validateDropOffNotBeforePickUp() ||
           "Drop off cannot be before pick up"
       ],
-      dateToday: new Date().toISOString().substr(0, 10),
+      dateToday: getVuetifyDateFormat(new Date()),
       pickUpDateModal: false,
       pickUpTimeModal: false,
       dropOffDateModal: false,

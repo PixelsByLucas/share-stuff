@@ -17,6 +17,7 @@ const userRouter = require('./routers/user')
 const itemRouter = require('./routers/item')
 const notificationsRouter = require('./routers/notifications')
 const transactionRouter = require('./routers/transaction')
+const reviewRouter = require('./routers/review')
 
 const unicodeLogo = require('./utils/unicodeLogo')
 const socketAuth = require('./middleware/socketAuth')
@@ -29,6 +30,7 @@ app.use(itemRouter)
 app.use(notificationsRouter)
 app.use(userRouter)
 app.use(transactionRouter)
+app.use(reviewRouter)
 io.use(socketAuth)
 
 io.on('connection', async (socket) => {
