@@ -8,6 +8,18 @@ const ItemReturnFlow = require("../models/notifications/itemReturnFlow")
 const { findByIdAndUpdate } = require("../models/user")
 const agenda = require('../jobs/agenda')
 
+// == get reviews by username ==
+router.get("/reviews/:username", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).populate('reviews.review').exec()
+
+    res.send(user.reviews)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+})
+
+// == post review ==
 router.post("/review", auth, async (req, res) => {
   try {
     if (!req.body.transactionId) {
@@ -36,6 +48,7 @@ router.post("/review", auth, async (req, res) => {
 
     const reviewData = {
       transaction: transaction._id,
+      reviewerUsername: req.user.username,
       reviewer: req.user._id,
       reviewee: userIsBorrower ? transaction.lenderId : transaction.borrowerId,
       message: req.body.message || "",
@@ -54,9 +67,9 @@ router.post("/review", auth, async (req, res) => {
     }
 
     // == update reviewee with new review after 48 hours ==
-    const fourtyEightHrsFromNow = new Date(new Date().getTime() + 60 * 60 * 48 * 1000)
-
-    agenda.schedule(fourtyEightHrsFromNow, "apply review", { revieweeId: review.reviewee, reviewId: review._id, rating: review.rating })
+    const fortyEightHrsFromNow = new Date(new Date().getTime() + 60 * 60 * 48 * 1000)
+    // TODO: change job time to fortyEightHrsFromNow once testing complete
+    agenda.schedule(new Date(), "apply review", { revieweeId: review.reviewee, reviewId: review._id, rating: review.rating })
 
     // == if user is lender, initiate itemReturnFlow for borrower ==
     if (!userIsBorrower) {

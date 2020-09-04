@@ -55,14 +55,16 @@
               variant="wide"
             />
           </v-row>
-          <!-- == reviews == -->
-          <v-row>
-            <ReviewList :reviews="reviews" />
-          </v-row>
         </v-col>
         <v-col cols="6">
           <!-- == map == -->
-          <LeafletMap :coords="itemDetail.owner.primaryLocation" :zoomProp="13" marker="location" />
+          <div class="map-box">
+            <LeafletMap
+              :coords="itemDetail.owner.primaryLocation"
+              :zoomProp="13"
+              marker="location"
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -79,7 +81,6 @@ import Carousel from "../components/Carousel";
 import LeafletMap from "../components/LeafletMap";
 import LoginRegisterModal from "../components/LoginRegisterModal";
 import { profileDummyData } from "../utils/dummyData";
-import ReviewList from "../components/ReviewList";
 import router from "../router";
 
 export default {
@@ -88,8 +89,7 @@ export default {
     AvatarRating,
     Carousel,
     LeafletMap,
-    LoginRegisterModal,
-    ReviewList
+    LoginRegisterModal
   },
   data() {
     return {
@@ -142,5 +142,8 @@ export default {
   transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
+}
+.map-box {
+  height: 300px;
 }
 </style>

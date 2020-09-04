@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row v-for="review in reviews" :key="review._id">
+    <v-row v-for="{review} in reviews" :key="review._id">
       <v-col xs="12" sm="9" md="9">
         <ReviewItem v-bind:review="review" />
       </v-col>

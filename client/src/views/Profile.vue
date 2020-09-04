@@ -33,7 +33,6 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { profileDummyData } from "../utils/dummyData";
 import AvatarRating from "../components/AvatarRating";
 import UserBio from "../components/UserBio";
 import StuffReviewList from "../components/StuffReviewList";
@@ -47,12 +46,12 @@ export default {
   },
   data() {
     return {
-      ...profileDummyData,
       editing: false
     };
   },
   computed: {
     ...mapState({
+      reviews: state => state.reviews.profileReviews,
       fetchingUser: state => state.users.fetchingUser,
       fetchingItems: state => state.items.fetchingItems,
       profileUser: state => state.users.profileUser,
@@ -63,9 +62,12 @@ export default {
   methods: {
     getProfileData(paramUsername) {
       if (!this.fetchingUser && this.isLoggedIn) {
-        this.$store.dispatch("getUserProfileData", paramUsername).then(() => {
-          this.$store.dispatch("getProfileItems", this.profileUser._id);
-        });
+        this.$store
+          .dispatch("getUserProfileData", paramUsername)
+          .then(async () => {
+            this.$store.dispatch("getProfileItems", this.profileUser._id);
+            this.$store.dispatch("getProfileReviews", paramUsername);
+          });
       }
     }
   },
