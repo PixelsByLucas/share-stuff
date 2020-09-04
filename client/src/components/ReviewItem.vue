@@ -2,10 +2,14 @@
   <v-card class="review-item">
     <v-card-title>
       <v-icon class="review-item__icon" small :color="color">{{ icon }}</v-icon>
-      <a class="review-item__username">{{ review.owner.username }}</a>
+      <router-link
+        class="review-item__link"
+        :to="`/profile/${review.reviewerUsername}`"
+        tag="a"
+      >{{review.reviewerUsername}}</router-link>
     </v-card-title>
     <v-card-text>
-      <p>{{ review.text }}</p>
+      <p>{{ review.message }}</p>
     </v-card-text>
   </v-card>
 </template>
@@ -15,16 +19,16 @@ export default {
   props: ["review"],
   computed: {
     icon() {
-      const { up } = this.review.rating;
-      if (up) {
+      const { rating } = this.review;
+      if (rating > 0) {
         return "mdi-thumb-up-outline";
       } else {
         return "mdi-thumb-down-outline";
       }
     },
     color() {
-      const { up } = this.review.rating;
-      if (up) {
+      const { rating } = this.review;
+      if (rating > 0) {
         return "#37a175";
       } else {
         return "#cc4c49";
@@ -35,7 +39,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .review-item {
-  &__username {
+  &__link {
     font-size: 0.8rem;
   }
   &__icon {

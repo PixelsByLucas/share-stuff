@@ -34,7 +34,7 @@
                 <v-row>
                   <v-col cols="12">
                     <p>
-                      {{`${notification.borrowerUsername} was due to return ${notification.itemName} today at ${dropOffTime}.`}}
+                      {{`${notification.borrowerUsername === myUsername ? "You were" : `${notification.borrowerUsername} was`} due to return ${notification.itemName} today at ${dropOffTime}.`}}
                       <br />
                       <strong>Has the item been returned yet?</strong>
                     </p>
@@ -166,7 +166,8 @@ export default {
   },
   computed: {
     ...mapState({
-      userId: state => state.users.me._id
+      userId: state => state.users.me._id,
+      myUsername: state => state.users.me.username
     }),
     days() {
       let result = "days";
