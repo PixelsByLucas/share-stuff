@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row>
         <v-col
-          v-for="{notification, notificationType} in notifications"
+          v-for="{ notification, notificationType } in notifications"
           cols="12"
           :key="notification._id"
         >
@@ -23,6 +23,7 @@
 import { mapState } from "vuex";
 import LendingRequest from "../components/notifications/LendingRequest";
 import BorrowRequest from "../components/notifications/BorrowRequest";
+import BorrowRequestExpired from "../components/notifications/BorrowRequestExpired";
 import PickUpReminder from "../components/notifications/PickUpReminder";
 import DropOffReminder from "../components/notifications/DropOffReminder";
 import ItemReturnFlow from "../components/notifications/ItemReturnFlow";
@@ -58,6 +59,8 @@ export default {
           return LendingRequest;
         case "BorrowRequest":
           return BorrowRequest;
+        case "BorrowRequestExpired":
+          return BorrowRequestExpired;
         case "PickUpReminder":
           return PickUpReminder;
         case "DropOffReminder":

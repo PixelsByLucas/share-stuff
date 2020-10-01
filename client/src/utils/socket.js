@@ -16,12 +16,16 @@ export const socketDisconnect = () => {
 }
 
 const initListeners = () => {
-  socket.on('new notification', (notification) => {
+  socket.on("new notification", (notification) => {
     store.dispatch("socketNotification", notification)
     sounds.notification.play()
   })
 
   socket.on("karma", (amount) => {
     store.dispatch("socketKarma", amount)
+  })
+
+  socket.on("expiration", (lendingRequest) => {
+    store.dispatch("socketExpiration", lendingRequest)
   })
 }

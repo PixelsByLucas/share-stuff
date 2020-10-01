@@ -98,7 +98,7 @@ const userSchema = new mongoose.Schema({
     notificationType: {
       type: String,
       required: true,
-      enum: ["LendingRequest", "BorrowRequest", 'PickUpReminder', 'DropOffReminder', "ItemReturnFlow"]
+      enum: ["LendingRequest", "BorrowRequest", "BorrowRequestExpired", 'PickUpReminder', 'DropOffReminder', "ItemReturnFlow"]
     }
   }],
   reviews: [{

@@ -24,7 +24,7 @@ const transactionSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'completed', 'incomplete', 'declined', 'active']
+    enum: ['pending', 'completed', 'incomplete', 'declined', 'expired', 'active']
   },
   reviews: {
     borrower: {
