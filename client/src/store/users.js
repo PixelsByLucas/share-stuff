@@ -86,6 +86,9 @@ export default {
     },
     PUSH_SOCKET_NOTIFICATION(state, payload) {
       state.me.notifications = [...state.me.notifications, payload]
+    },
+    REPLACE_NOTIFICATIONS(state, payload) {
+      state.me.notifications = payload
     }
   },
   actions: {
@@ -192,7 +195,17 @@ export default {
         commit("PUSH_SOCKET_NOTIFICATION", payload)
       }
     },
+    async socketExpiration({ state, commit }, payload) {
+      const notifications = state.me.notifications.map((notification) => {
+        if (notification.notification._id === payload._id) {
+          return { ...notification, notification: payload }
+        } else {
+          return notification
+        }
+      })
 
+      commit("REPLACE_NOTIFICATIONS", notifications)
+    },
     // === User Transactions ===
     async sendBorrowRequest({ state, commit }, payload) {
       commit("FETCHING_TRANSACTION", true)

@@ -27,6 +27,9 @@ const sockets = {
   },
   emitKarma(amount, socketId) {
     io.to(socketId).emit('karma', amount)
+  },
+  emitExpiration(lendingRequest, socketId) {
+    io.to(socketId).emit('expiration', lendingRequest)
   }
 }
 

@@ -44,6 +44,7 @@ router.post(
       const transactionRequest = new Transaction({ ...req.body, price: item.price * dateMath.duration(pickUpTime, dropOffTime) });
       await transactionRequest.save();
 
+
       // == create new notification ==
       const lendingRequestData = {
         borrowerUsername: req.user.username,
@@ -58,6 +59,9 @@ router.post(
 
       const lendingRequest = new LendingRequest(lendingRequestData);
       await lendingRequest.save()
+
+      // == expire transaction if not accepted before pickup date
+      agenda.schedule(new Date(transactionRequest.pickUpTime), "expire transaction", { transactionId: transactionRequest._id, lendingRequestId: lendingRequest._id })
 
       // == associate notification with lender ==
       const lender = await User.findById(req.body.lenderId)
@@ -110,7 +114,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
     await borrower.save();
 
 
-    // == update transaction status to active == 
+    // == update transaction status == 
     transaction.status = req.body.status;
     await transaction.save();
 
@@ -154,20 +158,25 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
 
       // == decline conflicting pending requests ==
       const conflictingTransactions = await Transaction.find({ itemId: transaction.itemId, status: "pending" }).populate("borrowerId").exec()
-      conflictingTransactions.forEach(transaction => {
+      conflictingTransactions.forEach(async transaction => {
         transaction.status = "declined"
-        transaction.save()
+        await transaction.save()
 
         // TODO: could potentially send socket notification to borrower here to update pending (now declined) notification in real time.
 
         // NOTE: following line returns borrower karma if declined
         transaction.borrowerId.karma = transaction.borrowerId.karma + transaction.price
-        transaction.borrowerId.save()
+        await transaction.borrowerId.save()
 
         if (transaction.borrowerId.isLoggedIn && transaction.borrowerId.socketId) {
           socket.emitKarma(transaction.price, transaction.borrowerId.socketId)
         }
       })
+    }
+
+    // == cancel agenda expiry job == 
+    if (transaction.status === 'active' || transaction.status === 'declined') {
+      await agenda.cancel({ 'data.transactionId': transaction._id })
     }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()

@@ -1,5 +1,6 @@
 const LendingRequest = require("../models/notifications/lendingRequest")
 const BorrowRequest = require("../models/notifications/borrowRequest")
+const BorrowRequestExpired = require("../models/notifications/borrowRequestExpired")
 const PickUpReminder = require("../models/notifications/pickUpReminder")
 const DropOffReminder = require("../models/notifications/dropOffReminder")
 const ItemReturnFlow = require("../models/notifications/itemReturnFlow")
@@ -23,6 +24,9 @@ const verifyNotification = async (req, res, next) => {
         break;
       case "BorrowRequest":
         notification = await (await BorrowRequest.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
+        break;
+      case "BorrowRequestExpired":
+        notification = await (await BorrowRequestExpired.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();
         break;
       case "PickUpReminder":
         notification = await (await PickUpReminder.findById(req.params.id)).populate({ path: "transaction" }).execPopulate();

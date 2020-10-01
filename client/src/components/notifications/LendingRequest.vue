@@ -5,36 +5,47 @@
         <div class="card-header-text">
           <div>
             <v-card-title class="title">
-              <span>{{`Lending Request - `}}</span>
-              <span :class="statusClass">{{transactionStatus}}</span>
+              <span>{{ `Lending Request - ` }}</span>
+              <span :class="statusClass">{{ transactionStatus }}</span>
             </v-card-title>
-            <p class="no-margin">{{notificationDate}}</p>
+            <p class="no-margin">{{ notificationDate }}</p>
           </div>
           <div>
-            <span>{{` from: `}}</span>
+            <span>{{ ` from: ` }}</span>
             <router-link
               class="subtitle"
               :to="`/profile/${notification.borrowerUsername}`"
               tag="a"
-            >{{notification.borrowerUsername}}</router-link>
+              >{{ notification.borrowerUsername }}</router-link
+            >
 
             <p class="no-margin">
-              <span>{{`Requesting to borrow `}}</span>
-              <strong>{{notification.itemName}}</strong>
-              <span>{{` for ${duration} ${days}`}}</span>
+              <span>{{ `Requesting to borrow ` }}</span>
+              <strong>{{ notification.itemName }}</strong>
+              <span>{{ ` for ${duration} ${days}` }}</span>
             </p>
           </div>
         </div>
         <div class="select-button">
           <v-btn icon @click="selectNotification()">
-            <v-icon>{{ isNotificationSelected ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            <v-icon>{{
+              isNotificationSelected ? "mdi-chevron-up" : "mdi-chevron-down"
+            }}</v-icon>
           </v-btn>
         </div>
         <v-expand-transition>
           <div v-show="isNotificationSelected">
             <v-divider></v-divider>
             <v-card-text>
-              <v-row>
+              <v-row v-if="isExpired">
+                <v-col cols="12">
+                  <p>
+                    This request has expired because it wasn't accepted or
+                    rejected before the pick up date.
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row v-else>
                 <v-col cols="6">
                   <v-text-field
                     disabled
@@ -71,9 +82,19 @@
             <v-card-actions class="actions">
               <div v-if="notification.transaction.status === 'pending'">
                 <v-btn @click="acceptDeclineRequest('active')">ACCEPT</v-btn>
-                <v-btn class="decline-button" @click="acceptDeclineRequest('declined')">DECLINE</v-btn>
+                <v-btn
+                  class="decline-button"
+                  @click="acceptDeclineRequest('declined')"
+                  >DECLINE</v-btn
+                >
               </div>
-              <v-btn v-if="ableToDelete" icon large tile @click="deleteNotification()">
+              <v-btn
+                v-if="ableToDelete"
+                icon
+                large
+                tile
+                @click="deleteNotification()"
+              >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-card-actions>
@@ -108,6 +129,9 @@ export default {
     }
   },
   computed: {
+    isExpired() {
+      return this.notification.transaction.status === "expired";
+    },
     ableToDelete() {
       let result = false;
 
@@ -116,6 +140,9 @@ export default {
           result = true;
           break;
         case "completed":
+          result = true;
+          break;
+        case "expired":
           result = true;
           break;
       }
