@@ -6,13 +6,17 @@
           <Carousel :media="itemDetail.media" :itemId="itemDetail._id" />
         </v-col>
         <v-col cols="6">
-          <h2 class="item-title">{{itemDetail.name}}</h2>
-          <p class="item-text">{{itemDetail.description}}</p>
+          <h2 class="item-title">{{ itemDetail.name }}</h2>
+          <p class="item-text">{{ itemDetail.description }}</p>
           <v-divider class="divider"></v-divider>
           <v-row align="center" no-gutters>
             <span class="item-text item-text__price">Price:</span>
-            <v-icon class="karma-icon" color="black" v-text="'$vuetify.icons.karmaDark'"></v-icon>
-            <span>{{itemDetail.price}}</span>
+            <v-icon
+              class="karma-icon"
+              color="black"
+              v-text="'$vuetify.icons.karmaDark'"
+            ></v-icon>
+            <span>{{ itemDetail.price }}</span>
             <v-spacer></v-spacer>
             <!-- == borrow modal == -->
             <div v-if="myUsername !== itemOwnerUsername">
@@ -111,6 +115,8 @@ export default {
     toBorrowPage() {
       if (this.myKarma < this.itemDetail.price) {
         alert("You don't have enough karma for this item");
+      } else if (!this.itemDetail.available) {
+        alert("This item is currently unavailable");
       } else {
         router.push("/item-borrow");
       }

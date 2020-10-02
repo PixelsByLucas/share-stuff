@@ -103,10 +103,15 @@ router.get("/items/:itemId/media/:imageId", async (req, res) => {
 router.get("/items/search", async (req, res) => {
   const queryObj = {};
 
+  // == never return items that are unavailable ==
+  queryObj.available = true
+
   for (const query in req.query) {
     if (query === 'ownerId') {
+      // == don't renturn items that belong to user ==
       queryObj[query] = { $ne: req.query[query] }
     } else {
+      // == include all properties within req.query in query object ==
       queryObj[query] = req.query[query]
     }
   }

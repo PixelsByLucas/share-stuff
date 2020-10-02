@@ -176,7 +176,7 @@ router.put("/transaction/status/:id", auth, verifyNotification, async (req, res)
 
     // == cancel agenda expiry job == 
     if (transaction.status === 'active' || transaction.status === 'declined') {
-      await agenda.cancel({ 'data.transactionId': transaction._id })
+      await agenda.cancel({ 'data.transactionId': transaction._id, name: 'expire transaction' })
     }
 
     const user = await req.user.populate({ path: "notifications.notification", populate: { path: "transaction" } }).execPopulate()
