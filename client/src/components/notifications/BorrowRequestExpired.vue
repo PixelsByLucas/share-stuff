@@ -5,7 +5,8 @@
         <div class="card-header-text">
           <div>
             <v-card-title class="title">
-              <span>Borrow Request Expired</span>
+              <span>Borrow Request - </span>
+              <span class="status-expired">Expired</span>
             </v-card-title>
             <p class="no-margin">{{ notificationDate }}</p>
           </div>
@@ -39,7 +40,7 @@
                 <v-col cols="12">
                   <p>
                     {{
-                      `Your request to borrow ${notification.itemName} from ${notification.lenderUsername} has expired because ${notification.lenderUsername} did not accept or reject your request before the pick up date you selected.`
+                      `Your request to borrow ${notification.itemName} from ${notification.lenderUsername} has expired because ${notification.lenderUsername} did not accept or reject your request before the pick up time you selected.`
                     }}
                   </p>
                 </v-col>
@@ -117,6 +118,9 @@ export default {
 }
 .card-unseen {
   border-left: 4px solid #1976d2;
+}
+.status-expired {
+  color: red;
 }
 .no-margin {
   margin: 0;
