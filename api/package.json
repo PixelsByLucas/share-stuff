@@ -23,7 +23,7 @@
     "nodemailer": "^6.4.10",
     "sharp": "^0.23.1",
     "socket.io": "^2.3.0",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
